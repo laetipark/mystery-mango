@@ -1,0 +1,53 @@
+spring:
+  application:
+    name: mystery-mango
+  datasource:
+    url: ${DATABASE_URL:jdbc:postgresql://localhost:5432/mystery_mango}
+    username: ${DATABASE_USER:mango}
+    password: ${DATABASE_PASSWORD:mango_local_only}
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: validate
+  session:
+    timeout: 12h
+    jdbc:
+      initialize-schema: never
+  flyway:
+    enabled: true
+  jackson:
+    default-property-inclusion: always
+server:
+  port: ${PORT:8080}
+  servlet:
+    session:
+      cookie:
+        http-only: true
+        secure: ${COOKIE_SECURE:false}
+        same-site: lax
+  error:
+    include-message: never
+    include-stacktrace: never
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health
+  endpoint:
+    health:
+      show-details: never
+springdoc:
+  api-docs:
+    path: /api/openapi
+  swagger-ui:
+    path: /api/docs
+app:
+  origins: ${APP_ORIGINS:http://localhost:5173,http://localhost:8080,http://127.0.0.1:5173,http://127.0.0.1:8080}
+  voice-provider: ${VOICE_PROVIDER:disabled}
+  match-accept-seconds: ${MATCH_ACCEPT_SECONDS:30}
+  match-vote-seconds: ${MATCH_VOTE_SECONDS:60}
+  game-phase-seconds: ${GAME_PHASE_SECONDS:0}
+  disconnect-grace-seconds: ${DISCONNECT_GRACE_SECONDS:120}
+  abandon-seconds: ${ABANDON_SECONDS:300}
+  empty-game-abort-seconds: ${EMPTY_GAME_ABORT_SECONDS:1800}
+

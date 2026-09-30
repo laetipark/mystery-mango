@@ -1,0 +1,62 @@
+name: mystery-mango
+services:
+  db:
+    image: postgres:17.11-alpine@sha256:b0f9560a2de083e2cc7382e75f808c7381a32852a7ec49117deedb300e552b24
+    environment:
+      POSTGRES_DB: mystery_mango
+      POSTGRES_USER: ${DATABASE_USER:-mango}
+      POSTGRES_PASSWORD: ${DATABASE_PASSWORD:-mango_local_only}
+    ports:
+      - "127.0.0.1:5432:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: [CMD-SHELL, "pg_isready -U $${POSTGRES_USER} -d mystery_mango"]
+      interval: 3s
+      timeout: 3s
+      retries: 20
+  backend:
+    build:
+      context: ./backend
+    environment:
+      DATABASE_URL: jdbc:postgresql://db:5432/mystery_mango
+      DATABASE_USER: ${DATABASE_USER:-mango}
+      DATABASE_PASSWORD: ${DATABASE_PASSWORD:-mango_local_only}
+      SPRING_PROFILES_ACTIVE: ${SPRING_PROFILES_ACTIVE:-dev}
+      COOKIE_SECURE: ${COOKIE_SECURE:-false}
+      APP_ORIGINS: ${APP_ORIGINS:-http://localhost:5173,http://localhost:8080,http://127.0.0.1:5173,http://127.0.0.1:8080}
+      VOICE_PROVIDER: ${VOICE_PROVIDER:-disabled}
+      GAME_PHASE_SECONDS: ${GAME_PHASE_SECONDS:-0}
+      MATCH_ACCEPT_SECONDS: ${MATCH_ACCEPT_SECONDS:-30}
+      MATCH_VOTE_SECONDS: ${MATCH_VOTE_SECONDS:-60}
+      DISCONNECT_GRACE_SECONDS: ${DISCONNECT_GRACE_SECONDS:-120}
+      ABANDON_SECONDS: ${ABANDON_SECONDS:-300}
+      EMPTY_GAME_ABORT_SECONDS: ${EMPTY_GAME_ABORT_SECONDS:-1800}
+      DISCORD_BOT_TOKEN: ${DISCORD_BOT_TOKEN:-}
+      DISCORD_CLIENT_ID: ${DISCORD_CLIENT_ID:-}
+      DISCORD_CLIENT_SECRET: ${DISCORD_CLIENT_SECRET:-}
+      DISCORD_GUILD_ID: ${DISCORD_GUILD_ID:-}
+      DISCORD_CATEGORY_ID: ${DISCORD_CATEGORY_ID:-}
+      DISCORD_REDIRECT_URI: ${DISCORD_REDIRECT_URI:-http://localhost:8080/api/v1/me/discord/callback}
+      DISCORD_INVITE_URL: ${DISCORD_INVITE_URL:-}
+    ports:
+      - "127.0.0.1:8081:8080"
+    depends_on:
+      db:
+        condition: service_healthy
+    healthcheck:
+      test: [CMD, curl, -f, http://localhost:8080/actuator/health]
+      interval: 5s
+      timeout: 3s
+      retries: 30
+  web:
+    build:
+      context: .
+      dockerfile: infra/frontend.Dockerfile
+    ports:
+      - "127.0.0.1:8080:80"
+    depends_on:
+      backend:
+        condition: service_healthy
+volumes:
+  postgres-data:

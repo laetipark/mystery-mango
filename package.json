@@ -1,0 +1,16 @@
+{
+  "name": "mystery-mango",
+  "private": true,
+  "version": "0.1.0",
+  "scripts": {
+    "dev:api": "docker compose up --build db backend",
+    "dev:web": "npm --prefix frontend run dev",
+    "build:web": "npm --prefix frontend run build",
+    "lint": "npm --prefix frontend run lint",
+    "test:web": "npm --prefix frontend test",
+    "test:e2e": "npm --prefix frontend run test:e2e",
+    "start": "docker compose up --build -d",
+    "stop": "docker compose down"
+  }
+}
+

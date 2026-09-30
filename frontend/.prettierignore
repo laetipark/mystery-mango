@@ -1,0 +1,6 @@
+src/common/api.generated.ts
+node_modules
+dist
+.npm-cache
+playwright-report
+test-results

@@ -1,0 +1,21 @@
+import type { components, paths } from './api.generated';
+
+type Schemas = components['schemas'];
+type ScenarioPage = paths['/api/v1/scenarios']['get']['responses'][200]['content']['application/json'];
+export type User = Schemas['UserView'];
+export type Page<T> = Omit<ScenarioPage, 'items'> & { items: T[] };
+export type PlayMode = Schemas['RoomCard']['mode'];
+export type Scenario = Schemas['ScenarioCard'] & { rank?: number };
+export type Activity = Schemas['Activity'];
+export type RoomCard = Schemas['RoomCard'];
+export type Room = Schemas['RoomSnapshot'];
+export type Ticket = Schemas['TicketView'];
+export type Proposal = Schemas['MatchProposal'];
+export type Clue = Schemas['ClueView'];
+export type Game = Schemas['GameSnapshot'];
+export type Message = Schemas['ChatMessage'];
+export type History = Schemas['PlayHistoryEntry'];
+export type ServerEvent = Schemas['ServerEvent'];
+export type Block = { userId: string; displayName: string };
+export type AdminScenario = { id: string; versionId?: string; title: string; status: string; version: number };
+export type Report = { id: string; reason: string; status: string; createdAt: string; targetUserId?: string };

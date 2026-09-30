@@ -1,0 +1,343 @@
+{
+  "schemaVersion": 1,
+  "slug": "rain-soaked-villa",
+  "title": "비 내리는 별장",
+  "synopsis": "유산 협의를 위해 모인 별장에서 건축가가 숨졌다. 폭우가 다리를 끊고 거실 벽난로에는 타다 남은 설계도가 있다. 가족과 동료 네 사람이 밤의 기록을 맞추어야 한다.",
+  "language": "ko",
+  "playerCount": 4,
+  "estimatedMinutes": 45,
+  "genre": "가족 서스펜스",
+  "difficulty": "MEDIUM",
+  "modes": [
+    "TEXT",
+    "DISCORD"
+  ],
+  "roles": [
+    {
+      "id": "daughter",
+      "name": "나래 · 딸",
+      "publicIntro": "별장을 문화 공간으로 바꾸고 싶어 한다.",
+      "secret": "당신은 아버지와 유산 문제로 다퉜다. 20시 40분부터 55분까지 온실에 있었으며 자동 관수 수리 기록에 손전등 그림자가 남는다. 서재에서 유언장을 가져갔지만 아버지를 해치지 않았다.",
+      "objective": {
+        "text": "새 유언장의 내용을 공개한다.",
+        "condition": {
+          "type": "CLUE_PUBLIC",
+          "clueId": "will"
+        }
+      }
+    },
+    {
+      "id": "partner",
+      "name": "준호 · 공동 설계자",
+      "publicIntro": "고인과 오랫동안 건축 사무소를 운영했다.",
+      "secret": "당신이 범인이다. 고인은 당신이 강도 계산서를 위조한 사실을 밝히려 했다. 20시 46분 서재에서 우산 지팡이의 무거운 손잡이로 고인을 공격했다. 이후 벽난로에 계산서를 태우고 젖은 우산을 현관에 두어 밖에서 돌아온 척했다. 실제로 밖에는 나가지 않았다.",
+      "objective": {
+        "text": "최종 투표에서 지목되지 않는다.",
+        "condition": {
+          "type": "NOT",
+          "condition": {
+            "type": "CULPRIT_IDENTIFIED"
+          }
+        }
+      }
+    },
+    {
+      "id": "housekeeper",
+      "name": "미정 · 관리인",
+      "publicIntro": "별장의 열쇠와 오래된 물건을 관리한다.",
+      "secret": "고인은 당신에게 별장 매각 후 퇴직을 통보했다. 당신은 20시 43분부터 50분까지 주방에서 정전 대비 양초를 찾았다. 서재 앞에서 준호의 특이한 우산 손잡이가 벽에 부딪치는 소리를 들었다. 과거 장부를 숨겼지만 살인과 무관하다.",
+      "objective": {
+        "text": "서재 녹음을 확보한다.",
+        "condition": {
+          "type": "HAS_CLUE",
+          "clueId": "audio"
+        }
+      }
+    },
+    {
+      "id": "nephew",
+      "name": "도윤 · 조카",
+      "publicIntro": "사진 작업을 위해 별장을 방문했다.",
+      "secret": "당신은 몰래 고인의 인장을 찍어 돈을 빌렸다. 폭우를 찍은 타임랩스에는 20시 30분부터 55분까지 현관이 보인다. 준호는 밖에서 왔다고 하지만 영상에서는 아무도 현관을 드나들지 않는다. 당신은 빚이 드러날까 영상 제출을 망설인다.",
+      "objective": {
+        "text": "현관 영상을 공개한다.",
+        "condition": {
+          "type": "CLUE_PUBLIC",
+          "clueId": "door"
+        }
+      }
+    }
+  ],
+  "phases": [
+    {
+      "id": "reading",
+      "kind": "READING",
+      "durationSeconds": 240,
+      "actions": [],
+      "publicText": "자신의 역할과 비밀 목표를 읽으세요. 모두 읽기를 완료하면 다음 단계로 이동합니다.",
+      "investigationLimit": 0
+    },
+    {
+      "id": "investigation-1",
+      "kind": "INVESTIGATION",
+      "durationSeconds": 300,
+      "actions": [
+        "CHAT",
+        "INVESTIGATE",
+        "SHARE",
+        "WHISPER"
+      ],
+      "publicText": "첫 현장을 조사하세요. 각자 두 곳까지 조사할 수 있습니다. 서로 다른 대상을 나누어 조사하면 도움이 됩니다.",
+      "investigationLimit": 2
+    },
+    {
+      "id": "discussion-1",
+      "kind": "DISCUSSION",
+      "durationSeconds": 300,
+      "actions": [
+        "CHAT",
+        "SHARE",
+        "WHISPER"
+      ],
+      "publicText": "확보한 단서와 자신의 주장을 비교하세요. 공유한 단서는 상대가 밀담을 떠나도 남습니다.",
+      "investigationLimit": 0
+    },
+    {
+      "id": "investigation-2",
+      "kind": "INVESTIGATION",
+      "durationSeconds": 300,
+      "actions": [
+        "CHAT",
+        "INVESTIGATE",
+        "SHARE",
+        "WHISPER"
+      ],
+      "publicText": "추가 자료가 열렸습니다. 다시 두 곳까지 조사하고 시각과 물증을 연결하세요.",
+      "investigationLimit": 2
+    },
+    {
+      "id": "final-discussion",
+      "kind": "DISCUSSION",
+      "durationSeconds": 300,
+      "actions": [
+        "CHAT",
+        "SHARE",
+        "WHISPER"
+      ],
+      "publicText": "마지막 토론입니다. 다른 사람의 비밀을 단정하기보다 단서의 시각과 사실을 확인하세요.",
+      "investigationLimit": 0
+    },
+    {
+      "id": "accusation",
+      "kind": "VOTE",
+      "durationSeconds": 120,
+      "actions": [
+        "CHAT",
+        "VOTE"
+      ],
+      "publicText": "범인이라고 생각하는 역할에 투표하세요. 마감 전 변경과 기권이 가능하며 동률이면 누구도 지목하지 않습니다.",
+      "investigationLimit": 0
+    },
+    {
+      "id": "ending",
+      "kind": "ENDING",
+      "durationSeconds": 60,
+      "actions": [
+        "CHAT"
+      ],
+      "publicText": "사건의 해설과 자신의 목표 결과를 확인하세요. 시간이 끝나면 플레이 기록이 저장됩니다.",
+      "investigationLimit": 0
+    }
+  ],
+  "targets": [
+    {
+      "id": "target-will",
+      "name": "수정된 유언장 조사",
+      "phaseIds": [
+        "investigation-1"
+      ],
+      "clueIds": [
+        "will"
+      ]
+    },
+    {
+      "id": "target-ash",
+      "name": "벽난로의 종이 조각 조사",
+      "phaseIds": [
+        "investigation-1"
+      ],
+      "clueIds": [
+        "ash"
+      ]
+    },
+    {
+      "id": "target-door",
+      "name": "현관 타임랩스 조사",
+      "phaseIds": [
+        "investigation-1"
+      ],
+      "clueIds": [
+        "door"
+      ]
+    },
+    {
+      "id": "target-watch",
+      "name": "서재 스마트 스피커 조사",
+      "phaseIds": [
+        "investigation-1"
+      ],
+      "clueIds": [
+        "watch"
+      ]
+    },
+    {
+      "id": "target-umbrella",
+      "name": "무거운 우산 손잡이 조사",
+      "phaseIds": [
+        "investigation-2"
+      ],
+      "clueIds": [
+        "umbrella"
+      ]
+    },
+    {
+      "id": "target-audio",
+      "name": "서재 음성 메모 조사",
+      "phaseIds": [
+        "investigation-2"
+      ],
+      "clueIds": [
+        "audio"
+      ]
+    },
+    {
+      "id": "target-greenhouse",
+      "name": "온실 관수 영상 조사",
+      "phaseIds": [
+        "investigation-2"
+      ],
+      "clueIds": [
+        "greenhouse"
+      ]
+    },
+    {
+      "id": "target-sink",
+      "name": "주방 배수구 조사",
+      "phaseIds": [
+        "investigation-2"
+      ],
+      "clueIds": [
+        "sink"
+      ]
+    }
+  ],
+  "clues": [
+    {
+      "id": "will",
+      "title": "수정된 유언장",
+      "text": "유산은 딸에게만 남기지 않고 피해 건축물 보수 기금으로 기부한다. 고인의 서명 옆에는 '계산서 원본은 내일 공개'라는 메모가 있다.",
+      "sharePolicy": "PUBLIC_AND_WHISPER"
+    },
+    {
+      "id": "ash",
+      "title": "벽난로의 종이 조각",
+      "text": "타다 남은 종이에는 강도 수치가 두 번 수정된 흔적과 공동 설계자 준호의 승인 도장이 있다. 모서리의 물방울 자국은 우산 끝과 같은 간격이다.",
+      "sharePolicy": "PUBLIC_AND_WHISPER"
+    },
+    {
+      "id": "door",
+      "title": "현관 타임랩스",
+      "text": "20:30~20:55 현관은 한 번도 열리지 않는다. 시계 표시와 번개 시각이 기상 기록에 일치해 영상 시각은 신뢰할 수 있다.",
+      "sharePolicy": "PUBLIC_AND_WHISPER"
+    },
+    {
+      "id": "watch",
+      "title": "서재 스마트 스피커",
+      "text": "20:46에 큰 충격음이 감지되었고 이후 피해자의 음성 활동이 끊겼다. 20:52 관리인이 문을 두드리기 전까지 다른 발소리는 한 차례뿐이다.",
+      "sharePolicy": "PUBLIC_AND_WHISPER"
+    },
+    {
+      "id": "umbrella",
+      "title": "무거운 우산 손잡이",
+      "text": "준호의 지팡이 우산 손잡이 틈에 피해자의 혈흔이 남아 있다. 우산 천은 바깥쪽보다 안쪽이 더 젖어 싱크대에서 물을 뿌린 흔적과 맞는다.",
+      "sharePolicy": "PUBLIC_AND_WHISPER"
+    },
+    {
+      "id": "audio",
+      "title": "서재 음성 메모",
+      "text": "피해자의 음성: '준호, 네가 바꾼 수치를 더는 감출 수 없어.' 곧 금속이 벽을 긁는 소리와 충격이 난다. 파일 시각은 20:45~20:46이다.",
+      "sharePolicy": "PUBLIC_AND_WHISPER"
+    },
+    {
+      "id": "greenhouse",
+      "title": "온실 관수 영상",
+      "text": "딸은 20:40~20:55 관수 장치를 수리한다. 별장까지 왕복하려면 최소 8분이 필요하나 영상에 빈 구간은 없다.",
+      "sharePolicy": "PUBLIC_AND_WHISPER"
+    },
+    {
+      "id": "sink",
+      "title": "주방 배수구",
+      "text": "검은 우산 천 섬유와 탄 종이 가루가 함께 발견된다. 관리인이 가져온 양초 상자는 20:43에 열렸고 20:50까지 주방 카메라에 관리인이 보인다.",
+      "sharePolicy": "PUBLIC_AND_WHISPER"
+    }
+  ],
+  "ballot": {
+    "culpritRoleId": "partner",
+    "allowChange": true,
+    "allowAbstain": true,
+    "tiePolicy": "NO_ACCUSATION"
+  },
+  "endings": [
+    {
+      "id": "identified",
+      "title": "맞춰진 사건의 시간",
+      "text": "준호의 귀가 이야기는 현관 영상으로 무너졌다. 서재의 음성 메모와 우산의 혈흔이 가리키는 시간은 20시 46분이다. 그는 계산서 위조 폭로를 막으려 살인하고 비를 알리바이에 이용했다. 나래는 유언대로 피해 건물의 보수 기금을 세우기로 한다.",
+      "condition": {
+        "type": "CULPRIT_IDENTIFIED"
+      }
+    },
+    {
+      "id": "unresolved",
+      "title": "엇갈린 지목 뒤의 진실",
+      "text": "비가 그칠 때까지 진실을 올바르게 지목하지 못했다. 범인은 공동 설계자 준호였다. 현관은 열리지 않았고 우산은 싱크대에서 젖었다. 서재 음성 메모의 이름과 우산 손잡이의 혈흔을 연결했다면 위조 계산서 은폐라는 동기를 입증할 수 있었다.",
+      "condition": {
+        "type": "ALWAYS"
+      }
+    }
+  ],
+  "rules": [
+    {
+      "id": "arrival",
+      "when": "PHASE_STARTED",
+      "phaseId": "reading",
+      "condition": {
+        "type": "ALWAYS"
+      },
+      "effects": [
+        {
+          "type": "PUBLISH_MATERIAL",
+          "text": "이 작품은 직접 작성한 4인용 샘플입니다. 표시된 소요 시간은 추정값입니다. 범인 역할도 거짓 진술할 수 있으나 실제 단서 내용은 바꿀 수 없습니다. 플레이 중 공개된 사실을 근거로 토론하세요."
+        }
+      ]
+    },
+    {
+      "id": "evidence-confirmed",
+      "when": "CLUE_PUBLISHED",
+      "clueId": "watch",
+      "condition": {
+        "type": "ALWAYS"
+      },
+      "effects": [
+        {
+          "type": "SET_FLAG",
+          "flag": "timelineShared",
+          "value": true
+        },
+        {
+          "type": "PUBLISH_MATERIAL",
+          "text": "사건의 시각을 판단할 공통 자료가 공개되었습니다. 각자의 주장과 자료에 기록된 시각을 다시 비교하세요."
+        }
+      ]
+    }
+  ]
+}

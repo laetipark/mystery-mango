@@ -1,0 +1,10 @@
+.git
+.tools
+.gradle
+**/node_modules
+**/.npm-cache
+**/build
+**/dist
+.env
+**/playwright-report
+**/test-results

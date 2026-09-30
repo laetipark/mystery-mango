@@ -1,0 +1,15 @@
+.env
+.env.*.local
+.tools/
+.gradle/
+**/build/
+**/node_modules/
+**/dist/
+**/playwright-report/
+**/test-results/
+*.log
+.idea/
+.vscode/
+*.iml
+!gradle-wrapper.jar
+

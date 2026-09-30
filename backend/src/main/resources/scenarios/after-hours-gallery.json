@@ -1,0 +1,343 @@
+{
+  "schemaVersion": 1,
+  "slug": "after-hours-gallery",
+  "title": "폐관 후의 미술관",
+  "synopsis": "기증식 전날 밤, 폐관한 미술관의 수장고에서 관장이 숨졌다. 비상문은 안에서 잠겨 있고 네 사람의 출입 기록만 남았다. 사라진 그림과 7분의 정전을 되짚어 진실을 밝혀라.",
+  "language": "ko",
+  "playerCount": 4,
+  "estimatedMinutes": 45,
+  "genre": "예술 미스터리",
+  "difficulty": "MEDIUM",
+  "modes": [
+    "TEXT",
+    "DISCORD"
+  ],
+  "roles": [
+    {
+      "id": "restorer",
+      "name": "서윤 · 복원사",
+      "publicIntro": "그림의 작은 균열까지 기억하는 복원사.",
+      "secret": "당신은 관장이 위작을 진품으로 팔았다는 사실을 알아냈다. 21시 10분부터 25분까지 작업실에서 작품 사진을 복구했다. 관장의 협박 편지를 찢었지만 살인하지 않았다. 정전 때 어두운 복도에서 매니저의 금속 열쇠고리 소리를 들었다.",
+      "objective": {
+        "text": "위작 거래의 흔적을 공개한다.",
+        "condition": {
+          "type": "CLUE_PUBLIC",
+          "clueId": "invoice"
+        }
+      }
+    },
+    {
+      "id": "manager",
+      "name": "도현 · 운영실장",
+      "publicIntro": "기증 행사를 총괄하는 오래된 직원.",
+      "secret": "당신이 범인이다. 관장은 당신이 기증 대금을 빼돌린 사실을 경찰에 알리려 했다. 21시 18분 수장고에서 청동 문진으로 관장을 가격했다. 20분에 정전을 일으키고 25분에 발전기를 켠 뒤, 내내 기계실에 있었다고 주장했다. 열쇠고리가 수장고에 걸렸다는 사실은 아직 모른다.",
+      "objective": {
+        "text": "최종 투표에서 지목되지 않는다.",
+        "condition": {
+          "type": "NOT",
+          "condition": {
+            "type": "CULPRIT_IDENTIFIED"
+          }
+        }
+      }
+    },
+    {
+      "id": "curator",
+      "name": "해린 · 큐레이터",
+      "publicIntro": "기증전 해설과 작품 목록을 담당한다.",
+      "secret": "21시 17분 관장에게 퇴사를 통보하고 전시실로 돌아갔다. 관장은 당신의 연구를 자신의 이름으로 발표했다. 19분경 수장고 쪽에서 무거운 물건이 떨어지는 소리를 들었다. 몰래 녹음한 면담 파일에는 그때의 벽시계 소리도 남아 있다.",
+      "objective": {
+        "text": "녹음의 정확한 시각을 확보한다.",
+        "condition": {
+          "type": "HAS_CLUE",
+          "clueId": "recording"
+        }
+      }
+    },
+    {
+      "id": "guard",
+      "name": "민재 · 야간 경비",
+      "publicIntro": "폐관 후 건물의 출입을 관리한다.",
+      "secret": "당신은 21시 15분부터 23분까지 뒤뜰에서 담배를 피웠다. 징계를 피하려 처음에는 경비실을 비우지 않았다고 말했다. 뒤뜰 창으로 실장이 21시 20분 기계실에 들어가는 모습을 봤다. 출입 일지는 자동 기록이다.",
+      "objective": {
+        "text": "경비 기록을 공개해 사건 순서를 바로잡는다.",
+        "condition": {
+          "type": "CLUE_PUBLIC",
+          "clueId": "entry"
+        }
+      }
+    }
+  ],
+  "phases": [
+    {
+      "id": "reading",
+      "kind": "READING",
+      "durationSeconds": 240,
+      "actions": [],
+      "publicText": "자신의 역할과 비밀 목표를 읽으세요. 모두 읽기를 완료하면 다음 단계로 이동합니다.",
+      "investigationLimit": 0
+    },
+    {
+      "id": "investigation-1",
+      "kind": "INVESTIGATION",
+      "durationSeconds": 300,
+      "actions": [
+        "CHAT",
+        "INVESTIGATE",
+        "SHARE",
+        "WHISPER"
+      ],
+      "publicText": "첫 현장을 조사하세요. 각자 두 곳까지 조사할 수 있습니다. 서로 다른 대상을 나누어 조사하면 도움이 됩니다.",
+      "investigationLimit": 2
+    },
+    {
+      "id": "discussion-1",
+      "kind": "DISCUSSION",
+      "durationSeconds": 300,
+      "actions": [
+        "CHAT",
+        "SHARE",
+        "WHISPER"
+      ],
+      "publicText": "확보한 단서와 자신의 주장을 비교하세요. 공유한 단서는 상대가 밀담을 떠나도 남습니다.",
+      "investigationLimit": 0
+    },
+    {
+      "id": "investigation-2",
+      "kind": "INVESTIGATION",
+      "durationSeconds": 300,
+      "actions": [
+        "CHAT",
+        "INVESTIGATE",
+        "SHARE",
+        "WHISPER"
+      ],
+      "publicText": "추가 자료가 열렸습니다. 다시 두 곳까지 조사하고 시각과 물증을 연결하세요.",
+      "investigationLimit": 2
+    },
+    {
+      "id": "final-discussion",
+      "kind": "DISCUSSION",
+      "durationSeconds": 300,
+      "actions": [
+        "CHAT",
+        "SHARE",
+        "WHISPER"
+      ],
+      "publicText": "마지막 토론입니다. 다른 사람의 비밀을 단정하기보다 단서의 시각과 사실을 확인하세요.",
+      "investigationLimit": 0
+    },
+    {
+      "id": "accusation",
+      "kind": "VOTE",
+      "durationSeconds": 120,
+      "actions": [
+        "CHAT",
+        "VOTE"
+      ],
+      "publicText": "범인이라고 생각하는 역할에 투표하세요. 마감 전 변경과 기권이 가능하며 동률이면 누구도 지목하지 않습니다.",
+      "investigationLimit": 0
+    },
+    {
+      "id": "ending",
+      "kind": "ENDING",
+      "durationSeconds": 60,
+      "actions": [
+        "CHAT"
+      ],
+      "publicText": "사건의 해설과 자신의 목표 결과를 확인하세요. 시간이 끝나면 플레이 기록이 저장됩니다.",
+      "investigationLimit": 0
+    }
+  ],
+  "targets": [
+    {
+      "id": "target-invoice",
+      "name": "이중 거래 송장 조사",
+      "phaseIds": [
+        "investigation-1"
+      ],
+      "clueIds": [
+        "invoice"
+      ]
+    },
+    {
+      "id": "target-entry",
+      "name": "수장고 출입 기록 조사",
+      "phaseIds": [
+        "investigation-1"
+      ],
+      "clueIds": [
+        "entry"
+      ]
+    },
+    {
+      "id": "target-frame",
+      "name": "찢긴 협박 편지 조사",
+      "phaseIds": [
+        "investigation-1"
+      ],
+      "clueIds": [
+        "frame"
+      ]
+    },
+    {
+      "id": "target-clock",
+      "name": "멈춘 전자시계 조사",
+      "phaseIds": [
+        "investigation-1"
+      ],
+      "clueIds": [
+        "clock"
+      ]
+    },
+    {
+      "id": "target-keychain",
+      "name": "문틀의 금속 조각 조사",
+      "phaseIds": [
+        "investigation-2"
+      ],
+      "clueIds": [
+        "keychain"
+      ]
+    },
+    {
+      "id": "target-recording",
+      "name": "면담 녹음 조사",
+      "phaseIds": [
+        "investigation-2"
+      ],
+      "clueIds": [
+        "recording"
+      ]
+    },
+    {
+      "id": "target-generator",
+      "name": "발전기 수동 기록 조사",
+      "phaseIds": [
+        "investigation-2"
+      ],
+      "clueIds": [
+        "generator"
+      ]
+    },
+    {
+      "id": "target-weight",
+      "name": "청동 문진 검사 조사",
+      "phaseIds": [
+        "investigation-2"
+      ],
+      "clueIds": [
+        "weight"
+      ]
+    }
+  ],
+  "clues": [
+    {
+      "id": "invoice",
+      "title": "이중 거래 송장",
+      "text": "기증 대금 입금 계좌는 운영실장 명의 법인이다. 관장이 적은 메모: '내일 오전 경찰에 원본 전달.'",
+      "sharePolicy": "PUBLIC_AND_WHISPER"
+    },
+    {
+      "id": "entry",
+      "title": "수장고 출입 기록",
+      "text": "전자 자물쇠: 21:16 큐레이터 입실, 21:17 퇴실, 21:18 운영실장 입실, 21:19 퇴실. 정전은 21:20 시작되었다. 비상문 잠금은 외부 복제키로도 가능하다.",
+      "sharePolicy": "PUBLIC_AND_WHISPER"
+    },
+    {
+      "id": "frame",
+      "title": "찢긴 협박 편지",
+      "text": "복원사에게 위작 폭로를 막으라는 편지다. 종이에는 청색 안료만 있으며 혈흔은 없다. 위작 문제와 살인 동기는 겹치지만 동일한 범행의 증거는 아니다.",
+      "sharePolicy": "PUBLIC_AND_WHISPER"
+    },
+    {
+      "id": "clock",
+      "title": "멈춘 전자시계",
+      "text": "피해자 시계의 충격 센서에는 21:18:42가 저장되어 있다. 배터리는 정상이다. 정전 시각을 사망 시각으로 볼 수 없다.",
+      "sharePolicy": "PUBLIC_AND_WHISPER"
+    },
+    {
+      "id": "keychain",
+      "title": "문틀의 금속 조각",
+      "text": "수장고 안쪽 걸쇠에 삼각형 금속 조각이 끼었다. 실장이 항상 지닌 행사 로고 열쇠고리 한쪽이 같은 모양으로 깨져 있다.",
+      "sharePolicy": "PUBLIC_AND_WHISPER"
+    },
+    {
+      "id": "recording",
+      "title": "면담 녹음",
+      "text": "큐레이터가 나간 뒤 녹음기에는 21:18 벽시계 신호와 둔탁한 충격, 21:19 열쇠가 부딪치는 소리가 차례로 남았다. 녹음기는 책상에 놓여 있었다.",
+      "sharePolicy": "PUBLIC_AND_WHISPER"
+    },
+    {
+      "id": "generator",
+      "title": "발전기 수동 기록",
+      "text": "발전기는 21:25에 수동 기동되었다. 기계실 점검 서명의 21:10은 손으로 적은 시간이며, 문 센서는 21:20에야 열렸다.",
+      "sharePolicy": "PUBLIC_AND_WHISPER"
+    },
+    {
+      "id": "weight",
+      "title": "청동 문진 검사",
+      "text": "세척된 청동 문진 받침 틈에서 피해자의 혈액과 행사 명찰용 황색 섬유가 발견된다. 그날 황색 끈 명찰은 운영실장만 착용했다.",
+      "sharePolicy": "PUBLIC_AND_WHISPER"
+    }
+  ],
+  "ballot": {
+    "culpritRoleId": "manager",
+    "allowChange": true,
+    "allowAbstain": true,
+    "tiePolicy": "NO_ACCUSATION"
+  },
+  "endings": [
+    {
+      "id": "identified",
+      "title": "맞춰진 사건의 시간",
+      "text": "운영실장의 출입 기록, 충격 시각, 깨진 열쇠고리가 맞물렸다. 정전은 사망 뒤의 일이었다. 도현은 횡령을 숨기기 위해 관장을 죽였고 발전기 점검으로 시간을 뒤섞었다. 위작 거래를 둘러싼 다른 갈등은 별도로 조사된다.",
+      "condition": {
+        "type": "CULPRIT_IDENTIFIED"
+      }
+    },
+    {
+      "id": "unresolved",
+      "title": "엇갈린 지목 뒤의 진실",
+      "text": "누구도 명확히 지목되지 않았거나 다른 사람이 지목되었다. 운영실장 도현은 정전 시각을 사망 시각처럼 보이게 해 알리바이를 만들었다. 실제 충격은 21시 18분이며, 문틀의 열쇠고리 조각과 황색 섬유가 도현을 가리켰다.",
+      "condition": {
+        "type": "ALWAYS"
+      }
+    }
+  ],
+  "rules": [
+    {
+      "id": "arrival",
+      "when": "PHASE_STARTED",
+      "phaseId": "reading",
+      "condition": {
+        "type": "ALWAYS"
+      },
+      "effects": [
+        {
+          "type": "PUBLISH_MATERIAL",
+          "text": "이 작품은 직접 작성한 4인용 샘플입니다. 표시된 소요 시간은 추정값입니다. 범인 역할도 거짓 진술할 수 있으나 실제 단서 내용은 바꿀 수 없습니다. 플레이 중 공개된 사실을 근거로 토론하세요."
+        }
+      ]
+    },
+    {
+      "id": "evidence-confirmed",
+      "when": "CLUE_PUBLISHED",
+      "clueId": "clock",
+      "condition": {
+        "type": "ALWAYS"
+      },
+      "effects": [
+        {
+          "type": "SET_FLAG",
+          "flag": "timelineShared",
+          "value": true
+        },
+        {
+          "type": "PUBLISH_MATERIAL",
+          "text": "사건의 시각을 판단할 공통 자료가 공개되었습니다. 각자의 주장과 자료에 기록된 시각을 다시 비교하세요."
+        }
+      ]
+    }
+  ]
+}
