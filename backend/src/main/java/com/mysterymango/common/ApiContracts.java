@@ -19,7 +19,9 @@ public class ApiContracts implements OpenApiCustomizer {
         c.addSchemas("ErrorResponse",obj("code",text(),"message",text(),"traceId",text()));
         c.addSchemas("CsrfResponse",obj("token",text(),"headerName",text()));
         api.path("/api/v1/auth/logout",new PathItem().post(new Operation().operationId("logout").tags(List.of("auth-controller")).responses(new io.swagger.v3.oas.models.responses.ApiResponses().addApiResponse("200",new ApiResponse().description("세션과 연결을 종료합니다.").content(content(obj("ok",bool())))))));
-        c.addSchemas("UserView",obj("id",uuid(),"email",text(),"displayName",text(),"admin",bool()));
+        c.addSchemas("UserView",obj("id",uuid(),"email",nullable(text()),"displayName",text(),"admin",bool()));
+        c.addSchemas("AuthProviders",obj("kakaoConfigured",bool(),"localLoginEnabled",bool()));
+        c.addSchemas("KakaoAuthorize",obj("authorizeUrl",text()));
         c.addSchemas("Activity",obj("kind",enumeration("IDLE","QUEUED","PROPOSED","ROOM","GAME"),"referenceId",nullable(uuid())));
         c.addSchemas("ScenarioCard",obj("id",uuid(),"versionId",uuid(),"title",text(),"synopsis",text(),"playerCount",integer(),"estimatedMinutes",integer(),"durationEstimated",bool(),"genre",text(),"difficulty",text(),"language",text(),"modes",array(enumeration("TEXT","DISCORD")),"roles",array(obj("id",text(),"name",text(),"publicIntro",text()))));
         c.addSchemas("RoomCard",obj("id",uuid(),"title",text(),"scenarioVersionId",uuid(),"hostName",text(),"count",integer(),"capacity",integer(),"mode",enumeration("TEXT","DISCORD")));
@@ -40,16 +42,22 @@ public class ApiContracts implements OpenApiCustomizer {
         c.addSchemas("PlayHistoryEntry",obj("gameId",uuid(),"title",text(),"status",enumeration("COMPLETED","ABORTED"),"completedAt",nullable(date())));
         c.addSchemas("ServerEvent",obj("eventId",uuid(),"type",text(),"gameId",nullable(uuid()),"stateVersion",integer(),"serverTime",date()));
         response(api,"/api/v1/auth/csrf","CsrfResponse");response(api,"/api/v1/auth/me","UserView");response(api,"/api/v1/me/activity","Activity");
+        response(api,"/api/v1/auth/providers","AuthProviders");
+        var kakao=api.getPaths().get("/api/v1/auth/kakao");
+        if(kakao!=null)kakao.getPost().getResponses().addApiResponse("200",new ApiResponse().description("카카오 인가 페이지 주소. 로그인한 세션에서는 계정 전환을 거부합니다.").content(content(ref("KakaoAuthorize"))));
+        var callback=api.getPaths().get("/api/v1/auth/kakao/callback");
+        if(callback!=null){callback.getGet().getResponses().remove("200");callback.getGet().getResponses().addApiResponse("302",new ApiResponse().description("로그인 후 검증된 같은 사이트 경로로 이동합니다. 실패 시 /login?kakaoError=cancelled|expired|failed|unavailable 로 이동합니다.").addHeaderObject("Location",new io.swagger.v3.oas.models.headers.Header().schema(text())));}
         response(api,"/api/v1/scenarios",page(ref("ScenarioCard")));response(api,"/api/v1/scenarios/{id}","ScenarioCard");
         response(api,"/api/v1/rooms",page(ref("RoomCard")));response(api,"/api/v1/rooms/{id}","RoomSnapshot");
         response(api,"/api/v1/match-tickets/{id}","TicketView");response(api,"/api/v1/match-proposals/{id}","MatchProposal");
         response(api,"/api/v1/games/{id}/snapshot","GameSnapshot");response(api,"/api/v1/games/{id}/me/role","PrivateRole");
         response(api,"/api/v1/games/{id}/messages",obj("items",array(ref("ChatMessage")),"hasMore",bool()));response(api,"/api/v1/me/history",page(ref("PlayHistoryEntry")));
         for(var entry:api.getPaths().entrySet())for(var op:entry.getValue().readOperations()){
-            String path=entry.getKey();if(!path.contains("/auth/login")&&!path.contains("/auth/register")&&!path.contains("/auth/csrf")&&!path.equals("/api/v1/meta")&&!path.startsWith("/api/v1/scenarios")&&!(path.equals("/api/v1/rooms")&&op==entry.getValue().getGet()))op.addSecurityItem(new SecurityRequirement().addList("session"));
+            String path=entry.getKey();if(!Set.of("/api/v1/auth/login","/api/v1/auth/register","/api/v1/auth/csrf","/api/v1/auth/providers","/api/v1/auth/kakao","/api/v1/auth/kakao/callback").contains(path)&&!path.equals("/api/v1/meta")&&!path.startsWith("/api/v1/scenarios")&&!(path.equals("/api/v1/rooms")&&op==entry.getValue().getGet()))op.addSecurityItem(new SecurityRequirement().addList("session"));
             if(op!=entry.getValue().getGet())op.addParametersItem(new io.swagger.v3.oas.models.parameters.Parameter().name("X-CSRF-TOKEN").in("header").required(true).description("GET /api/v1/auth/csrf에서 받은 현재 세션 토큰").schema(text()));
-            for(String status:List.of("400","401","403","404","409","413","422","429"))op.getResponses().addApiResponse(status,new ApiResponse().description("안정적인 오류 코드와 한국어 메시지").content(content(ref("ErrorResponse"))));
+            for(String status:List.of("400","401","403","404","409","413","422","429","503"))op.getResponses().addApiResponse(status,new ApiResponse().description("안정적인 오류 코드와 한국어 메시지").content(content(ref("ErrorResponse"))));
         }
+        request(api,"/api/v1/auth/kakao",obj("next",text()).required(List.of()));
         request(api,"/api/v1/games/{id}/investigations",obj("targetId",text()));request(api,"/api/v1/games/{id}/clue-shares",obj("clueId",text(),"scope",enumeration("PUBLIC","WHISPER"),"whisperId",nullable(uuid())).required(List.of("clueId","scope")));
         request(api,"/api/v1/games/{id}/messages",obj("text",text(),"whisperId",nullable(uuid())).required(List.of("text")));request(api,"/api/v1/games/{id}/whispers",obj("inviteeId",uuid()));
         var ballot=api.getPaths().get("/api/v1/games/{id}/ballots/{ballotId}/me");if(ballot!=null)ballot.getPut().setRequestBody(new RequestBody().required(true).content(content(obj("roleId",nullable(text())))));

@@ -1,26 +1,28 @@
 import { useEffect, useRef, useState, type FormEvent } from 'react';
 import { Link, useNavigate, useParams, useSearchParams } from 'react-router-dom';
-import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
 import { Badge, Deadline, Empty, ErrorNotice, PageTitle, QueryState, ScenarioCard, useUser } from '~/components/ui';
-import type { Activity, AdminScenario, Block, History, Page, PlayMode, Proposal, Report, Room, RoomCard, Scenario, Ticket, User } from '~/common/types';
+import type { Activity, AdminScenario, Block, History, Page, PlayMode, Proposal, Report, Room, RoomCard, Scenario, Ticket } from '~/common/types';
 import { activityPath } from '~/common/time';
 import { difficultyNames } from '~/common/time';
-import { command, errorMessage, get, resetCsrf, sessionRestoredEvent } from '~/services/api';
+import { command, errorMessage, get } from '~/services/api';
 import { useCommand } from '~/hooks/use-command';
 import { createInviteToken, forgetCreatedInvite, getCreatedInvite, rememberCreatedInvite } from '~/services/invites';
 import s from '~/styles/app.module.scss';
 
 const listItems = <T,>(value: Page<T> | T[]) => (Array.isArray(value) ? value : value.items);
-function ModeSelect({ value, onChange, disabled = false }: { value: PlayMode; onChange: (mode: PlayMode) => void; disabled?: boolean }) {
+function ModeSelect({ value, onChange, disabled = false, allowedModes = ['TEXT', 'DISCORD'] }: { value: PlayMode; onChange: (mode: PlayMode) => void; disabled?: boolean; allowedModes?: PlayMode[] }) {
   const meta = useQuery({ queryKey: ['meta'], queryFn: () => get<{ voiceProvider: string; voiceConfigured: boolean }>('/meta') });
   return (
     <label>
       대화 방식
-      <select value={value} onChange={(e) => onChange(e.target.value as PlayMode)} disabled={disabled}>
-        <option value="TEXT">텍스트 채팅</option>
-        <option value="DISCORD" disabled={!meta.data?.voiceConfigured}>
-          Discord 음성 + 텍스트{!meta.data?.voiceConfigured ? ' (미설정)' : ''}
-        </option>
+      <select value={value} onChange={(e) => onChange(e.target.value as PlayMode)} disabled={disabled || allowedModes.length === 1}>
+        {allowedModes.includes('TEXT') && <option value="TEXT">텍스트 채팅</option>}
+        {allowedModes.includes('DISCORD') && (
+          <option value="DISCORD" disabled={!meta.data?.voiceConfigured}>
+            Discord 음성 + 텍스트{!meta.data?.voiceConfigured ? ' (미설정)' : ''}
+          </option>
+        )}
       </select>
     </label>
   );
@@ -31,7 +33,7 @@ export function HomePage() {
     <>
       <section className={s.hero}>
         <div>
-          <span className={s.eyebrow}>같은 사건, 네 개의 시선</span>
+          <span className={s.eyebrow}>혼자 또는 함께 풀어가는 사건</span>
           <h1>
             오늘 밤,
             <br />
@@ -40,7 +42,7 @@ export function HomePage() {
             <em>용의자.</em>
           </h1>
           <p>
-            작품을 고르고, 동료를 만나고, 비밀을 나누세요.
+            혼자 추리하거나, 동료와 비밀을 나누세요.
             <br />한 편의 미스터리가 당신을 기다립니다.
           </p>
           <div className={s.actions}>
@@ -94,7 +96,7 @@ export function HomePage() {
       </section>
       <section className={s.steps}>
         {[
-          ['01', '함께 모이기', '작품을 골라 모집하거나, 조건에 맞는 4인 그룹을 찾아요.'],
+          ['01', '이야기 시작하기', '작품의 인원에 맞춰 시작하거나, 4인 자동 매칭으로 동료를 찾아요.'],
           ['02', '나만의 비밀 읽기', '역할을 맡고 개인 자료와 단서를 살펴보세요.'],
           ['03', '진실 완성하기', '대화와 조사, 마지막 투표로 우리만의 엔딩을 만나요.']
         ].map(([n, title, text]) => (
@@ -108,89 +110,38 @@ export function HomePage() {
     </>
   );
 }
-export function AuthPage({ register = false }: { register?: boolean }) {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [name, setName] = useState('');
-  const [error, setError] = useState('');
-  const [pending, setPending] = useState(false);
-  const [params] = useSearchParams();
-  const navigate = useNavigate();
-  const cache = useQueryClient();
-  async function submit(e: FormEvent) {
-    e.preventDefault();
-    setError('');
-    setPending(true);
-    try {
-      const user = await command<User>('POST', `/auth/${register ? 'register' : 'login'}`, { email, password, ...(register ? { displayName: name } : {}) });
-      resetCsrf();
-      cache.clear();
-      cache.setQueryData(['me'], user);
-      window.dispatchEvent(new Event(sessionRestoredEvent));
-      const next = params.get('next');
-      navigate(next?.startsWith('/') && !next.startsWith('//') ? next : '/');
-    } catch (failure) {
-      setError(errorMessage(failure));
-    } finally {
-      setPending(false);
-    }
-  }
-  return (
-    <div className={s.authCard}>
-      <PageTitle eyebrow="다음 이야기에 참여하세요" title={register ? '처음 오셨나요?' : '다시 만나 반가워요.'} />
-      <form onSubmit={(e) => void submit(e)} className={s.form}>
-        {register && (
-          <label>
-            이름
-            <input autoComplete="nickname" required maxLength={40} value={name} onChange={(e) => setName(e.target.value)} />
-          </label>
-        )}
-        <label>
-          이메일
-          <input type="email" autoComplete="email" required value={email} onChange={(e) => setEmail(e.target.value)} />
-        </label>
-        <label>
-          비밀번호
-          <input
-            type="password"
-            autoComplete={register ? 'new-password' : 'current-password'}
-            required
-            minLength={register ? 10 : undefined}
-            maxLength={72}
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          />
-        </label>
-        <ErrorNotice message={error} />
-        <button className={s.primary} disabled={pending}>
-          {pending ? '잠시만 기다려 주세요…' : register ? '회원가입' : '로그인'}
-        </button>
-      </form>
-      <p>
-        {register ? '이미 계정이 있나요?' : '미스터리 망고가 처음인가요?'} <Link to={register ? '/login' : '/register'}>{register ? '로그인' : '회원가입'}</Link>
-      </p>
-    </div>
-  );
-}
 export function CatalogPage() {
+  const [playerCount, setPlayerCount] = useState('');
   const [genre, setGenre] = useState('');
   const [difficulty, setDifficulty] = useState('');
   const [minutes, setMinutes] = useState('');
   const [page, setPage] = useState(0);
   const query = useQuery({
-    queryKey: ['scenarios', genre, difficulty, minutes, page],
-    queryFn: () => get<Page<Scenario>>(`/scenarios?${new URLSearchParams({ page: String(page), size: '12', genre, difficulty, maxMinutes: minutes })}`)
+    queryKey: ['scenarios', playerCount, genre, difficulty, minutes, page],
+    queryFn: () => get<Page<Scenario>>(`/scenarios?${new URLSearchParams({ page: String(page), size: '12', genre, difficulty, maxMinutes: minutes, ...(playerCount ? { playerCount } : {}) })}`)
   });
   return (
     <>
       <PageTitle eyebrow="이야기 속으로" title="작품 탐색">
-        스포일러 없이 작품을 살펴보고, 함께 풀 사건을 골라보세요.
+        스포일러 없이 작품을 살펴보고, 카드에 표시된 인원에 맞춰 시작하세요.
       </PageTitle>
       <div className={s.filters}>
         <label>
           인원
-          <select aria-label="인원">
-            <option>4인</option>
+          <select
+            aria-label="인원"
+            value={playerCount}
+            onChange={(e) => {
+              setPlayerCount(e.target.value);
+              setPage(0);
+            }}
+          >
+            <option value="">모든 인원</option>
+            {[1, 2, 3, 4].map((count) => (
+              <option key={count} value={count}>
+                {count}인
+              </option>
+            ))}
           </select>
         </label>
         <label>
@@ -273,13 +224,14 @@ export function ScenarioPage() {
   const [mode, setMode] = useState<PlayMode>('TEXT');
   const pendingInvite = useRef<string | null>(null);
   const query = useQuery({ queryKey: ['scenario', id], queryFn: () => get<Scenario>(`/scenarios/${id}`) });
+  const selectedMode = query.data?.modes.includes(mode) ? mode : (query.data?.modes[0] ?? 'TEXT');
   async function create(versionId: string) {
     if (!user) {
       navigate(`/login?next=/scenarios/${id}`);
       return;
     }
     const inviteToken = visibility === 'INVITE' ? (pendingInvite.current ??= createInviteToken()) : undefined;
-    const result = await action.run<{ roomId: string; expiresAt?: string }>('POST', '/rooms', { scenarioVersionId: versionId, visibility, mode, ...(inviteToken ? { inviteToken } : {}) });
+    const result = await action.run<{ roomId: string; expiresAt?: string }>('POST', '/rooms', { scenarioVersionId: versionId, visibility, mode: selectedMode, ...(inviteToken ? { inviteToken } : {}) });
     if (result) {
       if (inviteToken) rememberCreatedInvite(result.roomId, inviteToken);
       pendingInvite.current = null;
@@ -309,7 +261,7 @@ export function ScenarioPage() {
             </section>
             <aside className={s.panel}>
               <Badge>{data.playerCount}인 전용</Badge>
-              <h2>함께 플레이하기</h2>
+              <h2>{data.playerCount === 1 ? '혼자 플레이하기' : '함께 플레이하기'}</h2>
               <p>
                 예상 {data.estimatedMinutes}분 <small>(샘플 작품 추정값)</small>
               </p>
@@ -321,7 +273,7 @@ export function ScenarioPage() {
                     <option value="INVITE">친구 초대 전용</option>
                   </select>
                 </label>
-                <ModeSelect value={mode} onChange={setMode} />
+                <ModeSelect value={selectedMode} onChange={setMode} allowedModes={data.modes} />
                 <ErrorNotice message={action.error} />
                 <button className={s.primary} disabled={action.pending} onClick={() => void create(data.versionId)}>
                   이 작품으로 방 만들기
@@ -467,7 +419,7 @@ export function LobbyPage() {
         return (
           <>
             <PageTitle eyebrow="플레이 준비" title={room.title}>
-              {room.mode === 'TEXT' ? '텍스트로 대화합니다.' : 'Discord에서 음성으로 대화합니다. 계정 연결과 마이크 설정을 확인해 주세요.'}
+              {room.capacity === 1 ? '혼자 자료를 읽고 단서를 조사합니다.' : room.mode === 'TEXT' ? '텍스트로 대화합니다.' : 'Discord에서 음성으로 대화합니다. 계정 연결과 마이크 설정을 확인해 주세요.'}
             </PageTitle>
             <div className={s.detailGrid}>
               <section className={s.panel}>
@@ -519,7 +471,7 @@ export function LobbyPage() {
                     방 나가기
                   </button>
                 </div>
-                <p className={s.note}>정확히 {room.capacity}명이 모이고 전원 준비가 완료되면 방장이 시작할 수 있어요.</p>
+                <p className={s.note}>{room.capacity === 1 ? '준비 완료를 누르면 혼자 바로 시작할 수 있어요.' : `정확히 ${room.capacity}명이 모이고 전원 준비가 완료되면 방장이 시작할 수 있어요.`}</p>
               </section>
               <aside className={s.panel}>
                 <h2>플레이 약속</h2>
@@ -527,7 +479,7 @@ export function LobbyPage() {
                 <p>비밀 자료는 본인만 읽고, 공개할 단서는 직접 공유해 주세요.</p>
                 <p>게임 시작 후 역할 교체나 새로운 참가자 입장은 불가능합니다.</p>
                 {room.mode === 'DISCORD' && <Link to="/account">Discord 연결 확인 →</Link>}
-                {host && (
+                {host && room.capacity > 1 && (
                   <>
                     <h3>친구 초대</h3>
                     <button disabled={action.pending} onClick={() => void inviteLink()}>
@@ -740,6 +692,13 @@ export function MatchPage() {
   );
 }
 type DiscordAccount = { provider: string; configured: boolean; botReady: boolean; linked: boolean; discordUserId: string | null; displayName: string | null; eligible: boolean; reason: string | null };
+const discordReasonMessages: Record<string, string> = {
+  NOT_LINKED: 'Discord 계정을 연결하면 음성 게임 참가 가능 여부를 확인할 수 있습니다.',
+  BOT_UNAVAILABLE: 'Discord 음성 서비스에 연결하지 못했습니다. 잠시 후 다시 시도해 주세요.',
+  PRIVILEGED_ACCOUNT: '서버 소유자가 아닌 관리 권한 계정은 음성 게임에 참가할 수 없습니다.',
+  MEMBERSHIP_PENDING: 'Discord 서버의 가입 절차를 완료해 주세요.',
+  NOT_GUILD_MEMBER: '음성 게임에 참가하려면 전용 Discord 서버에 먼저 참가해 주세요.'
+};
 export function AccountPage() {
   const user = useUser();
   const action = useCommand();
@@ -761,7 +720,7 @@ export function AccountPage() {
   return (
     <>
       <PageTitle eyebrow="나의 기록" title={`${user.displayName} 님의 서재`}>
-        {user.email}
+        {user.email || '이메일 정보가 제공되지 않았어요.'}
       </PageTitle>
       <ErrorNotice message={action.error} />
       {notice && (
@@ -805,7 +764,8 @@ export function AccountPage() {
               <>
                 <p>{data.linked ? `${data.displayName} 계정이 연결되었습니다.` : '음성 모드 참가 시 Discord 계정을 연결해 주세요.'}</p>
                 <Badge>{!data.configured ? '미설정' : data.botReady ? '서비스 연결됨' : '봇 연결 확인 중'}</Badge>
-                {data.reason && <p className={s.note}>{data.reason}</p>}
+                {data.reason && <p className={s.note}>{discordReasonMessages[data.reason] ?? '음성 게임 참가 조건을 확인해 주세요.'}</p>}
+                {data.configured && <p className={s.note}>서버 소유자도 참가할 수 있습니다. 소유자는 Discord 권한상 모든 음성 채널에 접근할 수 있습니다.</p>}
                 <p>최초 통화 입장, 마이크 허용·기기 선택·음소거는 Discord에서 합니다. 웹에서는 방 권한과 이동 상태를 확인합니다.</p>
                 {data.linked ? (
                   <button disabled={action.pending} onClick={() => void action.run('DELETE', '/me/discord')}>

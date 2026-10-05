@@ -80,6 +80,38 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/auth/kakao": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["start_1"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/auth/kakao/callback": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["callback_1"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/auth/login": {
         parameters: {
             query?: never;
@@ -120,6 +152,22 @@ export interface paths {
             cookie?: never;
         };
         get: operations["me"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/auth/providers": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["providers"];
         put?: never;
         post?: never;
         delete?: never;
@@ -793,6 +841,10 @@ export interface components {
             kind: "IDLE" | "QUEUED" | "PROPOSED" | "ROOM" | "GAME";
             referenceId: string | null;
         };
+        AuthProviders: {
+            kakaoConfigured: boolean;
+            localLoginEnabled: boolean;
+        };
         BallotView: {
             allowAbstain: boolean;
             allowChange: boolean;
@@ -908,6 +960,12 @@ export interface components {
         };
         Join: {
             inviteToken?: string;
+        };
+        KakaoAuthorize: {
+            authorizeUrl: string;
+        };
+        KakaoStart: {
+            next?: string;
         };
         Login: {
             /** Format: email */
@@ -1099,7 +1157,7 @@ export interface components {
         UserView: {
             admin: boolean;
             displayName: string;
-            email: string;
+            email: string | null;
             /** Format: uuid */
             id: string;
         };
@@ -1211,6 +1269,15 @@ export interface operations {
                     "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
+            /** @description 안정적인 오류 코드와 한국어 메시지 */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
         };
     };
     scenarios: {
@@ -1301,6 +1368,15 @@ export interface operations {
             };
             /** @description 안정적인 오류 코드와 한국어 메시지 */
             429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description 안정적인 오류 코드와 한국어 메시지 */
+            503: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -1410,6 +1486,15 @@ export interface operations {
                     "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
+            /** @description 안정적인 오류 코드와 한국어 메시지 */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
         };
     };
     publish: {
@@ -1503,6 +1588,15 @@ export interface operations {
             };
             /** @description 안정적인 오류 코드와 한국어 메시지 */
             429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description 안정적인 오류 코드와 한국어 메시지 */
+            503: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -1611,6 +1705,15 @@ export interface operations {
                     "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
+            /** @description 안정적인 오류 코드와 한국어 메시지 */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
         };
     };
     csrf: {
@@ -1696,6 +1799,229 @@ export interface operations {
             };
             /** @description 안정적인 오류 코드와 한국어 메시지 */
             429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description 안정적인 오류 코드와 한국어 메시지 */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    start_1: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description GET /api/v1/auth/csrf에서 받은 현재 세션 토큰 */
+                "X-CSRF-TOKEN": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    next?: string;
+                };
+            };
+        };
+        responses: {
+            /** @description 카카오 인가 페이지 주소. 로그인한 세션에서는 계정 전환을 거부합니다. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["KakaoAuthorize"];
+                };
+            };
+            /** @description 안정적인 오류 코드와 한국어 메시지 */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description 안정적인 오류 코드와 한국어 메시지 */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description 안정적인 오류 코드와 한국어 메시지 */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description 안정적인 오류 코드와 한국어 메시지 */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description 안정적인 오류 코드와 한국어 메시지 */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description 안정적인 오류 코드와 한국어 메시지 */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description 안정적인 오류 코드와 한국어 메시지 */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description 안정적인 오류 코드와 한국어 메시지 */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description 안정적인 오류 코드와 한국어 메시지 */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    callback_1: {
+        parameters: {
+            query?: {
+                code?: string;
+                error?: string;
+                state?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description 로그인 후 검증된 같은 사이트 경로로 이동합니다. 실패 시 /login?kakaoError=cancelled|expired|failed|unavailable 로 이동합니다. */
+            302: {
+                headers: {
+                    Location?: string;
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description 안정적인 오류 코드와 한국어 메시지 */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description 안정적인 오류 코드와 한국어 메시지 */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description 안정적인 오류 코드와 한국어 메시지 */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description 안정적인 오류 코드와 한국어 메시지 */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description 안정적인 오류 코드와 한국어 메시지 */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description 안정적인 오류 코드와 한국어 메시지 */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description 안정적인 오류 코드와 한국어 메시지 */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description 안정적인 오류 코드와 한국어 메시지 */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description 안정적인 오류 코드와 한국어 메시지 */
+            503: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -1802,6 +2128,15 @@ export interface operations {
                     "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
+            /** @description 안정적인 오류 코드와 한국어 메시지 */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
         };
     };
     logout: {
@@ -1892,6 +2227,15 @@ export interface operations {
             };
             /** @description 안정적인 오류 코드와 한국어 메시지 */
             429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description 안정적인 오류 코드와 한국어 메시지 */
+            503: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -1991,6 +2335,116 @@ export interface operations {
                     "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
+            /** @description 안정적인 오류 코드와 한국어 메시지 */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    providers: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description 성공 */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthProviders"];
+                };
+            };
+            /** @description 안정적인 오류 코드와 한국어 메시지 */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description 안정적인 오류 코드와 한국어 메시지 */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description 안정적인 오류 코드와 한국어 메시지 */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description 안정적인 오류 코드와 한국어 메시지 */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description 안정적인 오류 코드와 한국어 메시지 */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description 안정적인 오류 코드와 한국어 메시지 */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description 안정적인 오류 코드와 한국어 메시지 */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description 안정적인 오류 코드와 한국어 메시지 */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description 안정적인 오류 코드와 한국어 메시지 */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
         };
     };
     register: {
@@ -2083,6 +2537,15 @@ export interface operations {
             };
             /** @description 안정적인 오류 코드와 한국어 메시지 */
             429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description 안정적인 오류 코드와 한국어 메시지 */
+            503: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -2190,6 +2653,15 @@ export interface operations {
                     "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
+            /** @description 안정적인 오류 코드와 한국어 메시지 */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
         };
     };
     voice: {
@@ -2279,6 +2751,15 @@ export interface operations {
             };
             /** @description 안정적인 오류 코드와 한국어 메시지 */
             429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description 안정적인 오류 코드와 한국어 메시지 */
+            503: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -2386,6 +2867,15 @@ export interface operations {
                     "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
+            /** @description 안정적인 오류 코드와 한국어 메시지 */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
         };
     };
     vote_1: {
@@ -2486,6 +2976,15 @@ export interface operations {
             };
             /** @description 안정적인 오류 코드와 한국어 메시지 */
             429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description 안정적인 오류 코드와 한국어 메시지 */
+            503: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -2602,6 +3101,15 @@ export interface operations {
                     "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
+            /** @description 안정적인 오류 코드와 한국어 메시지 */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
         };
     };
     heartbeat_1: {
@@ -2694,6 +3202,15 @@ export interface operations {
             };
             /** @description 안정적인 오류 코드와 한국어 메시지 */
             429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description 안정적인 오류 코드와 한국어 메시지 */
+            503: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -2807,6 +3324,15 @@ export interface operations {
                     "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
+            /** @description 안정적인 오류 코드와 한국어 메시지 */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
         };
     };
     leaveGame: {
@@ -2900,6 +3426,15 @@ export interface operations {
             };
             /** @description 안정적인 오류 코드와 한국어 메시지 */
             429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description 안정적인 오류 코드와 한국어 메시지 */
+            503: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -3001,6 +3536,15 @@ export interface operations {
                     "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
+            /** @description 안정적인 오류 코드와 한국어 메시지 */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
         };
     };
     messages: {
@@ -3095,6 +3639,15 @@ export interface operations {
             };
             /** @description 안정적인 오류 코드와 한국어 메시지 */
             429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description 안정적인 오류 코드와 한국어 메시지 */
+            503: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -3209,6 +3762,15 @@ export interface operations {
                     "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
+            /** @description 안정적인 오류 코드와 한국어 메시지 */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
         };
     };
     ready_1: {
@@ -3309,6 +3871,15 @@ export interface operations {
                     "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
+            /** @description 안정적인 오류 코드와 한국어 메시지 */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
         };
     };
     snapshot_1: {
@@ -3396,6 +3967,15 @@ export interface operations {
             };
             /** @description 안정적인 오류 코드와 한국어 메시지 */
             429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description 안정적인 오류 코드와 한국어 메시지 */
+            503: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -3510,6 +4090,15 @@ export interface operations {
                     "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
+            /** @description 안정적인 오류 코드와 한국어 메시지 */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
         };
     };
     accept_1: {
@@ -3604,6 +4193,15 @@ export interface operations {
             };
             /** @description 안정적인 오류 코드와 한국어 메시지 */
             429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description 안정적인 오류 코드와 한국어 메시지 */
+            503: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -3712,6 +4310,15 @@ export interface operations {
                     "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
+            /** @description 안정적인 오류 코드와 한국어 메시지 */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
         };
     };
     proposal: {
@@ -3799,6 +4406,15 @@ export interface operations {
             };
             /** @description 안정적인 오류 코드와 한국어 메시지 */
             429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description 안정적인 오류 코드와 한국어 메시지 */
+            503: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -3906,6 +4522,15 @@ export interface operations {
                     "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
+            /** @description 안정적인 오류 코드와 한국어 메시지 */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
         };
     };
     reject: {
@@ -3999,6 +4624,15 @@ export interface operations {
             };
             /** @description 안정적인 오류 코드와 한국어 메시지 */
             429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description 안정적인 오류 코드와 한국어 메시지 */
+            503: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -4110,6 +4744,15 @@ export interface operations {
                     "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
+            /** @description 안정적인 오류 코드와 한국어 메시지 */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
         };
     };
     enqueue: {
@@ -4212,6 +4855,15 @@ export interface operations {
                     "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
+            /** @description 안정적인 오류 코드와 한국어 메시지 */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
         };
     };
     ticket: {
@@ -4299,6 +4951,15 @@ export interface operations {
             };
             /** @description 안정적인 오류 코드와 한국어 메시지 */
             429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description 안정적인 오류 코드와 한국어 메시지 */
+            503: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -4406,6 +5067,15 @@ export interface operations {
                     "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
+            /** @description 안정적인 오류 코드와 한국어 메시지 */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
         };
     };
     activity: {
@@ -4491,6 +5161,15 @@ export interface operations {
             };
             /** @description 안정적인 오류 코드와 한국어 메시지 */
             429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description 안정적인 오류 코드와 한국어 메시지 */
+            503: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -4585,6 +5264,15 @@ export interface operations {
             };
             /** @description 안정적인 오류 코드와 한국어 메시지 */
             429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description 안정적인 오류 코드와 한국어 메시지 */
+            503: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -4694,6 +5382,15 @@ export interface operations {
                     "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
+            /** @description 안정적인 오류 코드와 한국어 메시지 */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
         };
     };
     unblock: {
@@ -4794,6 +5491,15 @@ export interface operations {
                     "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
+            /** @description 안정적인 오류 코드와 한국어 메시지 */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
         };
     };
     account: {
@@ -4881,6 +5587,15 @@ export interface operations {
             };
             /** @description 안정적인 오류 코드와 한국어 메시지 */
             429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description 안정적인 오류 코드와 한국어 메시지 */
+            503: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -4986,6 +5701,15 @@ export interface operations {
                     "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
+            /** @description 안정적인 오류 코드와 한국어 메시지 */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
         };
     };
     callback: {
@@ -5072,6 +5796,15 @@ export interface operations {
             };
             /** @description 안정적인 오류 코드와 한국어 메시지 */
             429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description 안정적인 오류 코드와 한국어 메시지 */
+            503: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -5169,6 +5902,15 @@ export interface operations {
             };
             /** @description 안정적인 오류 코드와 한국어 메시지 */
             429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description 안정적인 오류 코드와 한국어 메시지 */
+            503: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -5279,6 +6021,15 @@ export interface operations {
                     "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
+            /** @description 안정적인 오류 코드와 한국어 메시지 */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
         };
     };
     meta: {
@@ -5366,6 +6117,15 @@ export interface operations {
             };
             /** @description 안정적인 오류 코드와 한국어 메시지 */
             429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description 안정적인 오류 코드와 한국어 메시지 */
+            503: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -5468,6 +6228,15 @@ export interface operations {
             };
             /** @description 안정적인 오류 코드와 한국어 메시지 */
             429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description 안정적인 오류 코드와 한국어 메시지 */
+            503: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -5579,6 +6348,15 @@ export interface operations {
                     "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
+            /** @description 안정적인 오류 코드와 한국어 메시지 */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
         };
     };
     create: {
@@ -5681,6 +6459,15 @@ export interface operations {
                     "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
+            /** @description 안정적인 오류 코드와 한국어 메시지 */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
         };
     };
     snapshot: {
@@ -5768,6 +6555,15 @@ export interface operations {
             };
             /** @description 안정적인 오류 코드와 한국어 메시지 */
             429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description 안정적인 오류 코드와 한국어 메시지 */
+            503: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -5867,6 +6663,15 @@ export interface operations {
             };
             /** @description 안정적인 오류 코드와 한국어 메시지 */
             429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description 안정적인 오류 코드와 한국어 메시지 */
+            503: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -5978,6 +6783,15 @@ export interface operations {
                     "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
+            /** @description 안정적인 오류 코드와 한국어 메시지 */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
         };
     };
     revoke: {
@@ -6071,6 +6885,15 @@ export interface operations {
             };
             /** @description 안정적인 오류 코드와 한국어 메시지 */
             429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description 안정적인 오류 코드와 한국어 메시지 */
+            503: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -6182,6 +7005,15 @@ export interface operations {
                     "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
+            /** @description 안정적인 오류 코드와 한국어 메시지 */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
         };
     };
     leave: {
@@ -6275,6 +7107,15 @@ export interface operations {
             };
             /** @description 안정적인 오류 코드와 한국어 메시지 */
             429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description 안정적인 오류 코드와 한국어 메시지 */
+            503: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -6386,6 +7227,15 @@ export interface operations {
                     "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
+            /** @description 안정적인 오류 코드와 한국어 메시지 */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
         };
     };
     start: {
@@ -6486,6 +7336,15 @@ export interface operations {
                     "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
+            /** @description 안정적인 오류 코드와 한국어 메시지 */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
         };
     };
     list_1: {
@@ -6495,6 +7354,7 @@ export interface operations {
                 genre?: string;
                 maxMinutes?: number;
                 page?: number;
+                playerCount?: number;
                 size?: number;
             };
             header?: never;
@@ -6592,6 +7452,15 @@ export interface operations {
                     "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
+            /** @description 안정적인 오류 코드와 한국어 메시지 */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
         };
     };
     detail: {
@@ -6679,6 +7548,15 @@ export interface operations {
             };
             /** @description 안정적인 오류 코드와 한국어 메시지 */
             429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description 안정적인 오류 코드와 한국어 메시지 */
+            503: {
                 headers: {
                     [name: string]: unknown;
                 };

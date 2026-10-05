@@ -1,5 +1,7 @@
 .env
-.env.*.local
+.env.*
+!.env.example
+!.env.*.example
 .tools/
 .gradle/
 **/build/
@@ -12,4 +14,3 @@
 .vscode/
 *.iml
 !gradle-wrapper.jar
-

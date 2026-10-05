@@ -42,6 +42,10 @@ springdoc:
   swagger-ui:
     path: /api/docs
 app:
+  kakao:
+    client-id: ${KAKAO_CLIENT_ID:}
+    client-secret: ${KAKAO_CLIENT_SECRET:}
+    redirect-uri: ${KAKAO_REDIRECT_URI:}
   origins: ${APP_ORIGINS:http://localhost:5173,http://localhost:8080,http://127.0.0.1:5173,http://127.0.0.1:8080}
   voice-provider: ${VOICE_PROVIDER:disabled}
   match-accept-seconds: ${MATCH_ACCEPT_SECONDS:30}
@@ -50,4 +54,3 @@ app:
   disconnect-grace-seconds: ${DISCONNECT_GRACE_SECONDS:120}
   abandon-seconds: ${ABANDON_SECONDS:300}
   empty-game-abort-seconds: ${EMPTY_GAME_ABORT_SECONDS:1800}
-

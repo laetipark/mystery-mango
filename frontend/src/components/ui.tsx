@@ -55,10 +55,11 @@ export function ScenarioCard({ scenario, action }: { scenario: Scenario; action?
       </div>
       <div className={s.cardBody}>
         <div className={s.row}>
+          <Badge>{scenario.playerCount}인</Badge>
           <Badge>{difficultyNames[scenario.difficulty] ?? scenario.difficulty}</Badge>
           {scenario.rank !== undefined && <Badge>추천 {scenario.rank + 1}순위</Badge>}
           <span className={s.muted}>
-            {scenario.playerCount}명 · 약 {scenario.estimatedMinutes}분*
+            약 {scenario.estimatedMinutes}분*
           </span>
         </div>
         <h2>

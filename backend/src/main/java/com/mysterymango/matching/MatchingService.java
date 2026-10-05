@@ -59,7 +59,7 @@ public class MatchingService {
             selected.add(t);var found=choose(tickets,eligible,blocks,i+1,selected,next,budget);selected.removeLast();if(found!=null)return found;
         }return null;
     }
-    private boolean canPlay(Map<String,Object> ticket,Map<String,Object> card){return Objects.equals(ticket.get("language"),card.get("language"))&&Db.num(ticket,"max_minutes")>=((Number)card.get("estimatedMinutes")).intValue()&&((List<?>)card.get("modes")).contains(ticket.get("mode"))&&db.optional("select 1 from scenario_exposure where user_id=? and scenario_id=?",ticket.get("user_id"),card.get("id"))==null;}
+    private boolean canPlay(Map<String,Object> ticket,Map<String,Object> card){return ((Number)card.get("playerCount")).intValue()==4&&Objects.equals(ticket.get("language"),card.get("language"))&&Db.num(ticket,"max_minutes")>=((Number)card.get("estimatedMinutes")).intValue()&&((List<?>)card.get("modes")).contains(ticket.get("mode"))&&db.optional("select 1 from scenario_exposure where user_id=? and scenario_id=?",ticket.get("user_id"),card.get("id"))==null;}
     private int score(List<Map<String,Object>> group,Map<String,Object> card){int score=0;for(var t:group){if(Objects.equals(t.get("genre"),card.get("genre")))score+=2;if(Objects.equals(t.get("difficulty"),card.get("difficulty")))score++;}return score;}
     private void finalizeVote(UUID id){
         var selected=db.optional("select c.scenario_version_id,count(m.user_id) as n,c.rank from match_candidate c left join match_member m on m.proposal_id=c.proposal_id and m.voted_version_id=c.scenario_version_id where c.proposal_id=? group by c.scenario_version_id,c.rank having count(m.user_id)>0 order by n desc,c.rank limit 1",id);

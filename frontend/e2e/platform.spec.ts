@@ -1,6 +1,6 @@
 import { randomUUID } from 'node:crypto';
 import { test, expect, type Browser, type BrowserContext, type Locator, type Page as BrowserPage } from '@playwright/test';
-import type { Game, Page, Proposal, Scenario, Ticket } from '../src/common/types';
+import type { Game, Page, Proposal, Room, Scenario, Ticket } from '../src/common/types';
 
 type Player = { context: BrowserContext; page: BrowserPage; id: string; email: string };
 const baseURL = process.env.E2E_BASE_URL || 'http://127.0.0.1:5173';
@@ -41,6 +41,11 @@ async function players(browser: Browser, count = 4): Promise<Player[]> {
 async function closePlayers(group: Player[]) {
   await Promise.all(group.map((player) => player.context.close()));
 }
+function scenarioForPlayers(catalog: Page<Scenario>, count: number): Scenario {
+  const scenario = catalog.items.find((item) => item.playerCount === count);
+  expect(scenario, `${count}인 작품이 필요합니다.`).toBeDefined();
+  return scenario!;
+}
 async function tabTo(page: BrowserPage, target: Locator) {
   await expect(target).toBeVisible();
   await expect(target).toBeEnabled();
@@ -50,9 +55,10 @@ async function tabTo(page: BrowserPage, target: Locator) {
   }
   throw new Error('주요 조작 요소에 Tab 키로 도달할 수 없습니다.');
 }
-async function finishGame(group: Player[], gameId: string) {
+async function finishGame(group: Player[], gameId: string, investigateAll = false) {
   const deadline = Date.now() + 120000;
   const acted = new Set<string>();
+  const investigatedTargets = new Set<string>();
   while (Date.now() < deadline) {
     const snapshot = await read<Game>(group[0], `/games/${gameId}/snapshot`);
     if (snapshot.ending) return;
@@ -65,14 +71,25 @@ async function finishGame(group: Player[], gameId: string) {
           await mutate(player, 'POST', `/games/${gameId}/phase-ready`);
           acted.add(key);
         } else if (own.phase?.kind === 'INVESTIGATION' && own.targets.some((target) => !target.investigated) && own.investigationsRemaining > 0) {
-          const target = own.targets.find((item) => !item.investigated)!;
-          const commandKey = randomUUID();
-          await mutate(player, 'POST', `/games/${gameId}/investigations`, { targetId: target.id }, commandKey);
-          const after = await read<Game>(player, `/games/${gameId}/snapshot`);
-          await mutate(player, 'POST', `/games/${gameId}/investigations`, { targetId: target.id }, commandKey);
-          const retry = await read<Game>(player, `/games/${gameId}/snapshot`);
-          if (retry.phase?.id === after.phase?.id) expect(retry.investigationsRemaining).toBe(after.investigationsRemaining);
-          expect(new Set(retry.clues.map((clue) => clue.id)).size).toBe(retry.clues.length);
+          let current = own;
+          do {
+            const target = current.targets.find((item) => !item.investigated && (!investigateAll || !investigatedTargets.has(item.id)));
+            if (!target) break;
+            const commandKey = randomUUID();
+            await mutate(player, 'POST', `/games/${gameId}/investigations`, { targetId: target.id }, commandKey);
+            investigatedTargets.add(target.id);
+            const after = await read<Game>(player, `/games/${gameId}/snapshot`);
+            await mutate(player, 'POST', `/games/${gameId}/investigations`, { targetId: target.id }, commandKey);
+            const retry = await read<Game>(player, `/games/${gameId}/snapshot`);
+            if (retry.phase?.id === after.phase?.id) expect(retry.investigationsRemaining).toBe(after.investigationsRemaining);
+            expect(new Set(retry.clues.map((clue) => clue.id)).size).toBe(retry.clues.length);
+            if (investigateAll && retry.phase?.actions.includes('SHARE')) {
+              for (const clue of retry.clues.filter((clue) => clue.owned && !clue.public && clue.sharePolicy !== 'PRIVATE')) {
+                await mutate(player, 'POST', `/games/${gameId}/clue-shares`, { clueId: clue.id, scope: 'PUBLIC' });
+              }
+            }
+            current = await read<Game>(player, `/games/${gameId}/snapshot`);
+          } while (investigateAll && current.phase?.id === own.phase.id && current.investigationsRemaining > 0);
           acted.add(key);
         } else if (own.phase?.kind === 'VOTE' && own.ballot) {
           await mutate(player, 'PUT', `/games/${gameId}/ballots/${own.ballot.id}/me`, { roleId: own.participants[0].roleId });
@@ -94,7 +111,7 @@ test('네 독립 로그인으로 모집방 → 비밀 역할 → 조사 → 투�
     expect(catalog.items.length).toBeGreaterThanOrEqual(3);
     expect(JSON.stringify(catalog)).not.toContain('culpritRoleId');
     expect(JSON.stringify(catalog)).not.toContain('"secret"');
-    const room = await mutate<{ roomId: string }>(group[0], 'POST', '/rooms', { scenarioVersionId: catalog.items[0].versionId, visibility: 'PUBLIC', mode: 'TEXT' });
+    const room = await mutate<{ roomId: string }>(group[0], 'POST', '/rooms', { scenarioVersionId: scenarioForPlayers(catalog, 4).versionId, visibility: 'PUBLIC', mode: 'TEXT' });
     for (const player of group.slice(1)) await mutate(player, 'POST', `/rooms/${room.roomId}/join`);
     for (const [index, player] of group.entries()) {
       await player.page.goto(`/rooms/${room.roomId}`);
@@ -193,6 +210,7 @@ test('네 독립 이용자 자동 매칭 → 전원 수락 → 작품 투표 →
     const proposal = await read<Proposal>(group[0], `/match-proposals/${proposalId}`);
     expect(proposal.candidates.length).toBeGreaterThan(0);
     expect(proposal.candidates.length).toBeLessThanOrEqual(3);
+    expect(proposal.candidates.every((candidate) => candidate.playerCount === 4)).toBe(true);
     for (const player of group) await mutate(player, 'PUT', `/match-proposals/${proposalId}/scenario-vote`, { scenarioVersionId: proposal.candidates[0].versionId });
     let roomId = '';
     await expect
@@ -218,7 +236,7 @@ test('참가하지 않은 사용자는 게임의 개인 자료와 메시지를 �
   const group = await players(browser, 5);
   try {
     const catalog = await read<Page<Scenario>>(group[0], '/scenarios');
-    const room = await mutate<{ roomId: string }>(group[0], 'POST', '/rooms', { scenarioVersionId: catalog.items[0].versionId, visibility: 'PUBLIC', mode: 'TEXT' });
+    const room = await mutate<{ roomId: string }>(group[0], 'POST', '/rooms', { scenarioVersionId: scenarioForPlayers(catalog, 4).versionId, visibility: 'PUBLIC', mode: 'TEXT' });
     for (const player of group.slice(1, 4)) await mutate(player, 'POST', `/rooms/${room.roomId}/join`);
     for (const player of group.slice(0, 4)) await mutate(player, 'PUT', `/rooms/${room.roomId}/ready`, { ready: true });
     const game = await mutate<{ gameId: string }>(group[0], 'POST', `/rooms/${room.roomId}/start`);
@@ -236,7 +254,7 @@ test('초대 원문은 브라우저에서 생성하고 새 링크 발급 뒤 이
   const group = await players(browser, 3);
   try {
     const catalog = await read<Page<Scenario>>(group[0], '/scenarios');
-    await group[0].page.goto(`/scenarios/${catalog.items[0].id}`);
+    await group[0].page.goto(`/scenarios/${scenarioForPlayers(catalog, 4).id}`);
     await group[0].page.getByLabel('모집 방식').selectOption('INVITE');
     await group[0].page.getByRole('button', { name: '이 작품으로 방 만들기' }).click();
     await expect(group[0].page).toHaveURL(/\/rooms\/[0-9a-f-]+$/);
@@ -261,3 +279,71 @@ test('초대 원문은 브라우저에서 생성하고 새 링크 발급 뒤 이
     await closePlayers(group);
   }
 });
+
+for (const playerCount of [1, 2]) {
+  test(`${playerCount}인 작품을 인원 필터로 고르고 정원에 맞춰 시작해 조사·투표·엔딩까지 진행한다`, async ({ browser }) => {
+    const group = await players(browser, playerCount);
+    const pageErrors: string[] = [];
+    for (const player of group) player.page.on('pageerror', (error) => pageErrors.push(error.message));
+    try {
+      const catalog = await read<Page<Scenario>>(group[0], `/scenarios?playerCount=${playerCount}&size=12`);
+      expect(catalog.items.length).toBeGreaterThan(0);
+      expect(catalog.items.every((item) => item.playerCount === playerCount)).toBe(true);
+      const scenario = scenarioForPlayers(catalog, playerCount);
+      await group[0].page.goto('/scenarios');
+      await group[0].page.getByLabel('인원', { exact: true }).selectOption(String(playerCount));
+      const card = group[0].page.getByRole('article').filter({ has: group[0].page.getByRole('link', { name: scenario.title, exact: true }) });
+      await expect(card.getByText(`${playerCount}인`, { exact: true })).toBeVisible();
+      await card.getByRole('link', { name: scenario.title, exact: true }).click();
+      await expect(group[0].page.getByText(`${playerCount}인 전용`, { exact: true })).toBeVisible();
+      if (playerCount === 1) {
+        await expect(group[0].page.getByRole('heading', { name: '혼자 플레이하기' })).toBeVisible();
+        await expect(group[0].page.getByLabel('대화 방식')).toBeDisabled();
+        await expect(group[0].page.getByLabel('대화 방식').locator('option')).toHaveCount(1);
+      }
+      await group[0].page.getByRole('button', { name: '이 작품으로 방 만들기', exact: true }).click();
+      await expect(group[0].page).toHaveURL(/\/rooms\/[0-9a-f-]+$/);
+      const roomId = group[0].page.url().split('/').pop()!;
+      const initialRoom = await read<Room>(group[0], `/rooms/${roomId}`);
+      expect(initialRoom.capacity).toBe(playerCount);
+      expect(initialRoom.participants).toHaveLength(1);
+      await expect(group[0].page.getByTestId('start-game')).toBeDisabled();
+      for (const player of group.slice(1)) await mutate(player, 'POST', `/rooms/${roomId}/join`);
+      for (const player of group) {
+        await player.page.goto(`/rooms/${roomId}`);
+        await expect(player.page.getByRole('heading', { name: `대기실 ${playerCount}/${playerCount}`, exact: true })).toBeVisible();
+        await player.page.getByRole('button', { name: '준비 완료', exact: true }).click();
+        await expect(player.page.getByRole('button', { name: '준비 취소', exact: true })).toBeVisible();
+      }
+      await expect(group[0].page.getByTestId('start-game')).toBeEnabled();
+      await group[0].page.getByTestId('start-game').click();
+      await expect(group[0].page).toHaveURL(/\/games\/[0-9a-f-]+$/);
+      const gameId = group[0].page.url().split('/').pop()!;
+      const roles = await Promise.all(group.map((player) => read<Game>(player, `/games/${gameId}/snapshot`)));
+      expect(new Set(roles.map((game) => game.myRole.id)).size).toBe(playerCount);
+      for (const [index, player] of group.entries()) {
+        expect(roles[index].participants).toHaveLength(playerCount);
+        await player.page.goto(`/games/${gameId}`);
+        await expect(player.page.getByTestId('my-role')).toHaveText(roles[index].myRole.name);
+        for (const [otherIndex, other] of roles.entries()) {
+          if (index !== otherIndex) expect(await player.page.locator('body').innerText()).not.toContain(other.myRole.secret);
+        }
+      }
+      await finishGame(group, gameId, true);
+      await expect.poll(async () => (await read<Game>(group[0], `/games/${gameId}/snapshot`)).status, { timeout: 20000 }).toBe('COMPLETED');
+      for (const player of group) {
+        const completed = await read<Game>(player, `/games/${gameId}/snapshot`);
+        expect(completed.status).toBe('COMPLETED');
+        expect(completed.clues.length).toBeGreaterThan(0);
+        expect(completed.ending?.objectiveAchieved).toBe(true);
+        await player.page.reload();
+        await expect(player.page.getByTestId('ending')).toBeVisible();
+        const history = await read<Page<{ gameId: string }>>(player, '/me/history');
+        expect(history.items.some((entry) => entry.gameId === gameId)).toBe(true);
+      }
+      expect(pageErrors).toEqual([]);
+    } finally {
+      await closePlayers(group);
+    }
+  });
+}

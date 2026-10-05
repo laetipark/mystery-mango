@@ -1,0 +1,157 @@
+{
+  "schemaVersion": 1,
+  "slug": "locker-at-twelve",
+  "title": "열두 시의 보관함",
+  "synopsis": "자정의 마을 기록관. 비어 버린 원본 서랍 앞에서 야간 기록사는 마지막 십여 분의 기억을 되찾으려 한다. 남은 영수증과 잠긴 보관함을 조사하고, 사라진 기록에 어떤 결론을 남길지 결정하라.",
+  "language": "ko",
+  "playerCount": 1,
+  "estimatedMinutes": 15,
+  "genre": "기억 미스터리",
+  "difficulty": "EASY",
+  "modes": ["TEXT"],
+  "roles": [
+    {
+      "id": "archivist",
+      "name": "하윤 · 야간 기록사",
+      "publicIntro": "폐관을 앞둔 마을 기록관에서 마지막 야간 근무를 맡았다.",
+      "secret": "23시 40분까지 주민 구술 원본 R-17의 분류를 확인한 기억은 분명하다. 그 뒤는 짧은 장면으로만 남았다. 정전 뒤 넘어진 서가 옆에서 정신을 차렸고, 빈 서랍을 발견했다. R-17에는 당신의 할머니가 남긴 목소리도 있다. 오늘 낮에는 그 목소리를 다시 듣기 두려워 원본을 없애 버리고 싶다는 생각까지 했다. 그러나 생각이 실제 행동이었다고 단정할 수는 없다. 오른쪽 주머니에는 기록관의 임시 보관 열쇠가 있다. 당신의 목표는 유리한 이야기를 만드는 것이 아니라, 남아 있는 자료를 빠짐없이 기록하는 것이다.",
+      "objective": {
+        "text": "이동 영수증과 보관함의 내용물을 공개 기록에 남긴다. 최종 지목을 유보하더라도 자료 보전 목표는 달성할 수 있다.",
+        "condition": {
+          "type": "ALL",
+          "conditions": [
+            {"type": "CLUE_PUBLIC", "clueId": "transfer-receipt"},
+            {"type": "CLUE_PUBLIC", "clueId": "locker-contents"}
+          ]
+        }
+      }
+    }
+  ],
+  "phases": [
+    {
+      "id": "reading",
+      "kind": "READING",
+      "durationSeconds": 120,
+      "actions": [],
+      "publicText": "역할의 기억과 목표를 읽으세요. 이 작품은 원본을 서랍에서 옮긴 사람이 누구인지, 원본이 어떻게 되었는지를 혼자 확인하는 추리 연습입니다. 준비되면 읽기를 완료하세요.",
+      "investigationLimit": 0
+    },
+    {
+      "id": "investigation",
+      "kind": "INVESTIGATION",
+      "durationSeconds": 300,
+      "actions": ["CHAT", "INVESTIGATE", "SHARE"],
+      "publicText": "네 대상을 각각 조사할 수 있습니다. 총 네 번의 조사로 모든 단서를 확보할 수 있습니다. '전체 공개'는 이 1인 게임의 조사 기록에 자료를 남긴다는 뜻입니다. 채팅에 시간 순서를 적어도 좋습니다.",
+      "investigationLimit": 4
+    },
+    {
+      "id": "reflection",
+      "kind": "DISCUSSION",
+      "durationSeconds": 240,
+      "actions": ["CHAT", "SHARE"],
+      "publicText": "기억과 기록을 구분해 정리하세요. 원본은 언제 이동했고, 정전은 언제 일어났나요? 이동 영수증·임시 보관 신청서·보관함 내용물을 공개하면 행동과 이유를 함께 남길 수 있습니다. 새로운 조사는 할 수 없지만 이미 확보한 단서는 계속 공개할 수 있습니다.",
+      "investigationLimit": 0
+    },
+    {
+      "id": "accusation",
+      "kind": "VOTE",
+      "durationSeconds": 120,
+      "actions": ["CHAT", "VOTE"],
+      "publicText": "화면의 '범인'은 원본을 서랍에서 직접 옮긴 사람을 뜻하며, 악의나 범죄 여부를 묻는 말이 아닙니다. 하윤을 선택하면 자신의 반출 행동을 인정합니다. 기권하면 자료를 남기되 최종 지목은 후속 조사에 맡깁니다. 제출 전후로 마감까지 변경할 수 있으며, 미제출도 지목 유보로 처리됩니다.",
+      "investigationLimit": 0
+    },
+    {
+      "id": "ending",
+      "kind": "ENDING",
+      "durationSeconds": 120,
+      "actions": ["CHAT"],
+      "publicText": "자료를 얼마나 기록했는지와 최종 선택에 따른 해설을 읽으세요. 이 작품의 실제 사건은 한 가지이며, 지목 결과가 과거의 사실을 바꾸지는 않습니다.",
+      "investigationLimit": 0
+    }
+  ],
+  "targets": [
+    {"id": "target-power", "name": "출입·정전 기록 조사", "phaseIds": ["investigation"], "clueIds": ["power-log"]},
+    {"id": "target-receipt", "name": "서랍 아래 영수증 조사", "phaseIds": ["investigation"], "clueIds": ["transfer-receipt"]},
+    {"id": "target-request", "name": "접수함의 신청서 조사", "phaseIds": ["investigation"], "clueIds": ["preservation-request"]},
+    {"id": "target-locker", "name": "열쇠가 맞는 보관함 조사", "phaseIds": ["investigation"], "clueIds": ["locker-contents"]}
+  ],
+  "clues": [
+    {
+      "id": "power-log",
+      "title": "출입·정전 기록",
+      "text": "23:35 이후 자정까지 출입문은 열리지 않았다. 내부에는 야간 기록사 하윤만 등록되어 있다. 시설 점검에 따른 정전은 예정대로 23:51에 시작되었고, 서가의 충격 감지는 23:52이다. 정전 전에 자료가 이동했을 가능성을 배제하면 안 된다.",
+      "sharePolicy": "PUBLIC"
+    },
+    {
+      "id": "transfer-receipt",
+      "title": "23시 46분의 이동 영수증",
+      "text": "자동 보관 장치가 출력한 원본 영수증이다. 23:46, 자료 R-17, 출발 '원본 서랍', 도착 '임시 보관함 12', 실행자 '하윤'. 이동은 현장에서 원본의 봉인 번호와 개인 사원증을 함께 읽혀야 완료되며 예약 실행은 지원하지 않는다. 원본 서랍의 봉인 번호와 영수증의 번호는 같다.",
+      "sharePolicy": "PUBLIC"
+    },
+    {
+      "id": "preservation-request",
+      "title": "임시 보관 신청서",
+      "text": "하윤의 필체로 23:42에 작성한 신청서다. 'R-17이 복제본으로 잘못 분류되어 00:10 폐기 목록에 올랐다. 책임자와 연결되지 않는다. 원본을 12번 보관함에 임시 격리하고 아침에 재분류 심사를 받겠다.' 뒤에는 실제 폐기 목록과 정정 요청의 발송 확인서가 붙어 있다. 신청서는 접수되었지만 책임자의 사후 승인은 아직 비어 있다.",
+      "sharePolicy": "PUBLIC"
+    },
+    {
+      "id": "locker-contents",
+      "title": "12번 보관함의 내용물",
+      "text": "주머니의 열쇠로 연 보관함 안에는 R-17 원본이 있다. 봉인 번호는 이동 영수증과 같고 봉인은 훼손되지 않았다. 재생 점검기에서 할머니의 첫 인사와 원본 검증 값이 정상으로 확인된다. 보관함 출고 기록은 비어 있다. 안쪽 메모에는 '두렵다고 없던 일로 만들지 말 것. 내일 직접 설명할 것'이라고 적혀 있다.",
+      "sharePolicy": "PUBLIC"
+    }
+  ],
+  "ballot": {"culpritRoleId": "archivist", "allowChange": true, "allowAbstain": true, "tiePolicy": "NO_ACCUSATION"},
+  "endings": [
+    {
+      "id": "accountable-preservation",
+      "title": "내 이름으로 남긴 기록",
+      "text": "하윤은 자신이 원본을 옮겼다고 기록하고, 이동 영수증·신청서·보관함 내용물을 함께 제출했다. 23:42에 잘못된 폐기 분류를 발견했고 23:46에 원본을 옮겼다. 23:51의 정전과 23:52의 충격은 그 뒤의 일이다. 반출은 책임자의 사전 승인을 받지 못했지만 원본을 없애려던 행동은 아니었다. 원본은 보전되었고, 절차에 대한 판단은 아침의 심사에 맡긴다. 지목만으로는 설명되지 않는 이유까지 남긴 결말이다.",
+      "condition": {
+        "type": "ALL",
+        "conditions": [
+          {"type": "CULPRIT_IDENTIFIED"},
+          {"type": "CLUE_PUBLIC", "clueId": "transfer-receipt"},
+          {"type": "CLUE_PUBLIC", "clueId": "preservation-request"},
+          {"type": "CLUE_PUBLIC", "clueId": "locker-contents"}
+        ]
+      }
+    },
+    {
+      "id": "preserved-without-verdict",
+      "title": "결론 대신 남긴 자료",
+      "text": "하윤은 최종 지목을 유보했지만 원본의 이동과 현재 상태를 공개 기록에 남겼다. 개인 목표인 자료 보전은 이루어졌다. 해설의 사실은 분명하다. 원본을 옮긴 사람은 하윤이며, 폐기 분류 오류에서 지키기 위해 23:46에 12번 보관함으로 옮겼다. 정전은 23:51로 그보다 늦다. 이번 투표에서는 행동의 주체를 확정하지 않았으므로 사건 지목은 미해결로 남고, 제출된 자료가 후속 조사로 이어진다.",
+      "condition": {
+        "type": "ALL",
+        "conditions": [
+          {"type": "NOT", "condition": {"type": "CULPRIT_IDENTIFIED"}},
+          {"type": "CLUE_PUBLIC", "clueId": "transfer-receipt"},
+          {"type": "CLUE_PUBLIC", "clueId": "locker-contents"}
+        ]
+      }
+    },
+    {
+      "id": "name-before-evidence",
+      "title": "이름만 적힌 보고서",
+      "text": "하윤은 자신을 지목했다. 반출한 사람은 맞지만 행동과 이유를 잇는 공개 자료 일부가 빠졌다. 실제로 하윤은 23:42에 폐기 분류 오류를 발견하고 23:46에 원본을 12번 보관함으로 옮겼다. 원본은 훼손되지 않았으며 정전은 그 뒤에 일어났다. 이동 영수증과 신청서, 내용물을 함께 남겼다면 단순한 자책과 자료에 근거한 설명을 구분할 수 있었을 것이다. 개인 목표 달성 여부는 공개한 영수증과 내용물로 따로 판단한다.",
+      "condition": {"type": "CULPRIT_IDENTIFIED"}
+    },
+    {
+      "id": "unfinished-report",
+      "title": "아침을 기다리는 서랍",
+      "text": "최종 지목은 유보되었고 원본의 이동과 상태를 설명할 공개 자료도 충분히 남지 않았다. 실제 반출자는 하윤이다. 폐기 목록의 오류를 막으려고 23:46에 원본을 12번 보관함으로 옮겼으며, 원본은 그 안에서 보전되었다. 23:51의 정전을 반출 원인으로 생각하면 사건 순서를 놓친다. 이동 영수증과 신청서, 보관함의 봉인을 연결하는 일이 아침 조사자의 몫으로 남았다.",
+      "condition": {"type": "ALWAYS"}
+    }
+  ],
+  "rules": [
+    {
+      "id": "arrival",
+      "when": "PHASE_STARTED",
+      "phaseId": "reading",
+      "condition": {"type": "ALWAYS"},
+      "effects": [
+        {"type": "PUBLISH_MATERIAL", "text": "직접 작성한 1인용 텍스트 샘플입니다. 15분은 단계 시간의 합계이며 읽기 완료 시 더 짧아질 수 있습니다. 밀담은 없습니다. 추리는 반출 행동·시간·이유를 구분하는 데 초점을 둡니다. 자신의 역할 지목과 기권 모두 가능하며, 자료를 공개해 남기는 개인 목표는 지목 결과와 별개입니다."}
+      ]
+    }
+  ]
+}

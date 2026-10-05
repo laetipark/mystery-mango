@@ -3,6 +3,8 @@ import type { components, paths } from './api.generated';
 type Schemas = components['schemas'];
 type ScenarioPage = paths['/api/v1/scenarios']['get']['responses'][200]['content']['application/json'];
 export type User = Schemas['UserView'];
+export type AuthProviders = Schemas['AuthProviders'];
+export type KakaoAuthorize = Schemas['KakaoAuthorize'];
 export type Page<T> = Omit<ScenarioPage, 'items'> & { items: T[] };
 export type PlayMode = Schemas['RoomCard']['mode'];
 export type Scenario = Schemas['ScenarioCard'] & { rank?: number };

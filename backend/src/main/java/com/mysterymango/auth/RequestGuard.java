@@ -20,7 +20,7 @@ public class RequestGuard extends OncePerRequestFilter {
         String trace=UUID.randomUUID().toString();req.setAttribute("traceId",trace);res.setHeader("X-Trace-Id",trace);res.setHeader("Cache-Control","no-store");res.setHeader("Referrer-Policy","no-referrer");
         String path=req.getRequestURI();long minute=System.currentTimeMillis()/60000;
         if(windows.size()>10000)windows.entrySet().removeIf(e->e.getValue().minute<minute);
-        boolean auth=path.startsWith("/api/v1/auth/login")||path.startsWith("/api/v1/auth/register");
+        boolean auth=path.startsWith("/api/v1/auth/login")||path.startsWith("/api/v1/auth/register")||path.equals("/api/v1/auth/kakao");
         boolean write=!Set.of("GET","HEAD","OPTIONS").contains(req.getMethod());
         if(req.getContentLengthLong()>MAX_BODY_BYTES){reject(res,413,"INPUT_TOO_LARGE","입력 크기가 너무 큽니다.",trace);return;}
         var authentication=SecurityContextHolder.getContext().getAuthentication();

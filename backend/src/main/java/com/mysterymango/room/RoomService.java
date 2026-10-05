@@ -25,7 +25,7 @@ public class RoomService {
     public Map<String,Object> snapshot(UUID id,UUID user){
         var room=db.one("select * from room where id=?",id);requireMember(id,user);var s=scenarios.publicVersion(Db.uuid(room,"scenario_version_id"));
         var members=db.list("select p.*,u.display_name from room_participant p join app_user u on u.id=p.user_id where room_id=? order by joined_at,user_id",id).stream().map(p->map("userId",p.get("user_id"),"displayName",p.get("display_name"),"ready",p.get("ready"),"connected",Db.instant(p,"last_seen_at").isAfter(Instant.now().minusSeconds(120)))).toList();
-        return map("id",id,"title",s.get("title"),"scenarioVersionId",room.get("scenario_version_id"),"hostId",room.get("host_id"),"visibility",room.get("visibility"),"mode",room.get("mode"),"status",room.get("status"),"gameId",room.get("game_id"),"capacity",s.get("playerCount"),"participants",members,"rules","정확히 4명이 준비하면 방장이 시작합니다. 비밀 자료를 외부에 공유하지 마세요.");
+        return map("id",id,"title",s.get("title"),"scenarioVersionId",room.get("scenario_version_id"),"hostId",room.get("host_id"),"visibility",room.get("visibility"),"mode",room.get("mode"),"status",room.get("status"),"gameId",room.get("game_id"),"capacity",s.get("playerCount"),"participants",members,"rules","정확히 "+s.get("playerCount")+"명이 준비하면 방장이 시작합니다. 비밀 자료를 외부에 공유하지 마세요.");
     }
     public Map<String,Object> list(int page,int size,UUID scenarioId){
         page=Math.max(0,page);size=Math.clamp(size,1,50);

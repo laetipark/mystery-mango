@@ -22,7 +22,7 @@ class MatchingIntegrationTest {
     }
     @Autowired Db db;@Autowired Commands commands;@Autowired Activities activities;@Autowired RoomService rooms;@Autowired MatchingService matching;
     final List<UUID> users=new ArrayList<>();UUID version;
-    @BeforeEach void setup(){commands.transaction(()->{db.update("update match_ticket set status='CANCELLED' where status in('WAITING','PROPOSED')");db.update("update match_proposal set status='ENDED' where status in('ACCEPTING','VOTING')");db.update("update player_activity set kind='IDLE',reference_id=null where kind in('QUEUED','PROPOSED')");for(int i=0;i<8;i++){UUID id=UUID.randomUUID();users.add(id);db.update("insert into app_user(id,email,display_name,password_hash) values(?,?,?,'unused')",id,id+"@test.invalid","탐정"+i);db.update("insert into player_activity(user_id,kind) values(?,'IDLE')",id);}version=Db.uuid(db.one("select id from scenario_version where status='PUBLISHED' limit 1"),"id");return null;});}
+    @BeforeEach void setup(){commands.transaction(()->{db.update("update match_ticket set status='CANCELLED' where status in('WAITING','PROPOSED')");db.update("update match_proposal set status='ENDED' where status in('ACCEPTING','VOTING')");db.update("update player_activity set kind='IDLE',reference_id=null where kind in('QUEUED','PROPOSED')");for(int i=0;i<8;i++){UUID id=UUID.randomUUID();users.add(id);db.update("insert into app_user(id,email,display_name,password_hash) values(?,?,?,'unused')",id,id+"@test.invalid","탐정"+i);db.update("insert into player_activity(user_id,kind) values(?,'IDLE')",id);}version=Db.uuid(db.one("select id from scenario_version where status='PUBLISHED' and definition->>'playerCount'='4' limit 1"),"id");return null;});}
     @Test void onlyOneOfTwoConcurrentRoomJoinsWins()throws Exception{
         UUID a=create(users.get(0)),b=create(users.get(1)),user=users.get(2);
         var outcomes=race(()->join(a,user),()->join(b,user));assertEquals(1,outcomes.stream().filter(Boolean::booleanValue).count());
@@ -46,6 +46,23 @@ class MatchingIntegrationTest {
         commands.transaction(()->{db.update("delete from user_block where user_id=?",users.getFirst());for(var s:db.list("select id from scenario"))db.update("insert into scenario_exposure(user_id,scenario_id) values(?,?)",users.getFirst(),s.get("id"));return null;});matching.tick();assertWaiting();
     }
     @Test void noMatchingScenarioMaintainsRealWaitingState(){for(int i=0;i<4;i++)enqueue(users.get(i),false,1);matching.tick();assertWaiting();}
+    @Test void smallScenariosAreNeverProposedToFourPlayerTickets(){
+        assertEquals(2,Db.num(db.one("select count(*) n from scenario_version where status='PUBLISHED' and definition->>'playerCount' in ('1','2')"),"n"));
+        for(int i=0;i<4;i++)enqueue(users.get(i),false,20);
+        matching.tick();assertWaiting();
+    }
+    @Test void smallScenarioInjectedIntoAProposalCannotBecomeAFourPlayerRoom(){
+        UUID proposal=group(false);
+        assertTrue(db.list("select v.definition->>'playerCount' n from match_candidate c join scenario_version v on v.id=c.scenario_version_id where c.proposal_id=?",proposal).stream().allMatch(r->"4".equals(r.get("n"))));
+        UUID small=Db.uuid(db.one("select id from scenario_version where status='PUBLISHED' and definition->>'playerCount'='1' limit 1"),"id");
+        for(int i=0;i<4;i++){UUID user=users.get(i);commands.transaction(()->matching.accept(proposal,user));}
+        commands.transaction(()->{db.update("delete from match_candidate where proposal_id=?",proposal);db.update("insert into match_candidate(proposal_id,scenario_version_id,rank) values(?,?,1)",proposal,small);return null;});
+        for(int i=0;i<4;i++){UUID user=users.get(i);commands.transaction(()->matching.vote(proposal,user,small));}
+        expire(proposal);matching.tick();
+        assertEquals("ENDED",db.one("select status from match_proposal where id=?",proposal).get("status"));
+        assertNull(db.one("select room_id from match_proposal where id=?",proposal).get("room_id"));
+        for(int i=0;i<4;i++)assertEquals("IDLE",db.one("select kind from player_activity where user_id=?",users.get(i)).get("kind"));
+    }
     @Test void unpublishedWinnerEndsProposalInsteadOfLeavingItStuck(){
         UUID proposal=group(false);
         UUID winner=Db.uuid(db.one("select scenario_version_id from match_candidate where proposal_id=? order by rank limit 1",proposal),"scenario_version_id");

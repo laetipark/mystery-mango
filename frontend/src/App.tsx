@@ -1,3 +1,4 @@
+import { AuthPage } from '~/pages/auth';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
@@ -7,7 +8,7 @@ import { activityPath } from '~/common/time';
 import { command, errorMessage, get, resetCsrf, sessionExpiredEvent, sessionRestoredEvent } from '~/services/api';
 import { ErrorNotice, UserContext, useUser } from '~/components/ui';
 import { useEvents } from '~/hooks/use-events';
-import { HomePage, AuthPage, CatalogPage, ScenarioPage, RoomsPage, LobbyPage, MatchPage, AccountPage, AdminPage } from '~/pages/pages';
+import { HomePage, CatalogPage, ScenarioPage, RoomsPage, LobbyPage, MatchPage, AccountPage, AdminPage } from '~/pages/pages';
 import { GamePage } from '~/pages/game';
 import s from '~/styles/app.module.scss';
 

@@ -107,7 +107,7 @@ public class DiscordVoiceWorker {
             UUID recordId=Db.uuid(row,"id");String key=Db.str(row,"room_key"),channelId=Db.str(row,"channel_id");
             Set<String> desired=plan.rooms().getOrDefault(key,Set.of());
             if(plan.rooms().containsKey(key)) {
-                channelId=provider.ensureChannel(key,channelId,key.endsWith("-main")?4:2);
+                channelId=provider.ensureChannel(key,channelId,key.endsWith("-main")?plan.users().size():2);
                 String resolved=channelId;
                 tx.executeWithoutResult(status->{commands.lock();db.update("update discord_voice_channel set channel_id=? where id=?",resolved,recordId);});
             }

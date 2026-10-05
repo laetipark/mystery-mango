@@ -357,6 +357,15 @@ $mango: #f2bb49;
   flex: 1;
   display: flex;
   flex-direction: column;
+  .row {
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    gap: 8px;
+    .muted {
+      margin-left: auto;
+      white-space: nowrap;
+    }
+  }
   h2 {
     margin: 15px 0 10px;
     font-size: 1.22rem;
@@ -507,6 +516,56 @@ $mango: #f2bb49;
   gap: 18px;
   label + label {
     margin-top: 0;
+  }
+}
+.authCard .authIntro {
+  margin: 0 0 24px;
+  font-size: 0.92rem;
+  word-break: keep-all;
+}
+.kakaoButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-height: 46px;
+  padding: 0;
+  border: 0;
+  border-radius: 12px;
+  background: #fee500;
+  &:hover:not(:disabled):not([aria-selected='true']) {
+    background: #fee500;
+  }
+  &:disabled {
+    opacity: 1;
+  }
+  img {
+    display: block;
+    max-width: 100%;
+    height: auto;
+  }
+}
+.authCard .authStatus {
+  margin: 12px 0 0;
+  font-size: 0.82rem;
+  color: #616657;
+  &:empty {
+    display: none;
+  }
+}
+.authDivider {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 28px 0 20px;
+  color: #616657;
+  font-size: 0.85rem;
+  font-weight: 500;
+  &::before,
+  &::after {
+    content: '';
+    flex: 1;
+    border-top: 1px solid $line;
   }
 }
 .filters {

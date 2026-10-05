@@ -66,7 +66,8 @@ public final class DiscordVoiceProvider implements VoiceProvider {
         try {
             Guild guild = guild();
             Member member = run(guild.retrieveMemberById(discordUserId).useCache(false));
-            if (member.isOwner() || PRIVILEGED.stream().anyMatch(member::hasPermission))
+            // The current guild owner may play; other privileged accounts remain excluded.
+            if (!member.isOwner() && PRIVILEGED.stream().anyMatch(member::hasPermission))
                 return new MemberEligibility(false, "PRIVILEGED_ACCOUNT");
             if (member.isPending()) return new MemberEligibility(false, "MEMBERSHIP_PENDING");
             return new MemberEligibility(true, null);

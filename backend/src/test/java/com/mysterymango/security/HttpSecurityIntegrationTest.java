@@ -176,7 +176,7 @@ class HttpSecurityIntegrationTest {
 
     private UUID createGame(UUID owner) {
         return commands.transaction(()->{
-            UUID version=Db.uuid(db.one("select id from scenario_version where status='PUBLISHED' order by id limit 1"),"id");
+            UUID version=Db.uuid(db.one("select id from scenario_version where status='PUBLISHED' and definition->>'playerCount'='4' order by id limit 1"),"id");
             List<UUID> players=new ArrayList<>();players.add(owner);
             for(int i=0;i<3;i++){UUID id=UUID.randomUUID();players.add(id);db.update("insert into app_user(id,email,display_name,password_hash) values(?,?,?,'unused-http-security-test')",id,id+"@security.invalid","권한 검사 "+i);db.update("insert into player_activity(user_id,kind) values(?,'IDLE')",id);}
             UUID room=UUID.randomUUID();db.update("insert into room(id,scenario_version_id,host_id,visibility,mode) values(?,?,?,'PUBLIC','TEXT')",room,version,owner);

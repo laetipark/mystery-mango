@@ -29,7 +29,7 @@ class RoomInviteIntegrationTest {
     }
     @Autowired RoomController controller;@Autowired Commands commands;@Autowired Db db;
     private UUID host,guest,version;
-    @BeforeEach void fixture(){commands.transaction(()->{host=user();guest=user();version=Db.uuid(db.one("select id from scenario_version where status='PUBLISHED' order by id limit 1"),"id");return null;});as(host);}
+    @BeforeEach void fixture(){commands.transaction(()->{host=user();guest=user();version=Db.uuid(db.one("select id from scenario_version where status='PUBLISHED' and definition->>'playerCount'='4' order by id limit 1"),"id");return null;});as(host);}
     @AfterEach void clearActor(){SecurityContextHolder.clearContext();}
 
     @Test void invitationCreationAndRetryStoreOnlyAcknowledgementAndHash(){

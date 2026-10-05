@@ -12,11 +12,12 @@ public class ScenarioValidator {
         require(integer(d,"schemaVersion",0)==1,"지원하지 않는 작품 형식입니다.");
         for(String key:List.of("slug","title","synopsis","language","genre","difficulty")) text(d,key,10000);
         require(str(d,"slug").matches("[a-z0-9-]{3,80}"),"작품 slug가 올바르지 않습니다.");
-        require(integer(d,"playerCount",0)==4,"초기 작품은 정확히 4인용이어야 합니다.");
+        int playerCount=integer(d,"playerCount",0);
+        require(d.get("playerCount") instanceof Number count&&count.doubleValue()==playerCount&&playerCount>=1&&playerCount<=4,"작품 인원은 1~4명의 정수여야 합니다.");
         require(integer(d,"estimatedMinutes",0)>0&&integer(d,"estimatedMinutes",0)<=480,"예상 시간이 올바르지 않습니다.");
         require(Set.of("EASY","MEDIUM","HARD").contains(str(d,"difficulty")),"난이도가 올바르지 않습니다.");
         require(!strings(d.get("modes")).isEmpty()&&Set.of("TEXT","DISCORD").containsAll(strings(d.get("modes"))),"플레이 방식이 올바르지 않습니다.");
-        Set<String> roles=ids(d,"roles",4,4), phases=ids(d,"phases",3,30), clues=ids(d,"clues",1,100), targets=ids(d,"targets",1,100);
+        Set<String> roles=ids(d,"roles",playerCount,playerCount), phases=ids(d,"phases",3,30), clues=ids(d,"clues",1,100), targets=ids(d,"targets",1,100);
         ids(d,"endings",2,20); ids(d,"rules",0,100);
         for(var role:objects(d.get("roles"))) {
             for(String key:List.of("name","publicIntro","secret")) text(role,key,20000);

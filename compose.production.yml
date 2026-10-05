@@ -1,0 +1,47 @@
+# Docker Compose 2.24.4+; 사용: scripts/compose-production.sh
+name: mystery-mango-prod
+
+x-production-logging: &production-logging
+  driver: json-file
+  options:
+    max-size: "10m"
+    max-file: "3"
+
+services:
+  db:
+    restart: unless-stopped
+    ports: !reset []
+    environment:
+      POSTGRES_PASSWORD: ${DATABASE_PASSWORD:?운영 DB 비밀번호를 설정하세요}
+    logging: *production-logging
+  backend:
+    restart: unless-stopped
+    ports: !reset []
+    environment:
+      DATABASE_PASSWORD: ${DATABASE_PASSWORD:?운영 DB 비밀번호를 설정하세요}
+      SPRING_PROFILES_ACTIVE: prod
+      COOKIE_SECURE: "true"
+      APP_ORIGINS: https://mystery.laetipark.me
+      SERVER_FORWARD_HEADERS_STRATEGY: native
+      KAKAO_REDIRECT_URI: https://mystery.laetipark.me/api/v1/auth/kakao/callback
+      GAME_PHASE_SECONDS: "0"
+      MATCH_ACCEPT_SECONDS: "30"
+      MATCH_VOTE_SECONDS: "60"
+      DISCORD_REDIRECT_URI: https://mystery.laetipark.me/api/v1/me/discord/callback
+      JAVA_TOOL_OPTIONS: -XX:MaxRAMPercentage=70.0
+    mem_limit: 1536m
+    logging: *production-logging
+  web:
+    restart: unless-stopped
+    depends_on:
+      backend:
+        condition: service_healthy
+        restart: true
+    ports: !override
+      - "127.0.0.1:3211:80"
+    healthcheck:
+      test: [CMD, wget, -q, -O, /dev/null, http://127.0.0.1/healthz]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+    logging: *production-logging
