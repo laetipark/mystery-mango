@@ -28,7 +28,8 @@ class KakaoSecurityTest {
     @Test void nextPathsCannotEscapeTheSiteOrSmuggleHeaders(){
         for(String bad:List.of("https://evil.invalid/","//evil.invalid/","/\\evil.invalid","/%2fevil.invalid","/%252fevil.invalid","/%5cevil.invalid","/a/../..//evil.invalid","/\r\nLocation:https://evil.invalid","/%0d%0aLocation:evil"," /account","/account#fragment"))
             assertEquals("/",KakaoLoginService.safeNext(bad),bad);
-        assertEquals("/rooms/123?invite=token",KakaoLoginService.safeNext("/rooms/123?invite=token"));
+        assertEquals("/rooms/123",KakaoLoginService.safeNext("/rooms/123?invite=token"));
+        assertEquals("/rooms/123",KakaoLoginService.safeNext("/rooms/123?%69nvite=secret"));
         assertEquals("/",KakaoLoginService.safeNext(null));
     }
     @Test void providerIdentityRequiresPositiveIntegralIdAndUsesOnlyNickname(){

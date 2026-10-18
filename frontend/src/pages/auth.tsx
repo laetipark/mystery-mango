@@ -1,4 +1,5 @@
-import { useState, type FormEvent } from 'react';
+import { useEffect, useState, type FormEvent } from 'react';
+import { captureInvitePath } from '~/services/invites';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { ErrorNotice, PageTitle } from '~/components/ui';
@@ -16,7 +17,14 @@ export function AuthPage({ register = false }: { register?: boolean }) {
   const [params] = useSearchParams();
   const navigate = useNavigate();
   const cache = useQueryClient();
-  const next = safeNextPath(params.get('next'));
+  const next = captureInvitePath(safeNextPath(params.get('next')));
+  useEffect(() => {
+    if (params.get('next') && params.get('next') !== next) {
+      const clean = new URLSearchParams(params);
+      clean.set('next', next);
+      window.history.replaceState(null, '', `${window.location.pathname}?${clean}`);
+    }
+  }, [params, next]);
   const providers = useQuery({ queryKey: ['auth-providers'], queryFn: () => get<AuthProviders>('/auth/providers'), retry: false, staleTime: 60000 });
   const alternativePath = `${register ? '/login' : '/register'}${next === '/' ? '' : `?${new URLSearchParams({ next })}`}`;
 

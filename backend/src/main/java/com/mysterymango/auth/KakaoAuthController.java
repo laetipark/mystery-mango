@@ -24,10 +24,10 @@ public class KakaoAuthController {
     }
     @GetMapping("/kakao/callback") public void callback(@RequestParam(required=false) String code,@RequestParam(required=false) String state,
             @RequestParam(required=false) String error,HttpServletRequest request,HttpServletResponse response){
-        String destination="/login?kakaoError=failed";
+        String destination="/login?kakaoError=failed";String next=null;
         try{
             var session=request.getSession(false);
-            String next=logins.consume(session==null?null:session.getId(),state);
+            next=logins.consume(session==null?null:session.getId(),state);
             if(!settings.configured())destination="/login?kakaoError=unavailable";
             else if(next==null)destination="/login?kakaoError=expired";
             else if(SessionLogin.authenticated())destination="/login?kakaoError=failed";
@@ -43,6 +43,7 @@ public class KakaoAuthController {
             // Do not log provider response bodies, codes, tokens, state, or exception messages.
             org.slf4j.LoggerFactory.getLogger(KakaoAuthController.class).warn("Kakao login failed trace={} class={}",request.getAttribute("traceId"),e.getClass().getSimpleName());
         }
+        if(destination.startsWith("/login?kakaoError=")&&next!=null&&!"/".equals(next))destination+="&next="+java.net.URLEncoder.encode(next,java.nio.charset.StandardCharsets.UTF_8);
         response.setStatus(302);response.setHeader("Location",destination);
     }
 }

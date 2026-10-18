@@ -37,7 +37,7 @@ test('카카오 인증 시작은 CSRF를 보내고 공식 인증 페이지로 �
   await page.goto(`/login?${new URLSearchParams({ next })}`);
   await page.getByRole('button', { name: '카카오 로그인', exact: true }).click();
   await expect(page).toHaveURL(authorizeUrl);
-  expect(posted).toEqual({ next });
+  expect(posted).toEqual({ next: '/rooms/example' });
   expect(csrfHeader).toBe('ui-csrf');
 });
 
@@ -97,7 +97,9 @@ test('이메일을 제공하지 않은 계정도 서재와 Discord 연결 안내
   await page.route('**/api/v1/me/activity', (route) => route.fulfill({ json: { kind: 'IDLE', referenceId: null } }));
   await page.route('**/api/v1/me/history?*', (route) => route.fulfill({ json: { items: [], page: 0, size: 20, total: 0 } }));
   await page.route('**/api/v1/me/blocks', (route) => route.fulfill({ json: [] }));
-  await page.route('**/api/v1/me/discord', (route) => route.fulfill({ json: { provider: 'disabled', configured: false, botReady: false, linked: false, discordUserId: null, displayName: null, eligible: false, reason: null } }));
+  await page.route('**/api/v1/me/discord', (route) =>
+    route.fulfill({ json: { provider: 'disabled', configured: false, botReady: false, linked: false, discordUserId: null, displayName: null, eligible: false, reason: null } })
+  );
   await page.goto('/account');
   await expect(page.getByRole('heading', { name: '카카오 탐정 님의 서재' })).toBeVisible();
   await expect(page.getByText('이메일 정보가 제공되지 않았어요.', { exact: true })).toBeVisible();

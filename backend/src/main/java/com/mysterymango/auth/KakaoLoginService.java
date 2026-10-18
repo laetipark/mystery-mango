@@ -47,7 +47,8 @@ public class KakaoLoginService {
         try{
             URI uri=URI.create(next);
             if(uri.isAbsolute()||uri.getRawAuthority()!=null||uri.getRawFragment()!=null||!uri.normalize().equals(uri))return "/";
-            return uri.toASCIIString();
+            // 초대 원문과 중첩 복귀 쿼리는 서버 로그인 상태에 보관하지 않는다.
+            return uri.getRawPath();
         }catch(IllegalArgumentException e){return "/";}
     }
 }

@@ -1,6 +1,7 @@
 import { AuthPage } from '~/pages/auth';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useEffect, useState } from 'react';
+import { captureInvitePath } from '~/services/invites';
 import axios from 'axios';
 import { Link, Navigate, NavLink, Outlet, Route, Routes, useLocation, useNavigate } from 'react-router-dom';
 import type { Activity, User } from '~/common/types';
@@ -15,7 +16,7 @@ import s from '~/styles/app.module.scss';
 function SignedIn() {
   const user = useUser();
   const location = useLocation();
-  return user ? <Outlet /> : <Navigate to={`/login?next=${encodeURIComponent(location.pathname + location.search)}`} replace />;
+  return user ? <Outlet /> : <Navigate to={`/login?next=${encodeURIComponent(captureInvitePath(location.pathname + location.search))}`} replace />;
 }
 function AdminOnly() {
   const user = useUser();

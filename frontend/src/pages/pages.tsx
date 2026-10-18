@@ -9,6 +9,7 @@ import { command, errorMessage, get } from '~/services/api';
 import { useCommand } from '~/hooks/use-command';
 import { createInviteToken, forgetCreatedInvite, getCreatedInvite, rememberCreatedInvite } from '~/services/invites';
 import s from '~/styles/app.module.scss';
+import { captureInvitePath, clearReceivedInvite, receivedInvite } from '~/services/invites';
 
 const listItems = <T,>(value: Page<T> | T[]) => (Array.isArray(value) ? value : value.items);
 function ModeSelect({ value, onChange, disabled = false, allowedModes = ['TEXT', 'DISCORD'] }: { value: PlayMode; onChange: (mode: PlayMode) => void; disabled?: boolean; allowedModes?: PlayMode[] }) {
@@ -361,7 +362,11 @@ export function LobbyPage() {
   const user = useUser();
   const navigate = useNavigate();
   const action = useCommand();
-  const [invite, setInvite] = useState(() => params.get('invite') ?? getCreatedInvite(id ?? ''));
+  const [invite, setInvite] = useState(() => params.get('invite') ?? (receivedInvite(id ?? '') || getCreatedInvite(id ?? '')));
+  useEffect(() => {
+    const clean = captureInvitePath(window.location.pathname + window.location.search);
+    if (clean !== window.location.pathname + window.location.search) window.history.replaceState(null, '', clean);
+  }, []);
   const [inviteExpiresAt, setInviteExpiresAt] = useState<string>();
   const pendingInvite = useRef<string | null>(null);
   useEffect(() => {
@@ -371,6 +376,7 @@ export function LobbyPage() {
   const joined = !!query.data?.participants.some((p) => p.userId === user.id);
   useEffect(() => {
     if (!joined) return;
+    clearReceivedInvite(id ?? '');
     const ping = () => {
       if (document.visibilityState === 'visible') void command('POST', `/rooms/${id}/heartbeat`, {}).catch(() => undefined);
     };

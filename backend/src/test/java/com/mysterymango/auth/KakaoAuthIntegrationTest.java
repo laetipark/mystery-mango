@@ -59,7 +59,8 @@ class KakaoAuthIntegrationTest {
         try(var client=new KakaoHttpClient(port,json);var oldSession=new KakaoHttpClient(port,json)){
             client.csrf();String csrf=client.token;String cookie=client.sessionCookie();String state=client.begin("/rooms/example?invite=token");
             client.copyCookiesTo(oldSession);
-            KakaoHttpClient.redirect(client.callback(state),"/rooms/example?invite=token");
+            assertEquals("/rooms/example",db.one("select next_path from kakao_login_state where state_hash=?",Commands.hash(state)).get("next_path"));
+            KakaoHttpClient.redirect(client.callback(state),"/rooms/example");
             assertNotEquals(cookie,client.sessionCookie());
             assertEquals(401,oldSession.get("/api/v1/auth/me").statusCode());
             var me=json.object(client.get("/api/v1/auth/me").body());
@@ -80,7 +81,7 @@ class KakaoAuthIntegrationTest {
             owner.csrf();stranger.csrf();String state=owner.begin("/account");
             KakaoHttpClient.redirect(stranger.callback(state),"/login?kakaoError=expired");
             verify(kakao,never()).exchange(anyString());
-            KakaoHttpClient.redirect(owner.get("/api/v1/auth/kakao/callback?state="+state+"&error=access_denied"),"/login?kakaoError=cancelled");
+            KakaoHttpClient.redirect(owner.get("/api/v1/auth/kakao/callback?state="+state+"&error=access_denied"),"/login?kakaoError=cancelled&next=%2Faccount");
             KakaoHttpClient.redirect(owner.callback(state),"/login?kakaoError=expired");
             verify(kakao,never()).exchange(anyString());assertEquals(401,owner.get("/api/v1/auth/me").statusCode());
         }
