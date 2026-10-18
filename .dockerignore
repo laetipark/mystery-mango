@@ -1,5 +1,7 @@
 .git
 .tools
+.data
+**/.data
 .gradle
 **/node_modules
 **/.npm-cache

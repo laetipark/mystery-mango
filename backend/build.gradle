@@ -28,6 +28,10 @@ dependencies {
     testImplementation 'org.testcontainers:testcontainers-junit-jupiter'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 }
-tasks.named('test') { useJUnitPlatform() }
+tasks.named('test') {
+    useJUnitPlatform()
+    // 여러 Spring HTTP 테스트 문맥이 하나의 폐기용 PostgreSQL을 공유한다.
+    systemProperty 'spring.datasource.hikari.maximum-pool-size', '3'
+}
 tasks.withType(JavaCompile).configureEach { options.encoding = 'UTF-8' }
 

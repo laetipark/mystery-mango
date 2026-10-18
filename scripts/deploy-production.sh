@@ -73,6 +73,13 @@ if [[ "$stage" == all || "$stage" == app ]]; then
     fi
     systemctl enable --now docker
     bash "$root/scripts/compose-production.sh" up --build -d --wait --wait-timeout 240
+    # 볼륨 소유권은 이미지 빌드 결과와 다를 수 있으므로 실제 앱 사용자로 검사한다.
+    bash "$root/scripts/compose-production.sh" exec -T backend sh -c '
+        set -eu
+        test "$(id -u)" = 10001
+        probe=$(mktemp /app/assets/.write-check.XXXXXXXX)
+        rm -- "$probe"
+    '
     curl --fail --silent --show-error http://127.0.0.1:3211/healthz
     echo
     bash "$root/scripts/compose-production.sh" ps

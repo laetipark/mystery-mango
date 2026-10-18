@@ -8,12 +8,12 @@ import java.util.*;
 public class RoomController {
     private final RoomService rooms;private final Commands commands;private final GameService games;
     public RoomController(RoomService rooms,Commands commands,GameService games){this.rooms=rooms;this.commands=commands;this.games=games;}
-    public record Create(UUID scenarioVersionId,String visibility,String mode,String inviteToken){}
+    public record Create(UUID scenarioVersionId,String visibility,String mode,String inviteToken,Integer capacity){public Create(UUID scenarioVersionId,String visibility,String mode,String inviteToken){this(scenarioVersionId,visibility,mode,inviteToken,null);}}
     public record Join(String inviteToken){}
     public record Invite(String inviteToken){}
     public record Ready(boolean ready){}
     @GetMapping public Map<String,Object> list(@RequestParam(defaultValue="0")int page,@RequestParam(defaultValue="20")int size,@RequestParam(required=false)UUID scenarioId){return rooms.list(page,size,scenarioId);}
-    @PostMapping public Map<String,Object> create(@RequestHeader("Idempotency-Key")String key,@RequestBody Create req){return commands.run(Actor.id(),key,"room.create",req,()->rooms.create(Actor.id(),req.scenarioVersionId(),req.visibility(),req.mode(),req.inviteToken()),result->{UUID id=UUID.fromString(result.get("roomId").toString());if("INVITE".equals(req.visibility()))rooms.authorizeInviteResponse(id,Actor.id(),req.inviteToken());else rooms.requireMember(id,Actor.id());});}
+    @PostMapping public Map<String,Object> create(@RequestHeader("Idempotency-Key")String key,@RequestBody Create req){return commands.run(Actor.id(),key,"room.create",req,()->rooms.create(Actor.id(),req.scenarioVersionId(),req.visibility(),req.mode(),req.inviteToken(),req.capacity()),result->{UUID id=UUID.fromString(result.get("roomId").toString());if("INVITE".equals(req.visibility()))rooms.authorizeInviteResponse(id,Actor.id(),req.inviteToken());else rooms.requireMember(id,Actor.id());});}
     @GetMapping("/{id}") public Map<String,Object> snapshot(@PathVariable UUID id){return rooms.snapshot(id,Actor.id());}
     @PostMapping("/{id}/join") public Map<String,Object> join(@PathVariable UUID id,@RequestHeader("Idempotency-Key")String key,@RequestBody(required=false)Join req){return commands.run(Actor.id(),key,"room.join:"+id,req,()->rooms.join(id,Actor.id(),req==null?null:req.inviteToken()),result->rooms.requireMember(id,Actor.id()));}
     @PutMapping("/{id}/ready") public Map<String,Object> ready(@PathVariable UUID id,@RequestHeader("Idempotency-Key")String key,@RequestBody Ready req){return commands.run(Actor.id(),key,"room.ready:"+id,req,()->rooms.ready(id,Actor.id(),req.ready()),result->rooms.requireMember(id,Actor.id()));}

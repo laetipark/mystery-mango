@@ -1,0 +1,137 @@
+{
+  "schemaVersion": 1,
+  "slug": "starter-yacht",
+  "title": "주사위의 항해 · 요트",
+  "synopsis": "다섯 주사위를 한 차례에 세 번까지 굴려 열두 점수 항목을 채웁니다. 남겨 둘 주사위를 고정하고 이번 차례의 점수를 선택하세요. 윗부분 여섯 항목의 합이 63점 이상이면 35점 보너스를 받습니다. 모든 항목을 채우면 총점을 비교하며 같은 점수는 공동 순위입니다.",
+  "language": "ko",
+  "playerCount": 2,
+  "supportedPlayerCounts": [
+    1,
+    2,
+    3,
+    4
+  ],
+  "estimatedMinutes": 30,
+  "genre": "주사위 게임",
+  "difficulty": "EASY",
+  "modes": [
+    "TEXT",
+    "DISCORD"
+  ],
+  "gameType": "YACHT",
+  "engineId": "yacht-v1",
+  "roles": [],
+  "phases": [],
+  "targets": [],
+  "clues": [],
+  "rules": [],
+  "endings": [],
+  "ballot": {},
+  "presentation": {
+    "scenes": [
+      {
+        "id": "opening",
+        "name": "규칙 안내",
+        "kind": "SCENE",
+        "referenceId": "",
+        "phaseIds": [],
+        "width": 1280,
+        "height": 720,
+        "background": "#f4ead7",
+        "bgmAssetId": null,
+        "nodes": [
+          {
+            "id": "accent",
+            "kind": "RECT",
+            "x": 64,
+            "y": 64,
+            "width": 10,
+            "height": 576,
+            "rotation": 0,
+            "fill": "#486b46",
+            "text": "",
+            "fontSize": 30,
+            "assetId": null,
+            "locked": false,
+            "hidden": false,
+            "bindingType": "NONE",
+            "bindingId": ""
+          },
+          {
+            "id": "title",
+            "kind": "TEXT",
+            "x": 106,
+            "y": 80,
+            "width": 1040,
+            "height": 90,
+            "rotation": 0,
+            "fill": "#242a27",
+            "text": "주사위의 항해 · 요트",
+            "fontSize": 46,
+            "assetId": null,
+            "locked": false,
+            "hidden": false,
+            "bindingType": "NONE",
+            "bindingId": ""
+          },
+          {
+            "id": "rules",
+            "kind": "TEXT",
+            "x": 106,
+            "y": 212,
+            "width": 1000,
+            "height": 350,
+            "rotation": 0,
+            "fill": "#242a27",
+            "text": "다섯 주사위를 한 차례에 세 번까지 굴려 열두 점수 항목을 채웁니다. 남겨 둘 주사위를 고정하고 이번 차례의 점수를 선택하세요. 윗부분 여섯 항목의 합이 63점 이상이면 35점 보너스를 받습니다. 모든 항목을 채우면 총점을 비교하며 같은 점수는 공동 순위입니다.",
+            "fontSize": 30,
+            "assetId": null,
+            "locked": false,
+            "hidden": false,
+            "bindingType": "NONE",
+            "bindingId": ""
+          },
+          {
+            "id": "first-piece",
+            "kind": "ELLIPSE",
+            "x": 1090,
+            "y": 600,
+            "width": 40,
+            "height": 40,
+            "rotation": 0,
+            "fill": "#242a27",
+            "text": "",
+            "fontSize": 30,
+            "assetId": null,
+            "locked": false,
+            "hidden": false,
+            "bindingType": "NONE",
+            "bindingId": ""
+          },
+          {
+            "id": "second-piece",
+            "kind": "ELLIPSE",
+            "x": 1148,
+            "y": 600,
+            "width": 40,
+            "height": 40,
+            "rotation": 0,
+            "fill": "#fffaf0",
+            "text": "",
+            "fontSize": 30,
+            "assetId": null,
+            "locked": false,
+            "hidden": false,
+            "bindingType": "NONE",
+            "bindingId": ""
+          }
+        ]
+      }
+    ]
+  },
+  "yacht": {
+    "diceColor": "#fffaf0",
+    "pipColor": "#242a27",
+    "scoreboardColor": "#ffffff"
+  }
+}

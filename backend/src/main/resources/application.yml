@@ -17,6 +17,11 @@ spring:
     enabled: true
   jackson:
     default-property-inclusion: always
+  servlet:
+    multipart:
+      max-file-size: 25MB
+      max-request-size: 26MB
+      file-size-threshold: 0
 server:
   port: ${PORT:8080}
   servlet:
@@ -42,6 +47,7 @@ springdoc:
   swagger-ui:
     path: /api/docs
 app:
+  asset-storage-path: ${ASSET_STORAGE_PATH:.data/assets}
   kakao:
     client-id: ${KAKAO_CLIENT_ID:}
     client-secret: ${KAKAO_CLIENT_SECRET:}

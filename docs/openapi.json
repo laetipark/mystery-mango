@@ -7,8 +7,8 @@
   },
   "servers": [
     {
-      "description": "Same-origin API",
-      "url": "/"
+      "url": "http://127.0.0.1:8085",
+      "description": "Generated server url"
     }
   ],
   "paths": {
@@ -499,6 +499,312 @@
         ]
       }
     },
+    "/api/v1/author/works/{id}": {
+      "get": {
+        "tags": [
+          "author-controller"
+        ],
+        "operationId": "get",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "성공",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthorWork"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "안정적인 오류 코드와 한국어 메시지",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "안정적인 오류 코드와 한국어 메시지",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "안정적인 오류 코드와 한국어 메시지",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "안정적인 오류 코드와 한국어 메시지",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "안정적인 오류 코드와 한국어 메시지",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "안정적인 오류 코드와 한국어 메시지",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "안정적인 오류 코드와 한국어 메시지",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "안정적인 오류 코드와 한국어 메시지",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "안정적인 오류 코드와 한국어 메시지",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "session": []
+          }
+        ]
+      },
+      "put": {
+        "tags": [
+          "author-controller"
+        ],
+        "operationId": "save",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "X-CSRF-TOKEN",
+            "in": "header",
+            "description": "GET /api/v1/auth/csrf에서 받은 현재 세션 토큰",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "revision": {
+                    "type": "integer",
+                    "format": "int32"
+                  },
+                  "document": {
+                    "$ref": "#/components/schemas/EditorDocument"
+                  }
+                },
+                "required": [
+                  "document",
+                  "revision"
+                ]
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "성공",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "revision": {
+                      "type": "integer",
+                      "format": "int32"
+                    },
+                    "updatedAt": {
+                      "type": "string",
+                      "format": "date-time"
+                    }
+                  },
+                  "required": [
+                    "revision",
+                    "updatedAt"
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "안정적인 오류 코드와 한국어 메시지",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "안정적인 오류 코드와 한국어 메시지",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "안정적인 오류 코드와 한국어 메시지",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "안정적인 오류 코드와 한국어 메시지",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "안정적인 오류 코드와 한국어 메시지",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "안정적인 오류 코드와 한국어 메시지",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "안정적인 오류 코드와 한국어 메시지",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "안정적인 오류 코드와 한국어 메시지",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "안정적인 오류 코드와 한국어 메시지",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "session": []
+          }
+        ]
+      }
+    },
     "/api/v1/rooms": {
       "get": {
         "tags": [
@@ -694,7 +1000,54 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/Create"
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "scenarioVersionId": {
+                    "type": "string",
+                    "format": "uuid"
+                  },
+                  "visibility": {
+                    "type": "string",
+                    "enum": [
+                      "PUBLIC",
+                      "INVITE"
+                    ]
+                  },
+                  "mode": {
+                    "type": "string",
+                    "enum": [
+                      "TEXT",
+                      "DISCORD"
+                    ]
+                  },
+                  "inviteToken": {
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "capacity": {
+                    "anyOf": [
+                      {
+                        "type": "integer",
+                        "format": "int32"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  }
+                },
+                "required": [
+                  "mode",
+                  "scenarioVersionId",
+                  "visibility"
+                ]
               }
             }
           },
@@ -2243,7 +2596,79 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/TicketRequest"
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "language": {
+                    "type": "string"
+                  },
+                  "maxMinutes": {
+                    "type": "integer",
+                    "format": "int32"
+                  },
+                  "mode": {
+                    "type": "string",
+                    "enum": [
+                      "TEXT",
+                      "DISCORD"
+                    ]
+                  },
+                  "genre": {
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "difficulty": {
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "requeue": {
+                    "type": "boolean"
+                  },
+                  "gameType": {
+                    "type": "string",
+                    "enum": [
+                      "MURDER_MYSTERY",
+                      "TABLETOP",
+                      "YACHT",
+                      "GOMOKU",
+                      "REVERSI",
+                      "CHECKERS"
+                    ]
+                  },
+                  "scenarioVersionId": {
+                    "anyOf": [
+                      {
+                        "type": "string",
+                        "format": "uuid"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "capacity": {
+                    "type": "integer",
+                    "format": "int32"
+                  }
+                },
+                "required": [
+                  "language",
+                  "maxMinutes",
+                  "mode",
+                  "requeue"
+                ]
               }
             }
           },
@@ -3015,6 +3440,168 @@
                 "schema": {
                   "type": "object",
                   "additionalProperties": {}
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "안정적인 오류 코드와 한국어 메시지",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "안정적인 오류 코드와 한국어 메시지",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "안정적인 오류 코드와 한국어 메시지",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "안정적인 오류 코드와 한국어 메시지",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "안정적인 오류 코드와 한국어 메시지",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "안정적인 오류 코드와 한국어 메시지",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "안정적인 오류 코드와 한국어 메시지",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "안정적인 오류 코드와 한국어 메시지",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "안정적인 오류 코드와 한국어 메시지",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "session": []
+          }
+        ]
+      }
+    },
+    "/api/v1/games/{id}/scene": {
+      "post": {
+        "tags": [
+          "runtime-controller"
+        ],
+        "operationId": "scene",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "X-CSRF-TOKEN",
+            "in": "header",
+            "description": "GET /api/v1/auth/csrf에서 받은 현재 세션 토큰",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SceneChange"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "성공",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "ok": {
+                      "type": "boolean"
+                    }
+                  },
+                  "required": [
+                    "ok"
+                  ]
                 }
               }
             }
@@ -4228,6 +4815,272 @@
         ]
       }
     },
+    "/api/v1/games/{id}/board-commands": {
+      "post": {
+        "tags": [
+          "runtime-controller"
+        ],
+        "operationId": "command",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "X-CSRF-TOKEN",
+            "in": "header",
+            "description": "GET /api/v1/auth/csrf에서 받은 현재 세션 토큰",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "type": {
+                    "type": "string"
+                  },
+                  "expectedVersion": {
+                    "type": "integer",
+                    "format": "int32"
+                  },
+                  "payload": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "properties": {
+                      "row": {
+                        "type": "integer",
+                        "format": "int32"
+                      },
+                      "col": {
+                        "type": "integer",
+                        "format": "int32"
+                      },
+                      "fromRow": {
+                        "type": "integer",
+                        "format": "int32"
+                      },
+                      "fromCol": {
+                        "type": "integer",
+                        "format": "int32"
+                      },
+                      "toRow": {
+                        "type": "integer",
+                        "format": "int32"
+                      },
+                      "toCol": {
+                        "type": "integer",
+                        "format": "int32"
+                      },
+                      "objectId": {
+                        "type": "string"
+                      },
+                      "deckId": {
+                        "type": "string"
+                      },
+                      "toSeat": {
+                        "anyOf": [
+                          {
+                            "type": "integer",
+                            "format": "int32"
+                          },
+                          {
+                            "type": "null"
+                          }
+                        ]
+                      },
+                      "x": {
+                        "type": "number"
+                      },
+                      "y": {
+                        "type": "number"
+                      },
+                      "value": {
+                        "type": "integer",
+                        "format": "int32"
+                      },
+                      "indices": {
+                        "type": "array",
+                        "items": {
+                          "type": "integer",
+                          "format": "int32"
+                        }
+                      },
+                      "category": {
+                        "type": "string"
+                      },
+                      "targetId": {
+                        "type": "string"
+                      },
+                      "clueId": {
+                        "type": "string"
+                      },
+                      "scope": {
+                        "type": "string"
+                      },
+                      "roleId": {
+                        "anyOf": [
+                          {
+                            "type": "string"
+                          },
+                          {
+                            "type": "null"
+                          }
+                        ]
+                      },
+                      "sceneId": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                },
+                "required": [
+                  "expectedVersion",
+                  "payload",
+                  "type"
+                ]
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "성공",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "ok": {
+                      "type": "boolean"
+                    }
+                  },
+                  "required": [
+                    "ok"
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "안정적인 오류 코드와 한국어 메시지",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "안정적인 오류 코드와 한국어 메시지",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "안정적인 오류 코드와 한국어 메시지",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "안정적인 오류 코드와 한국어 메시지",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "안정적인 오류 코드와 한국어 메시지",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "안정적인 오류 코드와 한국어 메시지",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "안정적인 오류 코드와 한국어 메시지",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "안정적인 오류 코드와 한국어 메시지",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "안정적인 오류 코드와 한국어 메시지",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "session": []
+          }
+        ]
+      }
+    },
     "/api/v1/games/{id}/abort-vote": {
       "post": {
         "tags": [
@@ -4414,6 +5267,1714 @@
                 "schema": {
                   "type": "object",
                   "additionalProperties": {}
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "안정적인 오류 코드와 한국어 메시지",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "안정적인 오류 코드와 한국어 메시지",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "안정적인 오류 코드와 한국어 메시지",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "안정적인 오류 코드와 한국어 메시지",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "안정적인 오류 코드와 한국어 메시지",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "안정적인 오류 코드와 한국어 메시지",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "안정적인 오류 코드와 한국어 메시지",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "안정적인 오류 코드와 한국어 메시지",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "안정적인 오류 코드와 한국어 메시지",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "session": []
+          }
+        ]
+      }
+    },
+    "/api/v1/author/works": {
+      "get": {
+        "tags": [
+          "author-controller"
+        ],
+        "operationId": "list_1",
+        "responses": {
+          "200": {
+            "description": "성공",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthorWorkList"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "안정적인 오류 코드와 한국어 메시지",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "안정적인 오류 코드와 한국어 메시지",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "안정적인 오류 코드와 한국어 메시지",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "안정적인 오류 코드와 한국어 메시지",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "안정적인 오류 코드와 한국어 메시지",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "안정적인 오류 코드와 한국어 메시지",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "안정적인 오류 코드와 한국어 메시지",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "안정적인 오류 코드와 한국어 메시지",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "안정적인 오류 코드와 한국어 메시지",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "session": []
+          }
+        ]
+      },
+      "post": {
+        "tags": [
+          "author-controller"
+        ],
+        "operationId": "create_1",
+        "parameters": [
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "X-CSRF-TOKEN",
+            "in": "header",
+            "description": "GET /api/v1/auth/csrf에서 받은 현재 세션 토큰",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "title": {
+                    "type": "string"
+                  },
+                  "gameType": {
+                    "type": "string",
+                    "enum": [
+                      "MURDER_MYSTERY",
+                      "TABLETOP",
+                      "YACHT",
+                      "GOMOKU",
+                      "REVERSI",
+                      "CHECKERS"
+                    ]
+                  },
+                  "templateId": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "title"
+                ]
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "성공",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "format": "uuid"
+                    }
+                  },
+                  "required": [
+                    "id"
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "안정적인 오류 코드와 한국어 메시지",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "안정적인 오류 코드와 한국어 메시지",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "안정적인 오류 코드와 한국어 메시지",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "안정적인 오류 코드와 한국어 메시지",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "안정적인 오류 코드와 한국어 메시지",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "안정적인 오류 코드와 한국어 메시지",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "안정적인 오류 코드와 한국어 메시지",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "안정적인 오류 코드와 한국어 메시지",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "안정적인 오류 코드와 한국어 메시지",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "session": []
+          }
+        ]
+      }
+    },
+    "/api/v1/author/works/{workId}/test-room": {
+      "post": {
+        "tags": [
+          "author-test-room-controller"
+        ],
+        "operationId": "create_2",
+        "parameters": [
+          {
+            "name": "workId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "X-CSRF-TOKEN",
+            "in": "header",
+            "description": "GET /api/v1/auth/csrf에서 받은 현재 세션 토큰",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "versionId": {
+                    "type": "string",
+                    "format": "uuid"
+                  },
+                  "capacity": {
+                    "type": "integer",
+                    "format": "int32"
+                  },
+                  "mode": {
+                    "type": "string",
+                    "enum": [
+                      "TEXT",
+                      "DISCORD"
+                    ]
+                  },
+                  "inviteToken": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "capacity",
+                  "inviteToken",
+                  "mode",
+                  "versionId"
+                ]
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "성공",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "roomId": {
+                      "type": "string",
+                      "format": "uuid"
+                    },
+                    "expiresAt": {
+                      "type": "string",
+                      "format": "date-time"
+                    }
+                  },
+                  "required": [
+                    "expiresAt",
+                    "roomId"
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "안정적인 오류 코드와 한국어 메시지",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "안정적인 오류 코드와 한국어 메시지",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "안정적인 오류 코드와 한국어 메시지",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "안정적인 오류 코드와 한국어 메시지",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "안정적인 오류 코드와 한국어 메시지",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "안정적인 오류 코드와 한국어 메시지",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "안정적인 오류 코드와 한국어 메시지",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "안정적인 오류 코드와 한국어 메시지",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "안정적인 오류 코드와 한국어 메시지",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "session": []
+          }
+        ]
+      }
+    },
+    "/api/v1/author/works/{id}/validate": {
+      "post": {
+        "tags": [
+          "author-controller"
+        ],
+        "operationId": "validate",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "X-CSRF-TOKEN",
+            "in": "header",
+            "description": "GET /api/v1/auth/csrf에서 받은 현재 세션 토큰",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "revision": {
+                    "type": "integer",
+                    "format": "int32"
+                  }
+                },
+                "required": [
+                  "revision"
+                ]
+              }
+            }
+          },
+          "required": false
+        },
+        "responses": {
+          "200": {
+            "description": "성공",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "안정적인 오류 코드와 한국어 메시지",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "안정적인 오류 코드와 한국어 메시지",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "안정적인 오류 코드와 한국어 메시지",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "안정적인 오류 코드와 한국어 메시지",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "안정적인 오류 코드와 한국어 메시지",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "안정적인 오류 코드와 한국어 메시지",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "안정적인 오류 코드와 한국어 메시지",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "안정적인 오류 코드와 한국어 메시지",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "안정적인 오류 코드와 한국어 메시지",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "session": []
+          }
+        ]
+      }
+    },
+    "/api/v1/author/works/{id}/submit": {
+      "post": {
+        "tags": [
+          "author-controller"
+        ],
+        "operationId": "submit",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "X-CSRF-TOKEN",
+            "in": "header",
+            "description": "GET /api/v1/auth/csrf에서 받은 현재 세션 토큰",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "revision": {
+                    "type": "integer",
+                    "format": "int32"
+                  }
+                },
+                "required": [
+                  "revision"
+                ]
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "성공",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "versionId": {
+                      "type": "string",
+                      "format": "uuid"
+                    },
+                    "reviewId": {
+                      "type": "string",
+                      "format": "uuid"
+                    }
+                  },
+                  "required": [
+                    "reviewId",
+                    "versionId"
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "안정적인 오류 코드와 한국어 메시지",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "안정적인 오류 코드와 한국어 메시지",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "안정적인 오류 코드와 한국어 메시지",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "안정적인 오류 코드와 한국어 메시지",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "안정적인 오류 코드와 한국어 메시지",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "안정적인 오류 코드와 한국어 메시지",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "안정적인 오류 코드와 한국어 메시지",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "안정적인 오류 코드와 한국어 메시지",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "안정적인 오류 코드와 한국어 메시지",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "session": []
+          }
+        ]
+      }
+    },
+    "/api/v1/author/works/{id}/freeze": {
+      "post": {
+        "tags": [
+          "author-controller"
+        ],
+        "operationId": "freeze",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "X-CSRF-TOKEN",
+            "in": "header",
+            "description": "GET /api/v1/auth/csrf에서 받은 현재 세션 토큰",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "revision": {
+                    "type": "integer",
+                    "format": "int32"
+                  }
+                },
+                "required": [
+                  "revision"
+                ]
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "성공",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "versionId": {
+                      "type": "string",
+                      "format": "uuid"
+                    }
+                  },
+                  "required": [
+                    "versionId"
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "안정적인 오류 코드와 한국어 메시지",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "안정적인 오류 코드와 한국어 메시지",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "안정적인 오류 코드와 한국어 메시지",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "안정적인 오류 코드와 한국어 메시지",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "안정적인 오류 코드와 한국어 메시지",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "안정적인 오류 코드와 한국어 메시지",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "안정적인 오류 코드와 한국어 메시지",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "안정적인 오류 코드와 한국어 메시지",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "안정적인 오류 코드와 한국어 메시지",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "session": []
+          }
+        ]
+      }
+    },
+    "/api/v1/author/sandboxes": {
+      "post": {
+        "tags": [
+          "runtime-controller"
+        ],
+        "operationId": "create_3",
+        "parameters": [
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "X-CSRF-TOKEN",
+            "in": "header",
+            "description": "GET /api/v1/auth/csrf에서 받은 현재 세션 토큰",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "versionId": {
+                    "type": "string",
+                    "format": "uuid"
+                  },
+                  "capacity": {
+                    "type": "integer",
+                    "format": "int32"
+                  }
+                },
+                "required": [
+                  "capacity",
+                  "versionId"
+                ]
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "성공",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "format": "uuid"
+                    }
+                  },
+                  "required": [
+                    "id"
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "안정적인 오류 코드와 한국어 메시지",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "안정적인 오류 코드와 한국어 메시지",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "안정적인 오류 코드와 한국어 메시지",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "안정적인 오류 코드와 한국어 메시지",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "안정적인 오류 코드와 한국어 메시지",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "안정적인 오류 코드와 한국어 메시지",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "안정적인 오류 코드와 한국어 메시지",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "안정적인 오류 코드와 한국어 메시지",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "안정적인 오류 코드와 한국어 메시지",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "session": []
+          }
+        ]
+      }
+    },
+    "/api/v1/author/sandboxes/{id}/commands": {
+      "post": {
+        "tags": [
+          "runtime-controller"
+        ],
+        "operationId": "sandboxCommand",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "X-CSRF-TOKEN",
+            "in": "header",
+            "description": "GET /api/v1/auth/csrf에서 받은 현재 세션 토큰",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "seat": {
+                    "type": "integer",
+                    "format": "int32"
+                  },
+                  "type": {
+                    "type": "string"
+                  },
+                  "expectedVersion": {
+                    "type": "integer",
+                    "format": "int32"
+                  },
+                  "payload": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "properties": {
+                      "row": {
+                        "type": "integer",
+                        "format": "int32"
+                      },
+                      "col": {
+                        "type": "integer",
+                        "format": "int32"
+                      },
+                      "fromRow": {
+                        "type": "integer",
+                        "format": "int32"
+                      },
+                      "fromCol": {
+                        "type": "integer",
+                        "format": "int32"
+                      },
+                      "toRow": {
+                        "type": "integer",
+                        "format": "int32"
+                      },
+                      "toCol": {
+                        "type": "integer",
+                        "format": "int32"
+                      },
+                      "objectId": {
+                        "type": "string"
+                      },
+                      "deckId": {
+                        "type": "string"
+                      },
+                      "toSeat": {
+                        "anyOf": [
+                          {
+                            "type": "integer",
+                            "format": "int32"
+                          },
+                          {
+                            "type": "null"
+                          }
+                        ]
+                      },
+                      "x": {
+                        "type": "number"
+                      },
+                      "y": {
+                        "type": "number"
+                      },
+                      "value": {
+                        "type": "integer",
+                        "format": "int32"
+                      },
+                      "indices": {
+                        "type": "array",
+                        "items": {
+                          "type": "integer",
+                          "format": "int32"
+                        }
+                      },
+                      "category": {
+                        "type": "string"
+                      },
+                      "targetId": {
+                        "type": "string"
+                      },
+                      "clueId": {
+                        "type": "string"
+                      },
+                      "scope": {
+                        "type": "string"
+                      },
+                      "roleId": {
+                        "anyOf": [
+                          {
+                            "type": "string"
+                          },
+                          {
+                            "type": "null"
+                          }
+                        ]
+                      },
+                      "sceneId": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                },
+                "required": [
+                  "expectedVersion",
+                  "payload",
+                  "seat",
+                  "type"
+                ]
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "성공",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "ok": {
+                      "type": "boolean"
+                    }
+                  },
+                  "required": [
+                    "ok"
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "안정적인 오류 코드와 한국어 메시지",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "안정적인 오류 코드와 한국어 메시지",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "안정적인 오류 코드와 한국어 메시지",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "안정적인 오류 코드와 한국어 메시지",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "안정적인 오류 코드와 한국어 메시지",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "안정적인 오류 코드와 한국어 메시지",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "안정적인 오류 코드와 한국어 메시지",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "안정적인 오류 코드와 한국어 메시지",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "안정적인 오류 코드와 한국어 메시지",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "session": []
+          }
+        ]
+      }
+    },
+    "/api/v1/author/assets": {
+      "get": {
+        "tags": [
+          "asset-controller"
+        ],
+        "operationId": "list_2",
+        "responses": {
+          "200": {
+            "description": "성공",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "items": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/AuthorAsset"
+                      }
+                    }
+                  },
+                  "required": [
+                    "items"
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "안정적인 오류 코드와 한국어 메시지",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "안정적인 오류 코드와 한국어 메시지",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "안정적인 오류 코드와 한국어 메시지",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "안정적인 오류 코드와 한국어 메시지",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "안정적인 오류 코드와 한국어 메시지",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "안정적인 오류 코드와 한국어 메시지",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "안정적인 오류 코드와 한국어 메시지",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "안정적인 오류 코드와 한국어 메시지",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "안정적인 오류 코드와 한국어 메시지",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "session": []
+          }
+        ]
+      },
+      "post": {
+        "tags": [
+          "asset-controller"
+        ],
+        "operationId": "upload",
+        "parameters": [
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "X-CSRF-TOKEN",
+            "in": "header",
+            "description": "GET /api/v1/auth/csrf에서 받은 현재 세션 토큰",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "file": {
+                    "type": "string",
+                    "format": "binary"
+                  }
+                },
+                "required": [
+                  "file"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "성공",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthorAsset"
                 }
               }
             }
@@ -5057,7 +7618,7 @@
         "tags": [
           "admin-controller"
         ],
-        "operationId": "create_1",
+        "operationId": "create_4",
         "parameters": [
           {
             "name": "Idempotency-Key",
@@ -5346,7 +7907,7 @@
         "tags": [
           "admin-controller"
         ],
-        "operationId": "validate",
+        "operationId": "validate_1",
         "parameters": [
           {
             "name": "X-CSRF-TOKEN",
@@ -5478,12 +8039,191 @@
         ]
       }
     },
+    "/api/v1/admin/scenario-reviews/{id}/decision": {
+      "post": {
+        "tags": [
+          "review-controller"
+        ],
+        "operationId": "decide",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "X-CSRF-TOKEN",
+            "in": "header",
+            "description": "GET /api/v1/auth/csrf에서 받은 현재 세션 토큰",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "decision": {
+                    "type": "string",
+                    "enum": [
+                      "APPROVE",
+                      "REQUEST_CHANGES"
+                    ]
+                  },
+                  "note": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "decision",
+                  "note"
+                ]
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "성공",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "ok": {
+                      "type": "boolean"
+                    }
+                  },
+                  "required": [
+                    "ok"
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "안정적인 오류 코드와 한국어 메시지",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "안정적인 오류 코드와 한국어 메시지",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "안정적인 오류 코드와 한국어 메시지",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "안정적인 오류 코드와 한국어 메시지",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "안정적인 오류 코드와 한국어 메시지",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "안정적인 오류 코드와 한국어 메시지",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "안정적인 오류 코드와 한국어 메시지",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "안정적인 오류 코드와 한국어 메시지",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "안정적인 오류 코드와 한국어 메시지",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "session": []
+          }
+        ]
+      }
+    },
     "/api/v1/scenarios": {
       "get": {
         "tags": [
           "scenario-controller"
         ],
-        "operationId": "list_1",
+        "operationId": "list_3",
         "parameters": [
           {
             "name": "page",
@@ -5537,6 +8277,14 @@
             "schema": {
               "type": "integer",
               "format": "int32"
+            }
+          },
+          {
+            "name": "gameType",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
             }
           }
         ],
@@ -7329,6 +10077,279 @@
         ]
       }
     },
+    "/api/v1/games/{id}/kind": {
+      "get": {
+        "tags": [
+          "runtime-controller"
+        ],
+        "operationId": "kind",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "성공",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "gameType": {
+                      "type": "string",
+                      "enum": [
+                        "MURDER_MYSTERY",
+                        "TABLETOP",
+                        "YACHT",
+                        "GOMOKU",
+                        "REVERSI",
+                        "CHECKERS"
+                      ]
+                    },
+                    "test": {
+                      "type": "boolean"
+                    }
+                  },
+                  "required": [
+                    "gameType",
+                    "test"
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "안정적인 오류 코드와 한국어 메시지",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "안정적인 오류 코드와 한국어 메시지",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "안정적인 오류 코드와 한국어 메시지",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "안정적인 오류 코드와 한국어 메시지",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "안정적인 오류 코드와 한국어 메시지",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "안정적인 오류 코드와 한국어 메시지",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "안정적인 오류 코드와 한국어 메시지",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "안정적인 오류 코드와 한국어 메시지",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "안정적인 오류 코드와 한국어 메시지",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "session": []
+          }
+        ]
+      }
+    },
+    "/api/v1/games/{id}/board-snapshot": {
+      "get": {
+        "tags": [
+          "runtime-controller"
+        ],
+        "operationId": "board",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "성공",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BoardSnapshot"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "안정적인 오류 코드와 한국어 메시지",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "안정적인 오류 코드와 한국어 메시지",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "안정적인 오류 코드와 한국어 메시지",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "안정적인 오류 코드와 한국어 메시지",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "안정적인 오류 코드와 한국어 메시지",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "안정적인 오류 코드와 한국어 메시지",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "안정적인 오류 코드와 한국어 메시지",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "안정적인 오류 코드와 한국어 메시지",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "안정적인 오류 코드와 한국어 메시지",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "session": []
+          }
+        ]
+      }
+    },
     "/api/v1/games/{gameId}/voice-state": {
       "get": {
         "tags": [
@@ -7354,6 +10375,518 @@
                 "schema": {
                   "type": "object",
                   "additionalProperties": {}
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "안정적인 오류 코드와 한국어 메시지",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "안정적인 오류 코드와 한국어 메시지",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "안정적인 오류 코드와 한국어 메시지",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "안정적인 오류 코드와 한국어 메시지",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "안정적인 오류 코드와 한국어 메시지",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "안정적인 오류 코드와 한국어 메시지",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "안정적인 오류 코드와 한국어 메시지",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "안정적인 오류 코드와 한국어 메시지",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "안정적인 오류 코드와 한국어 메시지",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "session": []
+          }
+        ]
+      }
+    },
+    "/api/v1/author/works/{id}/versions/{versionId}": {
+      "get": {
+        "tags": [
+          "author-controller"
+        ],
+        "operationId": "getVersion",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "versionId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "성공",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthorVersion"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "안정적인 오류 코드와 한국어 메시지",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "안정적인 오류 코드와 한국어 메시지",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "안정적인 오류 코드와 한국어 메시지",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "안정적인 오류 코드와 한국어 메시지",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "안정적인 오류 코드와 한국어 메시지",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "안정적인 오류 코드와 한국어 메시지",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "안정적인 오류 코드와 한국어 메시지",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "안정적인 오류 코드와 한국어 메시지",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "안정적인 오류 코드와 한국어 메시지",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "session": []
+          }
+        ]
+      }
+    },
+    "/api/v1/author/versions/{versionId}/ending-observations": {
+      "get": {
+        "tags": [
+          "ending-observation-controller"
+        ],
+        "operationId": "get_1",
+        "parameters": [
+          {
+            "name": "versionId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "성공",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EndingObservations"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "안정적인 오류 코드와 한국어 메시지",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "안정적인 오류 코드와 한국어 메시지",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "안정적인 오류 코드와 한국어 메시지",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "안정적인 오류 코드와 한국어 메시지",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "안정적인 오류 코드와 한국어 메시지",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "안정적인 오류 코드와 한국어 메시지",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "안정적인 오류 코드와 한국어 메시지",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "안정적인 오류 코드와 한국어 메시지",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "안정적인 오류 코드와 한국어 메시지",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "session": []
+          }
+        ]
+      }
+    },
+    "/api/v1/author/templates": {
+      "get": {
+        "tags": [
+          "author-template-controller"
+        ],
+        "operationId": "list_4",
+        "responses": {
+          "200": {
+            "description": "성공",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthorTemplateList"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "안정적인 오류 코드와 한국어 메시지",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "안정적인 오류 코드와 한국어 메시지",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "안정적인 오류 코드와 한국어 메시지",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "안정적인 오류 코드와 한국어 메시지",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "안정적인 오류 코드와 한국어 메시지",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "안정적인 오류 코드와 한국어 메시지",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "안정적인 오류 코드와 한국어 메시지",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "안정적인 오류 코드와 한국어 메시지",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "안정적인 오류 코드와 한국어 메시지",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "session": []
+          }
+        ]
+      }
+    },
+    "/api/v1/author/sandboxes/{id}": {
+      "get": {
+        "tags": [
+          "runtime-controller"
+        ],
+        "operationId": "sandbox",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "seat",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 0
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "성공",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SandboxSnapshot"
                 }
               }
             }
@@ -7927,6 +11460,392 @@
         }
       }
     },
+    "/api/v1/assets/{id}": {
+      "get": {
+        "tags": [
+          "asset-controller"
+        ],
+        "operationId": "download",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "gameId",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "sandboxId",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "문맥별 열람 권한을 검사한 원본 파일. 공유 캐시 금지.",
+            "content": {
+              "application/octet-stream": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "안정적인 오류 코드와 한국어 메시지",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "안정적인 오류 코드와 한국어 메시지",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "안정적인 오류 코드와 한국어 메시지",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "안정적인 오류 코드와 한국어 메시지",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "안정적인 오류 코드와 한국어 메시지",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "안정적인 오류 코드와 한국어 메시지",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "안정적인 오류 코드와 한국어 메시지",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "안정적인 오류 코드와 한국어 메시지",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "안정적인 오류 코드와 한국어 메시지",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "session": []
+          }
+        ]
+      }
+    },
+    "/api/v1/admin/scenario-reviews": {
+      "get": {
+        "tags": [
+          "review-controller"
+        ],
+        "operationId": "list_5",
+        "responses": {
+          "200": {
+            "description": "성공",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReviewList"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "안정적인 오류 코드와 한국어 메시지",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "안정적인 오류 코드와 한국어 메시지",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "안정적인 오류 코드와 한국어 메시지",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "안정적인 오류 코드와 한국어 메시지",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "안정적인 오류 코드와 한국어 메시지",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "안정적인 오류 코드와 한국어 메시지",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "안정적인 오류 코드와 한국어 메시지",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "안정적인 오류 코드와 한국어 메시지",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "안정적인 오류 코드와 한국어 메시지",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "session": []
+          }
+        ]
+      }
+    },
+    "/api/v1/admin/scenario-reviews/{id}": {
+      "get": {
+        "tags": [
+          "review-controller"
+        ],
+        "operationId": "get_2",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "성공",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReviewDetail"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "안정적인 오류 코드와 한국어 메시지",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "안정적인 오류 코드와 한국어 메시지",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "안정적인 오류 코드와 한국어 메시지",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "안정적인 오류 코드와 한국어 메시지",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "안정적인 오류 코드와 한국어 메시지",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "안정적인 오류 코드와 한국어 메시지",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "안정적인 오류 코드와 한국어 메시지",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "안정적인 오류 코드와 한국어 메시지",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "안정적인 오류 코드와 한국어 메시지",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "session": []
+          }
+        ]
+      }
+    },
     "/api/v1/admin/reports": {
       "get": {
         "tags": [
@@ -8209,6 +12128,158 @@
         ]
       }
     },
+    "/api/v1/author/assets/{id}": {
+      "delete": {
+        "tags": [
+          "asset-controller"
+        ],
+        "operationId": "delete",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "X-CSRF-TOKEN",
+            "in": "header",
+            "description": "GET /api/v1/auth/csrf에서 받은 현재 세션 토큰",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "성공",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "ok": {
+                      "type": "boolean"
+                    }
+                  },
+                  "required": [
+                    "ok"
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "안정적인 오류 코드와 한국어 메시지",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "안정적인 오류 코드와 한국어 메시지",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "안정적인 오류 코드와 한국어 메시지",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "안정적인 오류 코드와 한국어 메시지",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "안정적인 오류 코드와 한국어 메시지",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "안정적인 오류 코드와 한국어 메시지",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "안정적인 오류 코드와 한국어 메시지",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "안정적인 오류 코드와 한국어 메시지",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "안정적인 오류 코드와 한국어 메시지",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "session": []
+          }
+        ]
+      }
+    },
     "/api/v1/auth/logout": {
       "post": {
         "tags": [
@@ -8364,6 +12435,19 @@
           }
         }
       },
+      "Save": {
+        "type": "object",
+        "properties": {
+          "revision": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "document": {
+            "type": "object",
+            "additionalProperties": {}
+          }
+        }
+      },
       "Create": {
         "type": "object",
         "properties": {
@@ -8379,6 +12463,10 @@
           },
           "inviteToken": {
             "type": "string"
+          },
+          "capacity": {
+            "type": "integer",
+            "format": "int32"
           }
         }
       },
@@ -8448,6 +12536,92 @@
           },
           "requeue": {
             "type": "boolean"
+          },
+          "gameType": {
+            "type": "string"
+          },
+          "scenarioVersionId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "capacity": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+      "SceneChange": {
+        "type": "object",
+        "properties": {
+          "sceneId": {
+            "type": "string"
+          }
+        }
+      },
+      "BoardCommand": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string"
+          },
+          "expectedVersion": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "payload": {
+            "type": "object",
+            "additionalProperties": {}
+          }
+        }
+      },
+      "Validate": {
+        "type": "object",
+        "properties": {
+          "revision": {
+            "type": "integer",
+            "format": "int64"
+          }
+        }
+      },
+      "Revision": {
+        "type": "object",
+        "properties": {
+          "revision": {
+            "type": "integer",
+            "format": "int64"
+          }
+        }
+      },
+      "SandboxCreate": {
+        "type": "object",
+        "properties": {
+          "versionId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "capacity": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+      "SandboxCommand": {
+        "type": "object",
+        "properties": {
+          "seat": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "type": {
+            "type": "string"
+          },
+          "expectedVersion": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "payload": {
+            "type": "object",
+            "additionalProperties": {}
           }
         }
       },
@@ -8559,6 +12733,17 @@
           }
         }
       },
+      "Decision": {
+        "type": "object",
+        "properties": {
+          "decision": {
+            "type": "string"
+          },
+          "note": {
+            "type": "string"
+          }
+        }
+      },
       "AuthProviders": {
         "type": "object",
         "additionalProperties": false,
@@ -8664,6 +12849,27 @@
             "type": "integer",
             "format": "int32"
           },
+          "gameType": {
+            "type": "string",
+            "enum": [
+              "MURDER_MYSTERY",
+              "TABLETOP",
+              "YACHT",
+              "GOMOKU",
+              "REVERSI",
+              "CHECKERS"
+            ]
+          },
+          "engineId": {
+            "type": "string"
+          },
+          "supportedPlayerCounts": {
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
           "estimatedMinutes": {
             "type": "integer",
             "format": "int32"
@@ -8717,13 +12923,16 @@
         "required": [
           "difficulty",
           "durationEstimated",
+          "engineId",
           "estimatedMinutes",
+          "gameType",
           "genre",
           "id",
           "language",
           "modes",
           "playerCount",
           "roles",
+          "supportedPlayerCounts",
           "synopsis",
           "title",
           "versionId"
@@ -8747,6 +12956,17 @@
           "hostName": {
             "type": "string"
           },
+          "gameType": {
+            "type": "string",
+            "enum": [
+              "MURDER_MYSTERY",
+              "TABLETOP",
+              "YACHT",
+              "GOMOKU",
+              "REVERSI",
+              "CHECKERS"
+            ]
+          },
           "count": {
             "type": "integer",
             "format": "int32"
@@ -8766,6 +12986,7 @@
         "required": [
           "capacity",
           "count",
+          "gameType",
           "hostName",
           "id",
           "mode",
@@ -8829,6 +13050,20 @@
             "type": "integer",
             "format": "int32"
           },
+          "gameType": {
+            "type": "string",
+            "enum": [
+              "MURDER_MYSTERY",
+              "TABLETOP",
+              "YACHT",
+              "GOMOKU",
+              "REVERSI",
+              "CHECKERS"
+            ]
+          },
+          "isTest": {
+            "type": "boolean"
+          },
           "participants": {
             "type": "array",
             "items": {
@@ -8864,8 +13099,10 @@
         "required": [
           "capacity",
           "gameId",
+          "gameType",
           "hostId",
           "id",
+          "isTest",
           "mode",
           "participants",
           "rules",
@@ -8943,10 +13180,38 @@
           },
           "requeue": {
             "type": "boolean"
+          },
+          "gameType": {
+            "type": "string",
+            "enum": [
+              "MURDER_MYSTERY",
+              "TABLETOP",
+              "YACHT",
+              "GOMOKU",
+              "REVERSI",
+              "CHECKERS"
+            ]
+          },
+          "capacity": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "scenarioVersionId": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "uuid"
+              },
+              {
+                "type": "null"
+              }
+            ]
           }
         },
         "required": [
+          "capacity",
           "difficulty",
+          "gameType",
           "genre",
           "id",
           "language",
@@ -8955,6 +13220,7 @@
           "proposalId",
           "queuedAt",
           "requeue",
+          "scenarioVersionId",
           "status"
         ]
       },
@@ -8962,6 +13228,32 @@
         "type": "object",
         "additionalProperties": false,
         "properties": {
+          "gameType": {
+            "type": "string",
+            "enum": [
+              "MURDER_MYSTERY",
+              "TABLETOP",
+              "YACHT",
+              "GOMOKU",
+              "REVERSI",
+              "CHECKERS"
+            ]
+          },
+          "capacity": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "scenarioVersionId": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "uuid"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
           "id": {
             "type": "string",
             "format": "uuid"
@@ -9038,6 +13330,27 @@
                   "type": "integer",
                   "format": "int32"
                 },
+                "gameType": {
+                  "type": "string",
+                  "enum": [
+                    "MURDER_MYSTERY",
+                    "TABLETOP",
+                    "YACHT",
+                    "GOMOKU",
+                    "REVERSI",
+                    "CHECKERS"
+                  ]
+                },
+                "engineId": {
+                  "type": "string"
+                },
+                "supportedPlayerCounts": {
+                  "type": "array",
+                  "items": {
+                    "type": "integer",
+                    "format": "int32"
+                  }
+                },
                 "estimatedMinutes": {
                   "type": "integer",
                   "format": "int32"
@@ -9095,7 +13408,9 @@
               "required": [
                 "difficulty",
                 "durationEstimated",
+                "engineId",
                 "estimatedMinutes",
+                "gameType",
                 "genre",
                 "id",
                 "language",
@@ -9103,6 +13418,7 @@
                 "playerCount",
                 "rank",
                 "roles",
+                "supportedPlayerCounts",
                 "synopsis",
                 "title",
                 "versionId"
@@ -9123,11 +13439,14 @@
         },
         "required": [
           "candidates",
+          "capacity",
           "expiresAt",
+          "gameType",
           "id",
           "members",
           "myVote",
           "roomId",
+          "scenarioVersionId",
           "status"
         ]
       },
@@ -9483,21 +13802,63 @@
           },
           "canRequestAbort": {
             "type": "boolean"
+          },
+          "scene": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/SceneView"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "availableScenes": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "id": {
+                  "type": "string"
+                },
+                "name": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "id",
+                "name"
+              ]
+            }
+          },
+          "canChangeScene": {
+            "type": "boolean"
+          },
+          "layouts": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SceneView"
+            }
           }
         },
         "required": [
           "abortRequired",
           "abortVotes",
+          "availableScenes",
           "ballot",
+          "canChangeScene",
           "canRequestAbort",
           "clues",
           "ending",
           "id",
           "investigationsRemaining",
+          "layouts",
           "materials",
           "myRole",
           "participants",
           "phase",
+          "scene",
           "serverTime",
           "stateVersion",
           "status",
@@ -9622,6 +13983,2321 @@
           "serverTime",
           "stateVersion",
           "type"
+        ]
+      },
+      "EditorCondition": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "type": {
+            "type": "string"
+          },
+          "clueId": {
+            "type": "string"
+          },
+          "roleId": {
+            "type": "string"
+          },
+          "flag": {
+            "type": "string"
+          },
+          "value": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "number"
+              }
+            ]
+          },
+          "condition": {
+            "$ref": "#/components/schemas/EditorCondition"
+          },
+          "conditions": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/EditorCondition"
+            }
+          }
+        }
+      },
+      "EditorNode": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "kind": {
+            "type": "string",
+            "enum": [
+              "TEXT",
+              "IMAGE",
+              "RECT",
+              "ELLIPSE",
+              "MATERIAL"
+            ]
+          },
+          "x": {
+            "type": "number"
+          },
+          "y": {
+            "type": "number"
+          },
+          "width": {
+            "type": "number"
+          },
+          "height": {
+            "type": "number"
+          },
+          "rotation": {
+            "type": "number"
+          },
+          "fill": {
+            "type": "string"
+          },
+          "text": {
+            "type": "string"
+          },
+          "fontSize": {
+            "type": "number"
+          },
+          "assetId": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "uuid"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "locked": {
+            "type": "boolean"
+          },
+          "hidden": {
+            "type": "boolean"
+          },
+          "bindingType": {
+            "type": "string",
+            "enum": [
+              "NONE",
+              "ROLE",
+              "CLUE",
+              "TARGET"
+            ]
+          },
+          "bindingId": {
+            "type": "string"
+          }
+        }
+      },
+      "EditorCardNode": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "kind": {
+            "type": "string",
+            "enum": [
+              "TEXT",
+              "IMAGE",
+              "RECT",
+              "ELLIPSE"
+            ]
+          },
+          "x": {
+            "type": "number"
+          },
+          "y": {
+            "type": "number"
+          },
+          "width": {
+            "type": "number"
+          },
+          "height": {
+            "type": "number"
+          },
+          "rotation": {
+            "type": "number"
+          },
+          "fill": {
+            "type": "string"
+          },
+          "text": {
+            "type": "string"
+          },
+          "fontSize": {
+            "type": "number"
+          },
+          "assetId": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "uuid"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "locked": {
+            "type": "boolean"
+          },
+          "hidden": {
+            "type": "boolean"
+          }
+        }
+      },
+      "EditorCardFace": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "background": {
+            "type": "string"
+          },
+          "nodes": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/EditorCardNode"
+            }
+          }
+        }
+      },
+      "EditorCardLayout": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "width": {
+            "type": "number"
+          },
+          "height": {
+            "type": "number"
+          },
+          "front": {
+            "$ref": "#/components/schemas/EditorCardFace"
+          },
+          "back": {
+            "$ref": "#/components/schemas/EditorCardFace"
+          }
+        }
+      },
+      "CardVisualNode": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "kind": {
+            "type": "string",
+            "enum": [
+              "TEXT",
+              "IMAGE",
+              "RECT",
+              "ELLIPSE"
+            ]
+          },
+          "x": {
+            "type": "number"
+          },
+          "y": {
+            "type": "number"
+          },
+          "width": {
+            "type": "number"
+          },
+          "height": {
+            "type": "number"
+          },
+          "rotation": {
+            "type": "number"
+          },
+          "fill": {
+            "type": "string"
+          },
+          "text": {
+            "type": "string"
+          },
+          "fontSize": {
+            "type": "number"
+          },
+          "assetId": {
+            "type": "string",
+            "format": "uuid"
+          }
+        },
+        "required": [
+          "height",
+          "kind",
+          "rotation",
+          "width",
+          "x",
+          "y"
+        ]
+      },
+      "CardFaceDesign": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "width": {
+            "type": "number"
+          },
+          "height": {
+            "type": "number"
+          },
+          "background": {
+            "type": "string"
+          },
+          "nodes": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CardVisualNode"
+            }
+          }
+        },
+        "required": [
+          "background",
+          "height",
+          "nodes",
+          "width"
+        ]
+      },
+      "EditorScene": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "kind": {
+            "type": "string",
+            "enum": [
+              "SCENE",
+              "ROLE",
+              "CLUE"
+            ]
+          },
+          "referenceId": {
+            "type": "string"
+          },
+          "phaseIds": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "width": {
+            "type": "number"
+          },
+          "height": {
+            "type": "number"
+          },
+          "background": {
+            "type": "string"
+          },
+          "bgmAssetId": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "uuid"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "nodes": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/EditorNode"
+            }
+          }
+        }
+      },
+      "TablePiece": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "kind": {
+            "type": "string",
+            "enum": [
+              "CARD",
+              "TOKEN",
+              "DICE",
+              "COUNTER"
+            ]
+          },
+          "name": {
+            "type": "string"
+          },
+          "text": {
+            "type": "string"
+          },
+          "assetId": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "uuid"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "backAssetId": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "uuid"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "x": {
+            "type": "number"
+          },
+          "y": {
+            "type": "number"
+          },
+          "width": {
+            "type": "number"
+          },
+          "height": {
+            "type": "number"
+          },
+          "locked": {
+            "type": "boolean"
+          },
+          "faceUp": {
+            "type": "boolean"
+          },
+          "sides": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "value": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "ownerSeat": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "format": "int32"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "faceDesign": {
+            "$ref": "#/components/schemas/CardFaceDesign"
+          }
+        }
+      },
+      "EditorTablePiece": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "kind": {
+            "type": "string",
+            "enum": [
+              "CARD",
+              "TOKEN",
+              "DICE",
+              "COUNTER"
+            ]
+          },
+          "name": {
+            "type": "string"
+          },
+          "text": {
+            "type": "string"
+          },
+          "assetId": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "uuid"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "backAssetId": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "uuid"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "layoutId": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "x": {
+            "type": "number"
+          },
+          "y": {
+            "type": "number"
+          },
+          "width": {
+            "type": "number"
+          },
+          "height": {
+            "type": "number"
+          },
+          "locked": {
+            "type": "boolean"
+          },
+          "faceUp": {
+            "type": "boolean"
+          },
+          "sides": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "value": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+      "YachtAppearance": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "diceColor": {
+            "type": "string"
+          },
+          "pipColor": {
+            "type": "string"
+          },
+          "scoreboardColor": {
+            "type": "string"
+          }
+        }
+      },
+      "ClassicAppearance": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "boardColor": {
+            "type": "string"
+          },
+          "lightSquareColor": {
+            "type": "string"
+          },
+          "darkSquareColor": {
+            "type": "string"
+          },
+          "firstPieceColor": {
+            "type": "string"
+          },
+          "secondPieceColor": {
+            "type": "string"
+          }
+        }
+      },
+      "EditorDocument": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "schemaVersion": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "slug": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "synopsis": {
+            "type": "string"
+          },
+          "playerCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "estimatedMinutes": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "genre": {
+            "type": "string"
+          },
+          "difficulty": {
+            "type": "string"
+          },
+          "language": {
+            "type": "string"
+          },
+          "gameType": {
+            "type": "string",
+            "enum": [
+              "MURDER_MYSTERY",
+              "TABLETOP",
+              "YACHT",
+              "GOMOKU",
+              "REVERSI",
+              "CHECKERS"
+            ]
+          },
+          "engineId": {
+            "type": "string"
+          },
+          "modes": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "supportedPlayerCounts": {
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          "roles": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "id": {
+                  "type": "string"
+                },
+                "name": {
+                  "type": "string"
+                },
+                "publicIntro": {
+                  "type": "string"
+                },
+                "secret": {
+                  "type": "string"
+                },
+                "objective": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "text": {
+                      "type": "string"
+                    },
+                    "condition": {
+                      "$ref": "#/components/schemas/EditorCondition"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "phases": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "id": {
+                  "type": "string"
+                },
+                "kind": {
+                  "type": "string"
+                },
+                "durationSeconds": {
+                  "type": "integer",
+                  "format": "int32"
+                },
+                "publicText": {
+                  "type": "string"
+                },
+                "investigationLimit": {
+                  "type": "integer",
+                  "format": "int32"
+                },
+                "actions": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          },
+          "targets": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "id": {
+                  "type": "string"
+                },
+                "name": {
+                  "type": "string"
+                },
+                "phaseIds": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "clueIds": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          },
+          "clues": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "id": {
+                  "type": "string"
+                },
+                "title": {
+                  "type": "string"
+                },
+                "text": {
+                  "type": "string"
+                },
+                "sharePolicy": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "ballot": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "culpritRoleId": {
+                "type": "string"
+              },
+              "allowChange": {
+                "type": "boolean"
+              },
+              "allowAbstain": {
+                "type": "boolean"
+              },
+              "tiePolicy": {
+                "type": "string"
+              }
+            }
+          },
+          "endings": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "id": {
+                  "type": "string"
+                },
+                "title": {
+                  "type": "string"
+                },
+                "text": {
+                  "type": "string"
+                },
+                "condition": {
+                  "$ref": "#/components/schemas/EditorCondition"
+                }
+              }
+            }
+          },
+          "rules": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "id": {
+                  "type": "string"
+                },
+                "when": {
+                  "type": "string"
+                },
+                "phaseId": {
+                  "type": "string"
+                },
+                "clueId": {
+                  "type": "string"
+                },
+                "condition": {
+                  "$ref": "#/components/schemas/EditorCondition"
+                },
+                "effects": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "properties": {
+                      "type": {
+                        "type": "string"
+                      },
+                      "roleId": {
+                        "type": "string"
+                      },
+                      "clueId": {
+                        "type": "string"
+                      },
+                      "text": {
+                        "type": "string"
+                      },
+                      "flag": {
+                        "type": "string"
+                      },
+                      "value": {
+                        "anyOf": [
+                          {
+                            "type": "string"
+                          },
+                          {
+                            "type": "boolean"
+                          },
+                          {
+                            "type": "number"
+                          }
+                        ]
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "yacht": {
+            "$ref": "#/components/schemas/YachtAppearance"
+          },
+          "classic": {
+            "$ref": "#/components/schemas/ClassicAppearance"
+          },
+          "presentation": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "scenes": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/EditorScene"
+                }
+              },
+              "cardLayouts": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/EditorCardLayout"
+                }
+              }
+            }
+          },
+          "tabletop": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "objects": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/EditorTablePiece"
+                }
+              },
+              "decks": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "id": {
+                      "type": "string"
+                    },
+                    "name": {
+                      "type": "string"
+                    },
+                    "backAssetId": {
+                      "anyOf": [
+                        {
+                          "type": "string",
+                          "format": "uuid"
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ]
+                    },
+                    "backLayoutId": {
+                      "anyOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ]
+                    },
+                    "x": {
+                      "type": "number"
+                    },
+                    "y": {
+                      "type": "number"
+                    },
+                    "cards": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "additionalProperties": false,
+                        "properties": {
+                          "id": {
+                            "type": "string"
+                          },
+                          "name": {
+                            "type": "string"
+                          },
+                          "text": {
+                            "type": "string"
+                          },
+                          "assetId": {
+                            "anyOf": [
+                              {
+                                "type": "string",
+                                "format": "uuid"
+                              },
+                              {
+                                "type": "null"
+                              }
+                            ]
+                          },
+                          "layoutId": {
+                            "anyOf": [
+                              {
+                                "type": "string"
+                              },
+                              {
+                                "type": "null"
+                              }
+                            ]
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "SceneView": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "width": {
+            "type": "number"
+          },
+          "height": {
+            "type": "number"
+          },
+          "background": {
+            "type": "string"
+          },
+          "bgmAssetId": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "uuid"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "nodes": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/EditorNode"
+            }
+          }
+        },
+        "required": [
+          "background",
+          "bgmAssetId",
+          "height",
+          "id",
+          "name",
+          "nodes",
+          "width"
+        ]
+      },
+      "AuthorWork": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "scenarioId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "revision": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "document": {
+            "$ref": "#/components/schemas/EditorDocument"
+          },
+          "versions": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "format": "uuid"
+                },
+                "version": {
+                  "type": "integer",
+                  "format": "int32"
+                },
+                "status": {
+                  "type": "string"
+                },
+                "reviewStatus": {
+                  "anyOf": [
+                    {
+                      "type": "string"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "reviewNote": {
+                  "anyOf": [
+                    {
+                      "type": "string"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                }
+              },
+              "required": [
+                "id",
+                "reviewNote",
+                "reviewStatus",
+                "status",
+                "version"
+              ]
+            }
+          }
+        },
+        "required": [
+          "document",
+          "id",
+          "revision",
+          "scenarioId",
+          "updatedAt",
+          "versions"
+        ]
+      },
+      "AuthorVersion": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "workId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "versionId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "version": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "authorRevision": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "format": "int32"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "status": {
+            "type": "string"
+          },
+          "reviewStatus": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "reviewNote": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "document": {
+            "$ref": "#/components/schemas/EditorDocument"
+          }
+        },
+        "required": [
+          "authorRevision",
+          "document",
+          "reviewNote",
+          "reviewStatus",
+          "status",
+          "version",
+          "versionId",
+          "workId"
+        ]
+      },
+      "EndingObservations": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "versionId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "authorRevision": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "format": "int32"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "totalEndings": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "reachedEndings": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "endings": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "endingId": {
+                  "type": "string"
+                },
+                "title": {
+                  "type": "string"
+                },
+                "authorReachedAt": {
+                  "anyOf": [
+                    {
+                      "type": "string",
+                      "format": "date-time"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "reviewerReachedAt": {
+                  "anyOf": [
+                    {
+                      "type": "string",
+                      "format": "date-time"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "invitedTestReachedAt": {
+                  "anyOf": [
+                    {
+                      "type": "string",
+                      "format": "date-time"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                }
+              },
+              "required": [
+                "authorReachedAt",
+                "endingId",
+                "invitedTestReachedAt",
+                "reviewerReachedAt",
+                "title"
+              ]
+            }
+          }
+        },
+        "required": [
+          "authorRevision",
+          "endings",
+          "reachedEndings",
+          "totalEndings",
+          "versionId"
+        ]
+      },
+      "AuthorWorkList": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "format": "uuid"
+                },
+                "title": {
+                  "anyOf": [
+                    {
+                      "type": "string"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "gameType": {
+                  "type": "string",
+                  "enum": [
+                    "MURDER_MYSTERY",
+                    "TABLETOP",
+                    "YACHT",
+                    "GOMOKU",
+                    "REVERSI",
+                    "CHECKERS"
+                  ]
+                },
+                "revision": {
+                  "type": "integer",
+                  "format": "int32"
+                },
+                "status": {
+                  "type": "string"
+                },
+                "updatedAt": {
+                  "type": "string",
+                  "format": "date-time"
+                }
+              },
+              "required": [
+                "gameType",
+                "id",
+                "revision",
+                "status",
+                "title",
+                "updatedAt"
+              ]
+            }
+          },
+          "total": {
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "required": [
+          "items",
+          "total"
+        ]
+      },
+      "AuthorTemplateList": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "id": {
+                  "type": "string"
+                },
+                "title": {
+                  "type": "string"
+                },
+                "description": {
+                  "type": "string"
+                },
+                "gameType": {
+                  "type": "string",
+                  "enum": [
+                    "MURDER_MYSTERY",
+                    "TABLETOP",
+                    "YACHT",
+                    "GOMOKU",
+                    "REVERSI",
+                    "CHECKERS"
+                  ]
+                },
+                "playerCounts": {
+                  "type": "array",
+                  "items": {
+                    "type": "integer",
+                    "format": "int32"
+                  }
+                },
+                "customizable": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "rulesSummary": {
+                  "type": "string"
+                },
+                "blank": {
+                  "type": "boolean"
+                }
+              },
+              "required": [
+                "blank",
+                "customizable",
+                "description",
+                "gameType",
+                "id",
+                "playerCounts",
+                "rulesSummary",
+                "title"
+              ]
+            }
+          }
+        },
+        "required": [
+          "items"
+        ]
+      },
+      "ValidationResult": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "valid": {
+            "type": "boolean"
+          },
+          "issues": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "path": {
+                  "type": "string"
+                },
+                "code": {
+                  "type": "string"
+                },
+                "message": {
+                  "type": "string"
+                },
+                "severity": {
+                  "type": "string",
+                  "enum": [
+                    "ERROR",
+                    "WARNING"
+                  ]
+                }
+              },
+              "required": [
+                "code",
+                "message",
+                "path",
+                "severity"
+              ]
+            },
+            "maxItems": 100
+          },
+          "revision": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "truncated": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "issues",
+          "revision",
+          "truncated",
+          "valid"
+        ]
+      },
+      "AuthorAsset": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "name": {
+            "type": "string"
+          },
+          "mimeType": {
+            "type": "string"
+          },
+          "size": {
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "required": [
+          "id",
+          "mimeType",
+          "name",
+          "size"
+        ]
+      },
+      "ReviewList": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "format": "uuid"
+                },
+                "versionId": {
+                  "type": "string",
+                  "format": "uuid"
+                },
+                "title": {
+                  "type": "string"
+                },
+                "authorName": {
+                  "type": "string"
+                },
+                "status": {
+                  "type": "string"
+                },
+                "createdAt": {
+                  "type": "string",
+                  "format": "date-time"
+                }
+              },
+              "required": [
+                "authorName",
+                "createdAt",
+                "id",
+                "status",
+                "title",
+                "versionId"
+              ]
+            }
+          },
+          "total": {
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "required": [
+          "items",
+          "total"
+        ]
+      },
+      "ReviewDetail": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "versionId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "status": {
+            "type": "string"
+          },
+          "document": {
+            "$ref": "#/components/schemas/EditorDocument"
+          },
+          "note": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "document",
+          "id",
+          "note",
+          "status",
+          "versionId"
+        ]
+      },
+      "YachtState": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "appearance": {
+            "$ref": "#/components/schemas/YachtAppearance"
+          },
+          "turnSeat": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "finished": {
+            "type": "boolean"
+          },
+          "activeSeats": {
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          "dice": {
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          "held": {
+            "type": "array",
+            "items": {
+              "type": "boolean"
+            }
+          },
+          "rollsRemaining": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "winners": {
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          "scores": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "seat": {
+                  "type": "integer",
+                  "format": "int32"
+                },
+                "categories": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "integer",
+                    "format": "int32"
+                  }
+                },
+                "upperTotal": {
+                  "type": "integer",
+                  "format": "int32"
+                },
+                "bonus": {
+                  "type": "integer",
+                  "format": "int32"
+                },
+                "total": {
+                  "type": "integer",
+                  "format": "int32"
+                },
+                "rank": {
+                  "anyOf": [
+                    {
+                      "type": "integer",
+                      "format": "int32"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "forfeited": {
+                  "type": "boolean"
+                }
+              }
+            }
+          },
+          "availableScores": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        },
+        "required": [
+          "activeSeats",
+          "appearance",
+          "availableScores",
+          "dice",
+          "finished",
+          "held",
+          "rollsRemaining",
+          "scores",
+          "turnSeat",
+          "winners"
+        ]
+      },
+      "ClassicMove": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "row": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "col": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "fromRow": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "fromCol": {
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "required": [
+          "col",
+          "row"
+        ]
+      },
+      "ClassicState": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "turnSeat": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "finished": {
+            "type": "boolean"
+          },
+          "activeSeats": {
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          "board": {
+            "type": "array",
+            "items": {
+              "type": "array",
+              "items": {
+                "type": "integer",
+                "format": "int32"
+              }
+            }
+          },
+          "legalMoves": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ClassicMove"
+            }
+          },
+          "winners": {
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          "draw": {
+            "type": "boolean"
+          },
+          "endReason": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "forcedFrom": {
+            "anyOf": [
+              {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "row": {
+                    "type": "integer",
+                    "format": "int32"
+                  },
+                  "col": {
+                    "type": "integer",
+                    "format": "int32"
+                  }
+                },
+                "required": [
+                  "col",
+                  "row"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "counts": {
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          "appearance": {
+            "$ref": "#/components/schemas/ClassicAppearance"
+          }
+        },
+        "required": [
+          "activeSeats",
+          "appearance",
+          "board",
+          "counts",
+          "draw",
+          "endReason",
+          "finished",
+          "forcedFrom",
+          "legalMoves",
+          "turnSeat",
+          "winners"
+        ]
+      },
+      "TableState": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "turnSeat": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "finished": {
+            "type": "boolean"
+          },
+          "activeSeats": {
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          "objects": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TablePiece"
+            }
+          },
+          "decks": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "id": {
+                  "type": "string"
+                },
+                "name": {
+                  "type": "string"
+                },
+                "backAssetId": {
+                  "anyOf": [
+                    {
+                      "type": "string",
+                      "format": "uuid"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "backDesign": {
+                  "$ref": "#/components/schemas/CardFaceDesign"
+                },
+                "x": {
+                  "type": "number"
+                },
+                "y": {
+                  "type": "number"
+                },
+                "count": {
+                  "type": "integer",
+                  "format": "int32"
+                }
+              },
+              "required": [
+                "count",
+                "id",
+                "name",
+                "x",
+                "y"
+              ]
+            }
+          },
+          "hands": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "seat": {
+                  "type": "integer",
+                  "format": "int32"
+                },
+                "count": {
+                  "type": "integer",
+                  "format": "int32"
+                }
+              },
+              "required": [
+                "count",
+                "seat"
+              ]
+            }
+          }
+        },
+        "required": [
+          "activeSeats",
+          "decks",
+          "finished",
+          "hands",
+          "objects",
+          "turnSeat"
+        ]
+      },
+      "MysterySandboxState": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "status": {
+            "type": "string"
+          },
+          "phaseIndex": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "phase": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "definitionId": {
+                "type": "string"
+              },
+              "kind": {
+                "type": "string"
+              },
+              "publicText": {
+                "type": "string"
+              },
+              "actions": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "ready": {
+                "type": "boolean"
+              }
+            },
+            "required": [
+              "actions",
+              "definitionId",
+              "kind",
+              "publicText",
+              "ready"
+            ]
+          },
+          "myRole": {
+            "$ref": "#/components/schemas/PrivateRole"
+          },
+          "participants": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "roleId": {
+                  "type": "string"
+                },
+                "roleName": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "roleId",
+                "roleName"
+              ]
+            }
+          },
+          "clues": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ClueView"
+            }
+          },
+          "targets": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "id": {
+                  "type": "string"
+                },
+                "name": {
+                  "type": "string"
+                },
+                "investigated": {
+                  "type": "boolean"
+                }
+              },
+              "required": [
+                "id",
+                "investigated",
+                "name"
+              ]
+            }
+          },
+          "investigationsRemaining": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "ballot": {
+            "anyOf": [
+              {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "allowChange": {
+                    "type": "boolean"
+                  },
+                  "allowAbstain": {
+                    "type": "boolean"
+                  },
+                  "myVote": {
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "submitted": {
+                    "type": "boolean"
+                  }
+                },
+                "required": [
+                  "allowAbstain",
+                  "allowChange",
+                  "myVote",
+                  "submitted"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "materials": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "format": "uuid"
+                },
+                "text": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "id",
+                "text"
+              ]
+            }
+          },
+          "ending": {
+            "anyOf": [
+              {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "title": {
+                    "type": "string"
+                  },
+                  "text": {
+                    "type": "string"
+                  },
+                  "objectiveAchieved": {
+                    "type": "boolean"
+                  }
+                },
+                "required": [
+                  "objectiveAchieved",
+                  "text",
+                  "title"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "required": [
+          "ballot",
+          "clues",
+          "ending",
+          "investigationsRemaining",
+          "materials",
+          "myRole",
+          "participants",
+          "phase",
+          "phaseIndex",
+          "status",
+          "targets"
+        ]
+      },
+      "BoardSnapshot": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "resultKind": {
+            "type": "string",
+            "enum": [
+              "MANUAL",
+              "AUTOMATIC"
+            ]
+          },
+          "abortVotes": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "abortRequired": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "canRequestAbort": {
+            "type": "boolean"
+          },
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "gameType": {
+            "type": "string",
+            "enum": [
+              "MURDER_MYSTERY",
+              "TABLETOP",
+              "YACHT",
+              "GOMOKU",
+              "REVERSI",
+              "CHECKERS"
+            ]
+          },
+          "status": {
+            "type": "string"
+          },
+          "stateVersion": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "serverTime": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "mySeat": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "hostId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "participants": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "userId": {
+                  "type": "string",
+                  "format": "uuid"
+                },
+                "displayName": {
+                  "type": "string"
+                },
+                "seat": {
+                  "type": "integer",
+                  "format": "int32"
+                },
+                "active": {
+                  "type": "boolean"
+                }
+              },
+              "required": [
+                "active",
+                "displayName",
+                "seat",
+                "userId"
+              ]
+            }
+          },
+          "state": {
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/YachtState"
+              },
+              {
+                "$ref": "#/components/schemas/TableState"
+              },
+              {
+                "$ref": "#/components/schemas/ClassicState"
+              }
+            ]
+          },
+          "scene": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/SceneView"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "availableScenes": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "id": {
+                  "type": "string"
+                },
+                "name": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "id",
+                "name"
+              ]
+            }
+          },
+          "canChangeScene": {
+            "type": "boolean"
+          },
+          "layouts": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SceneView"
+            }
+          }
+        },
+        "required": [
+          "abortRequired",
+          "abortVotes",
+          "availableScenes",
+          "canChangeScene",
+          "canRequestAbort",
+          "gameType",
+          "hostId",
+          "id",
+          "layouts",
+          "mySeat",
+          "participants",
+          "resultKind",
+          "scene",
+          "serverTime",
+          "state",
+          "stateVersion",
+          "status"
+        ]
+      },
+      "SandboxSnapshot": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "gameType": {
+            "type": "string",
+            "enum": [
+              "MURDER_MYSTERY",
+              "TABLETOP",
+              "YACHT",
+              "GOMOKU",
+              "REVERSI",
+              "CHECKERS"
+            ]
+          },
+          "stateVersion": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "seat": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "capacity": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "state": {
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/YachtState"
+              },
+              {
+                "$ref": "#/components/schemas/TableState"
+              },
+              {
+                "$ref": "#/components/schemas/ClassicState"
+              },
+              {
+                "$ref": "#/components/schemas/MysterySandboxState"
+              }
+            ]
+          },
+          "scene": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/SceneView"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "availableScenes": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "id": {
+                  "type": "string"
+                },
+                "name": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "id",
+                "name"
+              ]
+            }
+          },
+          "canChangeScene": {
+            "type": "boolean"
+          },
+          "layouts": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SceneView"
+            }
+          }
+        },
+        "required": [
+          "availableScenes",
+          "canChangeScene",
+          "capacity",
+          "gameType",
+          "id",
+          "layouts",
+          "scene",
+          "seat",
+          "state",
+          "stateVersion"
         ]
       }
     },

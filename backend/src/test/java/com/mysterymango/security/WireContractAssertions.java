@@ -26,6 +26,10 @@ final class WireContractAssertions {
             assertNotNull(target,"Unresolved schema at "+path);
             check(document,(Map<String,Object>)target,value,path);return;
         }
+        if(schema.containsKey("oneOf")) {
+            int matches=0;for(var alternative:(List<Map<String,Object>>)schema.get("oneOf")){try{check(document,alternative,value,path);matches++;}catch(AssertionError ignored){}}
+            assertEquals(1,matches,"Exactly one union alternative must match "+path);return;
+        }
         if(schema.containsKey("anyOf")) {
             for(var alternative:(List<Map<String,Object>>)schema.get("anyOf")) {
                 try {check(document,alternative,value,path);return;} catch(AssertionError ignored) {}
@@ -41,7 +45,7 @@ final class WireContractAssertions {
                 var properties=(Map<String,Object>)schema.getOrDefault("properties",Map.of());
                 for(String required:(List<String>)schema.getOrDefault("required",List.of()))assertTrue(object.containsKey(required),path+" missing "+required);
                 if(Boolean.FALSE.equals(schema.get("additionalProperties")))assertTrue(properties.keySet().containsAll(object.keySet()),path+" contains undocumented fields "+object.keySet());
-                for(var field:object.entrySet())if(properties.containsKey(field.getKey()))check(document,(Map<String,Object>)properties.get(field.getKey()),field.getValue(),path+"."+field.getKey());
+                for(var field:object.entrySet())if(properties.containsKey(field.getKey()))check(document,(Map<String,Object>)properties.get(field.getKey()),field.getValue(),path+"."+field.getKey());else if(schema.get("additionalProperties") instanceof Map<?,?> values)check(document,(Map<String,Object>)values,field.getValue(),path+"."+field.getKey());
             }
             case "array" -> {
                 assertInstanceOf(List.class,value,path);int index=0;

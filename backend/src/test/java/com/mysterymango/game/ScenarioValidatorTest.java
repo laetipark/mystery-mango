@@ -10,6 +10,19 @@ class ScenarioValidatorTest {
     private final ScenarioValidator validator=new ScenarioValidator();
     @SuppressWarnings("unchecked") private Map<String,Object> sample(String name)throws Exception {try(var in=getClass().getResourceAsStream("/scenarios/"+name+".json")){return new JsonMapper().readValue(in,Map.class);}}
     @Test void allOriginalStoriesHaveValidFinitePaths()throws Exception {for(String name:List.of("after-hours-gallery","midnight-last-passenger","rain-soaked-villa","locker-at-twelve","snowbound-last-parcel"))validator.validate(sample(name));}
+    @Test void classicSystemExamplesRequireTwoPlayersAndTheirMatchingEngine()throws Exception {
+        for(String name:List.of("classic-gomoku","classic-reversi","classic-checkers")){
+            var d=sample(name);validator.validate(d);assertEquals(List.of(2),d.get("supportedPlayerCounts"));
+            d.put("supportedPlayerCounts",List.of(1,2));assertThrows(ApiException.class,()->validator.validate(d));d.put("supportedPlayerCounts",List.of(2));
+            d.put("engineId","tabletop-v1");assertThrows(ApiException.class,()->validator.validate(d));
+        }
+    }
+    @Test void yachtAndTabletopSystemExamplesAdvertiseValidSoloThroughFourPlayerDefinitions()throws Exception {
+        for(String name:List.of("starter-yacht","starter-tabletop")){
+            var d=sample(name);assertEquals(List.of(1,2,3,4),d.get("supportedPlayerCounts"));
+            for(int capacity=1;capacity<=4;capacity++){d.put("playerCount",capacity);validator.validate(d);}
+        }
+    }
     @Test void oneThroughFourPlayersRequireExactlyTheSameNumberOfRoles()throws Exception {
         for(int count=1;count<=4;count++) {
             var d=sample("after-hours-gallery");d.put("playerCount",count);

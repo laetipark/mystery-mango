@@ -79,6 +79,26 @@ class HttpSecurityIntegrationTest {
         }
     }
 
+    @Test void studioAndSandboxResponsesMatchAllowlistedContracts()throws Exception {
+        try(Client client=new Client()) {
+            client.signup();var schema=json.object(client.get("/api/openapi").body());
+            WireContractAssertions.response(schema,"/api/v1/author/templates",json.object(client.get("/api/v1/author/templates").body()));
+            for(String type:List.of("MURDER_MYSTERY","TABLETOP","YACHT","GOMOKU","REVERSI","CHECKERS")){
+                var created=client.request("POST","/api/v1/author/works",Json.map("title","계약 검증 "+type,"gameType",type),true);assertEquals(200,created.statusCode(),created.body());
+                String work=json.object(created.body()).get("id").toString();
+                var response=client.get("/api/v1/author/works/"+work);assertEquals(200,response.statusCode());var body=json.object(response.body());
+                WireContractAssertions.response(schema,"/api/v1/author/works/{id}",body);
+                var frozen=client.request("POST","/api/v1/author/works/"+work+"/freeze",Json.map("revision",body.get("revision")),true);assertEquals(200,frozen.statusCode(),frozen.body());
+                var definition=(Map<?,?>)body.get("document");
+                var sandbox=client.request("POST","/api/v1/author/sandboxes",Json.map("versionId",json.object(frozen.body()).get("versionId"),"capacity",definition.get("playerCount")),true);assertEquals(200,sandbox.statusCode(),sandbox.body());
+                String id=json.object(sandbox.body()).get("id").toString();var view=client.get("/api/v1/author/sandboxes/"+id);assertEquals(200,view.statusCode(),view.body());
+                WireContractAssertions.response(schema,"/api/v1/author/sandboxes/{id}",json.object(view.body()));
+            }
+            WireContractAssertions.response(schema,"/api/v1/author/works",json.object(client.get("/api/v1/author/works").body()));
+            WireContractAssertions.response(schema,"/api/v1/author/assets",json.object(client.get("/api/v1/author/assets").body()));
+        }
+    }
+
     @Test void signupLoginSessionCsrfAdminAndLogoutAreEnforcedOverHttp()throws Exception {
         try(Client client=new Client()) {
             client.csrf();String email="security-"+UUID.randomUUID()+"@example.test";

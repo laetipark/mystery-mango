@@ -40,14 +40,14 @@ class SmallGameHttpIntegrationTest {
 
     @Test void playerCountFiltersPublicCatalogBeforePaginationWithoutLeakingStoryData()throws Exception {
         try(Client client=new Client()) {
-            assertEquals(5,integer(client.get("/api/v1/scenarios"),"total",0));
+            assertEquals(5,integer(client.get("/api/v1/scenarios?gameType=MURDER_MYSTERY"),"total",0));
             for(int count:List.of(1,2,3,4)) {
                 int expected=count==4?3:count==3?0:1;
-                var first=client.get("/api/v1/scenarios?playerCount="+count+"&size=1");
+                var first=client.get("/api/v1/scenarios?gameType=MURDER_MYSTERY&playerCount="+count+"&size=1");
                 assertEquals(expected,integer(first,"total",-1));assertEquals(Math.min(1,expected),objects(first.get("items")).size());
-                var beyond=client.get("/api/v1/scenarios?playerCount="+count+"&size=1&page="+expected);
+                var beyond=client.get("/api/v1/scenarios?gameType=MURDER_MYSTERY&playerCount="+count+"&size=1&page="+expected);
                 assertEquals(expected,integer(beyond,"total",-1));assertTrue(objects(beyond.get("items")).isEmpty());
-                for(var card:objects(client.get("/api/v1/scenarios?playerCount="+count).get("items"))) {
+                for(var card:objects(client.get("/api/v1/scenarios?gameType=MURDER_MYSTERY&playerCount="+count).get("items"))) {
                     assertEquals(count,integer(card,"playerCount",0));assertEquals(count,objects(card.get("roles")).size());
                     var definition=scenarios.definition(UUID.fromString(str(card,"versionId")));
                     String response=json.write(client.get("/api/v1/scenarios/"+card.get("id")));

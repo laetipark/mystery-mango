@@ -19,6 +19,7 @@ services:
     build:
       context: ./backend
     environment:
+      ASSET_STORAGE_PATH: /app/assets
       DATABASE_URL: jdbc:postgresql://db:5432/mystery_mango
       DATABASE_USER: ${DATABASE_USER:-mango}
       DATABASE_PASSWORD: ${DATABASE_PASSWORD:-mango_local_only}
@@ -42,6 +43,8 @@ services:
       DISCORD_CATEGORY_ID: ${DISCORD_CATEGORY_ID:-}
       DISCORD_REDIRECT_URI: ${DISCORD_REDIRECT_URI:-http://localhost:8080/api/v1/me/discord/callback}
       DISCORD_INVITE_URL: ${DISCORD_INVITE_URL:-}
+    volumes:
+      - author-assets:/app/assets
     ports:
       - "127.0.0.1:8081:8080"
     depends_on:
@@ -63,3 +66,4 @@ services:
         condition: service_healthy
 volumes:
   postgres-data:
+  author-assets:

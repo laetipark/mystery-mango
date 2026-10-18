@@ -47,7 +47,7 @@ class MatchingIntegrationTest {
     }
     @Test void noMatchingScenarioMaintainsRealWaitingState(){for(int i=0;i<4;i++)enqueue(users.get(i),false,1);matching.tick();assertWaiting();}
     @Test void smallScenariosAreNeverProposedToFourPlayerTickets(){
-        assertEquals(2,Db.num(db.one("select count(*) n from scenario_version where status='PUBLISHED' and definition->>'playerCount' in ('1','2')"),"n"));
+        assertEquals(2,Db.num(db.one("select count(*) n from scenario_version where status='PUBLISHED' and coalesce(definition->>'gameType','MURDER_MYSTERY')='MURDER_MYSTERY' and definition->>'playerCount' in ('1','2')"),"n"));
         for(int i=0;i<4;i++)enqueue(users.get(i),false,20);
         matching.tick();assertWaiting();
     }

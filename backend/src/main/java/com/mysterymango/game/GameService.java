@@ -15,11 +15,16 @@ import static com.mysterymango.game.Definitions.*;
 public class GameService {
     private final Commands commands; private final Db db; private final Json json; private final ScenarioService scenarios; private final Activities activities; private final Events events;
     private final int phaseSeconds,graceSeconds,absenceSeconds,emptyAbortSeconds;
+    private final BoardEngine boardEngine=new BoardEngine();
+    private final SceneService scenes;
+    private final EndingObservationService endingObservations;
     public GameService(Commands commands,Db db,Json json,ScenarioService scenarios,Activities activities,Events events,
             @Value("${app.game-phase-seconds:0}") int phaseSeconds,@Value("${app.disconnect-grace-seconds:120}") int graceSeconds,
             @Value("${app.abandon-seconds:300}") int absenceSeconds,@Value("${app.empty-game-abort-seconds:1800}") int emptyAbortSeconds) {
         this.commands=commands;this.db=db;this.json=json;this.scenarios=scenarios;this.activities=activities;this.events=events;
         this.phaseSeconds=phaseSeconds;this.graceSeconds=graceSeconds;this.absenceSeconds=absenceSeconds;this.emptyAbortSeconds=emptyAbortSeconds;
+        this.scenes=new SceneService(db,json,commands);
+        this.endingObservations=new EndingObservationService(db,json,commands,scenarios);
     }
 
     @Transactional
@@ -30,25 +35,29 @@ public class GameService {
         require("WAITING".equals(Db.str(room,"status")),409,"ROOM_CLOSED","종료된 방입니다.");
         var players=db.list("select * from room_participant where room_id=? order by joined_at,user_id",roomId);
         var definition=scenarios.definition(Db.uuid(room,"scenario_version_id"));
-        require(players.size()==integer(definition,"playerCount",4)&&players.stream().allMatch(p->Boolean.TRUE.equals(p.get("ready"))),409,"ROOM_NOT_READY","정확한 인원과 전원 준비가 필요합니다.");
+        String gameType=definition.getOrDefault("gameType","MURDER_MYSTERY").toString();boolean mystery=gameType.equals("MURDER_MYSTERY");
+        int capacity=room.get("capacity") instanceof Number n?n.intValue():integer(definition,"playerCount",4);
+        require(mystery?capacity==integer(definition,"playerCount",4):BoardEngine.numbers(definition.get("supportedPlayerCounts")).contains(capacity),409,"ROOM_CAPACITY_MISMATCH","작품에서 지원하는 방 인원을 확인해 주세요.");
+        require(players.size()==capacity&&players.stream().allMatch(p->Boolean.TRUE.equals(p.get("ready"))),409,"ROOM_NOT_READY","정확한 인원과 전원 준비가 필요합니다.");
         UUID gameId=UUID.randomUUID(); Instant now=Instant.now();
-        db.update("insert into game_session(id,room_id,scenario_version_id,status,created_at) values(?,?,?,'ACTIVE',?)",gameId,roomId,Db.uuid(room,"scenario_version_id"),now);
+        db.update("insert into game_session(id,room_id,scenario_version_id,status,created_at,game_type,is_test) values(?,?,?,'ACTIVE',?,?,?)",gameId,roomId,Db.uuid(room,"scenario_version_id"),now,gameType,Boolean.TRUE.equals(room.get("is_test")));
         var roles=new ArrayList<>(objects(definition.get("roles"))); Collections.shuffle(roles,new SecureRandom());
         for(int i=0;i<players.size();i++) {
             UUID uid=Db.uuid(players.get(i),"user_id");
             var activity=db.one("select * from player_activity where user_id=?",uid);
             require("ROOM".equals(Db.str(activity,"kind"))&&roomId.equals(Db.uuid(activity,"reference_id")),409,"ACTIVITY_CHANGED","참가자의 활동이 변경되었습니다.");
-            db.update("insert into player_role(game_id,user_id,role_id,last_seen_at) values(?,?,?,?)",gameId,uid,str(roles.get(i),"id"),now);
+            db.update("insert into player_role(game_id,user_id,role_id,last_seen_at) values(?,?,?,?)",gameId,uid,mystery?str(roles.get(i),"id"):"seat-"+i,now);
             activities.set(uid,"GAME",gameId);
         }
         db.update("update room set status='PLAYING',game_id=? where id=?",gameId,roomId);
-        openPhase(gameId,definition,0,now); pauseIfDiscord(gameId); changed(gameId,"GAME_STARTED");
+        if(mystery)openPhase(gameId,definition,0,now);else db.update("update game_session set board_state=?::jsonb where id=?",json.write(boardEngine.initial(gameType,definition,capacity)),gameId);
+        pauseIfDiscord(gameId); changed(gameId,"GAME_STARTED");
         return obj("gameId",gameId);
     }
 
     @Transactional
     public Map<String,Object> snapshot(UUID gameId,UUID actor) {
-        commands.lock(); var game=authorized(gameId,actor); var d=definition(game); expose(game,actor);
+        commands.lock(); var game=authorized(gameId,actor); requireMystery(game);var d=definition(game); expose(game,actor);
         var phase=db.one("select * from phase_instance where id=?",Db.uuid(game,"current_phase_id"));
         var p=find(d,"phases",Db.str(phase,"definition_id")); var role=myRoleData(gameId,actor,d);
         var phaseDto=obj("id",phase.get("id"),"definitionId",phase.get("definition_id"),"kind",p.get("kind"),"endsAt",Db.instant(phase,"ends_at"),"publicText",p.get("publicText"),"actions",p.get("actions"),"ready",db.optional("select 1 from phase_ready where phase_id=? and user_id=?",phase.get("id"),actor)!=null);
@@ -56,12 +65,9 @@ public class GameService {
         for(var player:db.list("select p.*,u.display_name from player_role p join app_user u on u.id=p.user_id where game_id=? order by role_id",gameId)) {
             people.add(obj("userId",player.get("user_id"),"displayName",player.get("display_name"),"roleId",player.get("role_id"),"roleName",find(d,"roles",Db.str(player,"role_id")).get("name"),"connected",Boolean.TRUE.equals(player.get("active"))&&connected(player),"active",player.get("active")));
         }
-        List<Map<String,Object>> clues=new ArrayList<>();
-        for(var c:objects(d.get("clues"))) {
-            var grant=db.optional("select owned from clue_grant where game_id=? and clue_id=? and user_id=?",gameId,str(c,"id"),actor);
-            boolean pub=db.optional("select 1 from public_clue where game_id=? and clue_id=?",gameId,str(c,"id"))!=null;
-            if(grant!=null||pub) clues.add(obj("id",c.get("id"),"title",c.get("title"),"text",c.get("text"),"owned",grant!=null&&Boolean.TRUE.equals(grant.get("owned")),"public",pub,"sharePolicy",c.get("sharePolicy")));
-        }
+        Map<String,Boolean> grants=new LinkedHashMap<>();for(var c:db.list("select clue_id,owned from clue_grant where game_id=? and user_id=?",gameId,actor))grants.put(Db.str(c,"clue_id"),Boolean.TRUE.equals(c.get("owned")));
+        Set<String> published=new HashSet<>();for(var c:db.list("select clue_id from public_clue where game_id=?",gameId))published.add(Db.str(c,"clue_id"));
+        var clues=MysteryEngine.clues(d,grants,published);
         List<Map<String,Object>> targets=new ArrayList<>();
         for(var t:objects(d.get("targets"))) if(strings(t.get("phaseIds")).contains(Db.str(phase,"definition_id"))) targets.add(obj("id",t.get("id"),"name",t.get("name"),"investigated",db.optional("select 1 from game_investigation where game_id=? and user_id=? and target_id=?",gameId,actor,str(t,"id"))!=null));
         var ballot=db.optional("select * from ballot where phase_id=?",phase.get("id")); Object ballotDto=null;
@@ -69,20 +75,19 @@ public class GameService {
         var whispers=db.list("select id,status,inviter_id,invitee_id from whisper_room where game_id=? and (inviter_id=? or invitee_id=?) order by created_at",gameId,actor,actor).stream().map(w->obj("id",w.get("id"),"status",w.get("status"),"inviterId",w.get("inviter_id"),"inviteeId",w.get("invitee_id"))).toList();
         Object ending=null;
         if(game.get("ending_id")!=null) { var e=find(d,"endings",Db.str(game,"ending_id")); var objective=map(find(d,"roles",str(role,"id")).get("objective")); ending=obj("title",e.get("title"),"text",e.get("text"),"objectiveAchieved",RuleConditions.evaluate(map(objective.get("condition")),facts(gameId,str(role,"id")))); }
-        List<UUID> eligible=abortEligible(gameId);
-        long abortCount=eligible.stream().filter(uid->db.optional("select 1 from abort_vote where game_id=? and user_id=?",gameId,uid)!=null).count();
-        return obj("id",gameId,"status",game.get("status"),"stateVersion",game.get("state_version"),"serverTime",Instant.now(),"phase",phaseDto,"participants",people,"myRole",role,"clues",clues,"targets",targets,"investigationsRemaining",remaining(gameId,actor,phase,p),"ballot",ballotDto,"whispers",whispers,"materials",db.list("select id,text from game_material where game_id=? order by created_at,id",gameId),"ending",ending,"abortVotes",abortCount,"abortRequired",eligible.size(),"canRequestAbort",Set.of("ACTIVE","PAUSED").contains(Db.str(game,"status")));
+        var result=obj("id",gameId,"status",game.get("status"),"stateVersion",game.get("state_version"),"serverTime",Instant.now(),"phase",phaseDto,"participants",people,"myRole",role,"clues",clues,"targets",targets,"investigationsRemaining",remaining(gameId,actor,phase,p),"ballot",ballotDto,"whispers",whispers,"materials",db.list("select id,text from game_material where game_id=? order by created_at,id",gameId),"ending",ending);
+        result.putAll(abortStatus(gameId,actor));result.putAll(scenes.forGame(gameId,actor));return result;
     }
 
     @Transactional
-    public Map<String,Object> role(UUID gameId,UUID actor) { commands.lock(); var game=authorized(gameId,actor); expose(game,actor); return myRoleData(gameId,actor,definition(game)); }
+    public Map<String,Object> role(UUID gameId,UUID actor) { commands.lock(); var game=authorized(gameId,actor);requireMystery(game); expose(game,actor); return myRoleData(gameId,actor,definition(game)); }
 
     public Map<String,Object> investigate(UUID gameId,UUID actor,String targetId) {
         var game=action(gameId,actor,"INVESTIGATE"); var d=definition(game); var phase=currentPhase(game); var pd=find(d,"phases",Db.str(phase,"definition_id")); var target=find(d,"targets",targetId);
         require(strings(target.get("phaseIds")).contains(Db.str(phase,"definition_id")),409,"TARGET_UNAVAILABLE","지금 조사할 수 없는 대상입니다.");
         var previous=db.optional("select id from game_investigation where game_id=? and user_id=? and target_id=?",gameId,actor,targetId);
         if(previous!=null) return obj("investigationId",previous.get("id"));
-        require(remaining(gameId,actor,phase,pd)>0,409,"INVESTIGATION_LIMIT","이 단계의 조사 횟수를 모두 사용했습니다.");
+        MysteryEngine.investigation(target,Db.str(phase,"definition_id"),remaining(gameId,actor,phase,pd));
         UUID id=UUID.randomUUID(); db.update("insert into game_investigation(id,game_id,phase_id,user_id,target_id,created_at) values(?,?,?,?,?,?)",id,gameId,phase.get("id"),actor,targetId,Instant.now());
         for(String clueId:strings(target.get("clueIds"))) grant(gameId,clueId,actor,true);
         expose(game,actor); changed(gameId,"CLUES_CHANGED"); return obj("investigationId",id);
@@ -91,7 +96,7 @@ public class GameService {
     public Map<String,Object> share(UUID gameId,UUID actor,String clueId,String scope,UUID whisperId) {
         var game=action(gameId,actor,"SHARE"); var clue=find(definition(game),"clues",clueId);
         var own=db.optional("select 1 from clue_grant where game_id=? and clue_id=? and user_id=? and owned=true",gameId,clueId,actor);
-        require(own!=null,403,"CLUE_NOT_OWNED","보유한 단서만 공유할 수 있습니다.");
+        MysteryEngine.share(clue,own!=null,scope);
         String policy=str(clue,"sharePolicy");
         if("PUBLIC".equals(scope)) {
             require(!policy.equals("PRIVATE"),403,"CLUE_PRIVATE","공개할 수 없는 단서입니다.");
@@ -110,6 +115,7 @@ public class GameService {
         require(b.get("closed_at")==null&&Objects.equals(b.get("phase_id"),game.get("current_phase_id")),409,"BALLOT_CLOSED","투표가 마감되었습니다.");
         if(roleId==null) require(bool(settings,"allowAbstain"),422,"ABSTAIN_NOT_ALLOWED","이 작품에서는 기권할 수 없습니다."); else find(d,"roles",roleId);
         var prior=db.optional("select * from game_vote where ballot_id=? and user_id=?",ballotId,actor);
+        MysteryEngine.vote(d,roleId,prior!=null,prior==null?null:Db.str(prior,"role_id"));
         if(prior!=null&&!bool(settings,"allowChange")) { require(Objects.equals(prior.get("role_id"),roleId),409,"VOTE_FINAL","이미 제출한 투표를 바꿀 수 없습니다."); return obj("ok",true); }
         db.update("insert into game_vote(ballot_id,user_id,role_id,updated_at) values(?,?,?,?) on conflict(ballot_id,user_id) do update set role_id=excluded.role_id,updated_at=excluded.updated_at",ballotId,actor,roleId,Instant.now());
         changed(gameId,"VOTE_CHANGED"); return obj("ok",true);
@@ -160,7 +166,7 @@ public class GameService {
         db.update("update whisper_room set status='CLOSED' where id=?",id);if("ACTIVE".equals(Db.str(w,"status"))) pauseIfDiscord(gameId);changed(gameId,"WHISPER_CHANGED");return obj("ok",true);
     }
     public Map<String,Object> phaseReady(UUID gameId,UUID actor) {
-        var g=authorized(gameId,actor); require("ACTIVE".equals(Db.str(g,"status")),409,"GAME_PAUSED","현재 게임이 일시정지 상태입니다.");var phase=currentPhase(g);
+        var g=authorized(gameId,actor);requireMystery(g); require("ACTIVE".equals(Db.str(g,"status")),409,"GAME_PAUSED","현재 게임이 일시정지 상태입니다.");var phase=currentPhase(g);
         require("READING".equals(str(find(definition(g),"phases",Db.str(phase,"definition_id")),"kind")),409,"NOT_READING","개인 자료 읽기 단계에서 사용할 수 있습니다.");
         db.update("insert into phase_ready(phase_id,user_id) values(?,?) on conflict do nothing",phase.get("id"),actor);
         if(Db.num(db.one("select count(*) n from phase_ready r join player_role p on p.user_id=r.user_id and p.game_id=? and p.active=true where r.phase_id=?",gameId,phase.get("id")),"n")==participants(gameId).size()) advance(gameId,Instant.now());
@@ -176,20 +182,26 @@ public class GameService {
         if(!eligible.isEmpty()&&eligible.stream().allMatch(uid->db.optional("select 1 from abort_vote where game_id=? and user_id=?",gameId,uid)!=null)) finish(gameId,"ABORTED");
         changed(gameId,"ABORT_VOTE_CHANGED");return obj("ok",true);
     }
+    public Map<String,Object> abortStatus(UUID gameId,UUID actor){var game=authorized(gameId,actor);List<UUID> eligible=abortEligible(gameId);long count=eligible.stream().filter(uid->db.optional("select 1 from abort_vote where game_id=? and user_id=? and created_at>?",gameId,uid,Instant.now().minusSeconds(60))!=null).count();return obj("abortVotes",count,"abortRequired",eligible.size(),"canRequestAbort",Set.of("ACTIVE","PAUSED").contains(Db.str(game,"status")));}
     public Map<String,Object> leaveGame(UUID gameId,UUID actor) {
         var game=authorized(gameId,actor);require(Set.of("ACTIVE","PAUSED").contains(Db.str(game,"status")),409,"GAME_FINISHED","종료된 게임에서는 탈퇴할 수 없습니다.");
+        if(!"MURDER_MYSTERY".equals(Db.str(game,"game_type"))){var board=json.object(game.get("board_state").toString());String role=Db.str(db.one("select role_id from player_role where game_id=? and user_id=?",gameId,actor),"role_id");boardEngine.command(Db.str(game,"game_type"),board,Integer.parseInt(role.substring(5)),false,"LEAVE",Map.of());db.update("update game_session set board_state=?::jsonb where id=?",json.write(board),gameId);}
         db.update("update player_role set active=false where game_id=? and user_id=?",gameId,actor);
         db.update("update whisper_room set status='CLOSED' where game_id=? and (inviter_id=? or invitee_id=?)",gameId,actor,actor);
         activities.release(actor);
-        if(participants(gameId).isEmpty())finish(gameId,"ABORTED");else pauseIfDiscord(gameId);
+        if(participants(gameId).isEmpty())finish(gameId,"ABORTED");else {
+            var room=db.one("select host_id from room where id=?",game.get("room_id"));if(actor.equals(Db.uuid(room,"host_id")))db.update("update room set host_id=? where id=?",db.one("select p.user_id from player_role p join room_participant rp on rp.user_id=p.user_id and rp.room_id=? where p.game_id=? and p.active=true order by rp.joined_at,p.user_id limit 1",game.get("room_id"),gameId).get("user_id"),game.get("room_id"));
+            if(!"MURDER_MYSTERY".equals(Db.str(game,"game_type"))){var state=json.object(db.one("select board_state from game_session where id=?",gameId).get("board_state").toString());if(bool(state,"finished"))finish(gameId,"COMPLETED");}
+            pauseIfDiscord(gameId);
+        }
         changed(gameId,"PARTICIPANT_LEFT");return obj("ok",true);
     }
 
     @Transactional(readOnly=true)
     public Map<String,Object> history(UUID actor,int page,int size) {
         page=Math.max(page,0);size=Math.max(1,Math.min(size,100));
-        var rows=db.list("select g.id,g.status,g.completed_at,s.definition->>'title' title from game_session g join player_role p on p.game_id=g.id join scenario_version s on s.id=g.scenario_version_id where p.user_id=? and g.status in ('COMPLETED','ABORTED') order by g.completed_at desc,g.id limit ? offset ?",actor,size,page*size);
-        return obj("items",rows.stream().map(r->obj("gameId",r.get("id"),"title",r.get("title"),"status",r.get("status"),"completedAt",Db.instant(r,"completed_at"))).toList(),"total",Db.num(db.one("select count(*) n from game_session g join player_role p on p.game_id=g.id where p.user_id=? and g.status in ('COMPLETED','ABORTED')",actor),"n"),"page",page,"size",size);
+        var rows=db.list("select g.id,g.status,g.completed_at,s.definition->>'title' title from game_session g join player_role p on p.game_id=g.id join scenario_version s on s.id=g.scenario_version_id where p.user_id=? and g.is_test=false and g.status in ('COMPLETED','ABORTED') order by g.completed_at desc,g.id limit ? offset ?",actor,size,page*size);
+        return obj("items",rows.stream().map(r->obj("gameId",r.get("id"),"title",r.get("title"),"status",r.get("status"),"completedAt",Db.instant(r,"completed_at"))).toList(),"total",Db.num(db.one("select count(*) n from game_session g join player_role p on p.game_id=g.id where p.user_id=? and g.is_test=false and g.status in ('COMPLETED','ABORTED')",actor),"n"),"page",page,"size",size);
     }
 
     @Scheduled(fixedDelayString="${game.tick-ms:1000}") @Transactional
@@ -206,22 +218,24 @@ public class GameService {
         commands.lock();var g=db.one("select * from game_session where id=?",gameId);Instant now=Instant.now();
         if(pause&&"ACTIVE".equals(Db.str(g,"status"))) {db.update("update game_session set status='PAUSED',voice_pause=true,paused_at=? where id=?",now,gameId);changed(gameId,"VOICE_SYNC_PENDING");}
         if(!pause&&"PAUSED".equals(Db.str(g,"status"))&&Boolean.TRUE.equals(g.get("voice_pause"))) {
-            var p=currentPhase(g);long millis=Math.max(0,Duration.between(Db.instant(g,"paused_at"),now).toMillis());
-            db.update("update phase_instance set ends_at=? where id=?",Db.instant(p,"ends_at").plusMillis(millis),p.get("id"));
+            if(g.get("current_phase_id")!=null){var p=currentPhase(g);long millis=Math.max(0,Duration.between(Db.instant(g,"paused_at"),now).toMillis());
+            db.update("update phase_instance set ends_at=? where id=?",Db.instant(p,"ends_at").plusMillis(millis),p.get("id"));}
             db.update("update game_session set status='ACTIVE',voice_pause=false,paused_at=null where id=?",gameId);changed(gameId,"VOICE_SYNC_READY");
         }
     }
 
     private Map<String,Object> authorized(UUID gameId,UUID actor) { require(isParticipant(gameId,actor),403,"GAME_ACCESS_DENIED","이 게임에 접근할 권한이 없습니다.");return db.one("select * from game_session where id=?",gameId); }
     private Map<String,Object> action(UUID gameId,UUID actor,String action) {
-        var g=authorized(gameId,actor);require("ACTIVE".equals(Db.str(g,"status")),409,"GAME_NOT_ACTIVE","현재 게임에서 행동할 수 없습니다.");var p=currentPhase(g);
+        var g=authorized(gameId,actor);require("ACTIVE".equals(Db.str(g,"status")),409,"GAME_NOT_ACTIVE","현재 게임에서 행동할 수 없습니다.");
+        if(!"MURDER_MYSTERY".equals(Db.str(g,"game_type"))){require(Set.of("CHAT","WHISPER").contains(action),409,"ACTION_NOT_ALLOWED","해당 보드게임 명령을 사용해 주세요.");return g;}
+        var p=currentPhase(g);
         require(Instant.now().isBefore(Db.instant(p,"ends_at")),409,"PHASE_EXPIRED","현재 단계가 종료되었습니다. 상태를 새로 받아 주세요.");
-        require(strings(find(definition(g),"phases",Db.str(p,"definition_id")).get("actions")).contains(action),409,"ACTION_NOT_ALLOWED","현재 단계에서 허용되지 않는 행동입니다.");return g;
+        MysteryEngine.action(find(definition(g),"phases",Db.str(p,"definition_id")),action);return g;
     }
     private Map<String,Object> definition(Map<String,Object> g) { return scenarios.definition(Db.uuid(g,"scenario_version_id")); }
     private Map<String,Object> currentPhase(Map<String,Object> g) { return db.one("select * from phase_instance where id=?",g.get("current_phase_id")); }
-    private Map<String,Object> myRoleData(UUID id,UUID actor,Map<String,Object> d) {var p=db.one("select role_id from player_role where game_id=? and user_id=?",id,actor);var r=find(d,"roles",Db.str(p,"role_id"));return obj("id",r.get("id"),"name",r.get("name"),"secret",r.get("secret"),"objective",map(r.get("objective")).get("text"));}
-    private void expose(Map<String,Object> game,UUID actor) {db.update("insert into scenario_exposure(user_id,scenario_id,first_seen_at) select ?,scenario_id,? from scenario_version where id=? on conflict do nothing",actor,Instant.now(),game.get("scenario_version_id"));}
+    private Map<String,Object> myRoleData(UUID id,UUID actor,Map<String,Object> d) {var p=db.one("select role_id from player_role where game_id=? and user_id=?",id,actor);return MysteryEngine.role(d,Db.str(p,"role_id"));}
+    private void expose(Map<String,Object> game,UUID actor) {db.update("insert into scenario_exposure(user_id,scenario_id,first_seen_at) select ?,scenario_id,? from scenario_version where id=? on conflict do nothing",actor,Instant.now(),game.get("scenario_version_id"));db.update("insert into scenario_exposure_source(user_id,version_id,source) values(?,?,?) on conflict do nothing",actor,game.get("scenario_version_id"),Boolean.TRUE.equals(game.get("is_test"))?"TEST_PLAY":"REGULAR_PLAY");}
     private int remaining(UUID gameId,UUID actor,Map<String,Object> phase,Map<String,Object> pd) {return Math.max(0,integer(pd,"investigationLimit",0)-Db.num(db.one("select count(*) n from game_investigation where game_id=? and user_id=? and phase_id=?",gameId,actor,phase.get("id")),"n"));}
     private boolean connected(Map<String,Object> p) {return Db.instant(p,"last_seen_at").isAfter(Instant.now().minusSeconds(graceSeconds));}
     private List<UUID> abortEligible(UUID gameId) {var players=db.list("select * from player_role where game_id=? and active=true",gameId);boolean absent=players.stream().anyMatch(p->Db.instant(p,"last_seen_at").isBefore(Instant.now().minusSeconds(absenceSeconds)));return players.stream().filter(p->!absent||connected(p)).map(p->Db.uuid(p,"user_id")).toList();}
@@ -236,10 +250,10 @@ public class GameService {
     private void openPhase(UUID id,Map<String,Object> d,int ordinal,Instant now) {
         var p=objects(d.get("phases")).get(ordinal);UUID pid=UUID.randomUUID();int duration=phaseSeconds>0?phaseSeconds:integer(p,"durationSeconds",60);
         db.update("insert into phase_instance(id,game_id,definition_id,ordinal,started_at,ends_at) values(?,?,?,?,?,?)",pid,id,str(p,"id"),ordinal,now,now.plusSeconds(duration));
-        db.update("update game_session set current_phase_id=? where id=?",pid,id);
+        db.update("update game_session set current_phase_id=?,active_scene_id=null where id=?",pid,id);
         if("VOTE".equals(str(p,"kind"))) db.update("insert into ballot(id,game_id,phase_id) values(?,?,?)",UUID.randomUUID(),id,pid);
         rules(id,"PHASE_STARTED",str(p,"id"),"phase:"+pid);
-        if("ENDING".equals(str(p,"kind"))) {var f=facts(id,"");var e=objects(d.get("endings")).stream().filter(x->RuleConditions.evaluate(map(x.get("condition")),f)).findFirst().orElseThrow();db.update("update game_session set ending_id=? where id=?",str(e,"id"),id);}
+        if("ENDING".equals(str(p,"kind"))) {var e=MysteryEngine.ending(d,facts(id,""));db.update("update game_session set ending_id=? where id=?",str(e,"id"),id);endingObservations.recordInvitedTest(id,now);}
     }
     private void advance(UUID id,Instant now) {
         var g=db.one("select * from game_session where id=? for update",id);if(!"ACTIVE".equals(Db.str(g,"status"))) return;var d=definition(g);var phase=currentPhase(g);if(phase.get("closed_at")!=null)return;
@@ -254,11 +268,13 @@ public class GameService {
         if(next>=objects(d.get("phases")).size()) finish(id,"COMPLETED"); else {openPhase(id,d,next,now);pauseIfDiscord(id);}
     }
     private void finish(UUID id,String status) {
-        db.update("update game_session set status=?,completed_at=?,voice_pause=false,paused_at=null where id=? and status in ('ACTIVE','PAUSED')",status,Instant.now(),id);
+        db.update("update game_session set status=?,completed_at=?,voice_pause=false,paused_at=null,board_state=case when game_type<>'MURDER_MYSTERY' then board_state||jsonb_build_object('finished',true,'aborted',?::boolean) else board_state end where id=? and status in ('ACTIVE','PAUSED')",status,Instant.now(),status.equals("ABORTED"),id);
         db.update("update phase_instance set closed_at=coalesce(closed_at,?) where game_id=?",Instant.now(),id);
         db.update("update whisper_room set status='CLOSED' where game_id=?",id);db.update("update room set status='CLOSED' where game_id=?",id);
         for(UUID uid:participants(id)) {var a=db.one("select * from player_activity where user_id=?",uid);if("GAME".equals(Db.str(a,"kind"))&&id.equals(Db.uuid(a,"reference_id")))activities.release(uid);}
     }
+    public void completeBoard(UUID id){var g=db.one("select game_type from game_session where id=?",id);require(!"MURDER_MYSTERY".equals(Db.str(g,"game_type")),409,"NOT_BOARD_GAME","보드게임에서 사용할 수 있습니다.");finish(id,"COMPLETED");}
+    private void requireMystery(Map<String,Object> game){require("MURDER_MYSTERY".equals(Db.str(game,"game_type")),409,"NOT_MYSTERY_GAME","머더미스터리에서 사용할 수 있습니다.");}
     private RuleConditions.Facts facts(UUID id,String ownRole) {
         var g=db.one("select * from game_session where id=?",id);Set<String> pub=new HashSet<>();for(var c:db.list("select clue_id from public_clue where game_id=?",id))pub.add(Db.str(c,"clue_id"));
         Map<String,Set<String>> roleClues=new HashMap<>();for(var p:db.list("select role_id from player_role where game_id=?",id))roleClues.put(Db.str(p,"role_id"),new HashSet<>(pub));
@@ -266,24 +282,15 @@ public class GameService {
         return new RuleConditions.Facts(Boolean.TRUE.equals(g.get("culprit_identified")),pub,roleClues,json.object(String.valueOf(g.get("flags"))),ownRole);
     }
     private void rules(UUID id,String when,String reference,String cause) {
-        var d=definition(db.one("select * from game_session where id=?",id));int effects=0;
-        for(var rule:objects(d.get("rules"))) {
-            if(!when.equals(str(rule,"when")))continue;
-            if(when.equals("PHASE_STARTED")&&!reference.equals(str(rule,"phaseId")))continue;
-            if(when.equals("CLUE_PUBLISHED")&&!reference.equals(str(rule,"clueId")))continue;
-            if(!RuleConditions.evaluate(map(rule.get("condition")),facts(id,"")))continue;
-            if(db.update("insert into rule_execution(game_id,rule_id,cause) values(?,?,?) on conflict do nothing",id,str(rule,"id"),cause)==0)continue;
-            for(var effect:objects(rule.get("effects"))) {
-                require(++effects<=1600,422,"RULE_LIMIT","작품 규칙 실행 한도를 초과했습니다.");
+        var d=definition(db.one("select * from game_session where id=?",id));
+        MysteryEngine.rules(d,when,reference,cause,()->facts(id,""),(rule,why)->db.update("insert into rule_execution(game_id,rule_id,cause) values(?,?,?) on conflict do nothing",id,rule,why)>0,effect->{
                 switch(str(effect,"type")) {
                     case "GRANT_CLUE" -> {var player=db.one("select user_id from player_role where game_id=? and role_id=?",id,str(effect,"roleId"));grant(id,str(effect,"clueId"),Db.uuid(player,"user_id"),true);}
                     case "PUBLISH_MATERIAL" -> db.update("insert into game_material(id,game_id,text,created_at) values(?,?,?,?)",UUID.randomUUID(),id,str(effect,"text"),Instant.now());
                     case "SET_FLAG" -> {var flags=new LinkedHashMap<>(facts(id,"").flags());flags.put(str(effect,"flag"),effect.get("value"));db.update("update game_session set flags=?::jsonb where id=?",json.write(flags),id);}
                     default -> throw new ApiException(422,"INVALID_RULE","허용되지 않는 작품 규칙입니다.");
                 }
-            }
-        }
+        });
     }
     private void require(boolean condition,int status,String code,String message) {if(!condition)throw new ApiException(status,code,message);}
 }
-

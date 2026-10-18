@@ -13,25 +13,43 @@ public class RoomService {
     public Map<String,Object> create(UUID user,UUID version,String visibility,String mode){
         return create(user,version,visibility,mode,null);
     }
-    public Map<String,Object> create(UUID user,UUID version,String visibility,String mode,String inviteToken){
+    public Map<String,Object> create(UUID user,UUID version,String visibility,String mode,String inviteToken){return create(user,version,visibility,mode,inviteToken,null);}
+    public Map<String,Object> create(UUID user,UUID version,String visibility,String mode,String inviteToken,Integer capacity){
+        return createRoom(user,version,visibility,mode,inviteToken,capacity,false);
+    }
+    public Map<String,Object> createTest(UUID user,UUID version,Integer capacity,String mode,String inviteToken){
+        scenarios.requireAuthorAccess(user,version);
+        return createRoom(user,version,"INVITE",mode,inviteToken,capacity,true);
+    }
+    private Map<String,Object> createRoom(UUID user,UUID version,String visibility,String mode,String inviteToken,Integer requested,boolean test){
         if(version==null||visibility==null||mode==null||!Set.of("PUBLIC","INVITE").contains(visibility)||!Set.of("TEXT","DISCORD").contains(mode))throw new ApiException(400,"INVALID_ROOM","방 설정을 확인해 주세요.");
         activities.requireIdle(user);
         if("INVITE".equals(visibility))inviteTokenHash(inviteToken);
-        var scenario=scenarios.publicVersion(version);if(!((List<?>)scenario.get("modes")).contains(mode))throw new ApiException(400,"MODE_UNSUPPORTED","이 작품에서 지원하지 않는 모드입니다.");voice.requireEligible(user,mode);
-        UUID id=UUID.randomUUID();db.update("insert into room(id,scenario_version_id,host_id,visibility,mode) values(?,?,?,?,?)",id,version,user,visibility,mode);
+        var scenario=test?scenarios.internalVersion(version):scenarios.publicVersion(version);
+        int capacity=capacity(scenario,requested);
+        if(!((List<?>)scenario.get("modes")).contains(mode))throw new ApiException(400,"MODE_UNSUPPORTED","이 작품에서 지원하지 않는 모드입니다.");voice.requireEligible(user,mode);
+        UUID id=UUID.randomUUID();db.update("insert into room(id,scenario_version_id,host_id,visibility,mode,capacity,is_test) values(?,?,?,?,?,?,?)",id,version,user,visibility,mode,capacity,test);
         db.update("insert into room_participant(room_id,user_id) values(?,?)",id,user);activities.set(user,"ROOM",id);
         var response=map("roomId",id);if(visibility.equals("INVITE"))response.put("expiresAt",invite(id,user,inviteToken).get("expiresAt"));return response;
     }
+    public static int capacity(Map<String,Object> scenario,Integer requested){
+        int capacity=requested==null?((Number)scenario.get("playerCount")).intValue():requested;
+        boolean mystery="MURDER_MYSTERY".equals(scenario.getOrDefault("gameType","MURDER_MYSTERY"));
+        List<?> supported=(List<?>)scenario.getOrDefault("supportedPlayerCounts",List.of(scenario.get("playerCount")));
+        if(capacity<1||capacity>4||(mystery?capacity!=((Number)scenario.get("playerCount")).intValue():supported.stream().noneMatch(n->((Number)n).intValue()==capacity)))throw new ApiException(422,"INVALID_CAPACITY","작품에서 허용한 인원을 선택해 주세요.");
+        return capacity;
+    }
+    private int roomCapacity(Map<String,Object> room,Map<String,Object> scenario){return room.get("capacity")==null?((Number)scenario.get("playerCount")).intValue():Db.num(room,"capacity");}
     public Map<String,Object> snapshot(UUID id,UUID user){
-        var room=db.one("select * from room where id=?",id);requireMember(id,user);var s=scenarios.publicVersion(Db.uuid(room,"scenario_version_id"));
+        var room=db.one("select * from room where id=?",id);requireMember(id,user);var s=scenarios.internalVersion(Db.uuid(room,"scenario_version_id"));
         var members=db.list("select p.*,u.display_name from room_participant p join app_user u on u.id=p.user_id where room_id=? order by joined_at,user_id",id).stream().map(p->map("userId",p.get("user_id"),"displayName",p.get("display_name"),"ready",p.get("ready"),"connected",Db.instant(p,"last_seen_at").isAfter(Instant.now().minusSeconds(120)))).toList();
-        return map("id",id,"title",s.get("title"),"scenarioVersionId",room.get("scenario_version_id"),"hostId",room.get("host_id"),"visibility",room.get("visibility"),"mode",room.get("mode"),"status",room.get("status"),"gameId",room.get("game_id"),"capacity",s.get("playerCount"),"participants",members,"rules","정확히 "+s.get("playerCount")+"명이 준비하면 방장이 시작합니다. 비밀 자료를 외부에 공유하지 마세요.");
+        return map("id",id,"title",s.get("title"),"scenarioVersionId",room.get("scenario_version_id"),"hostId",room.get("host_id"),"visibility",room.get("visibility"),"mode",room.get("mode"),"status",room.get("status"),"gameId",room.get("game_id"),"capacity",roomCapacity(room,s),"gameType",s.get("gameType"),"isTest",room.get("is_test"),"participants",members,"rules","정확히 "+roomCapacity(room,s)+"명이 준비하면 방장이 시작합니다. 비밀 자료를 외부에 공유하지 마세요.");
     }
     public Map<String,Object> list(int page,int size,UUID scenarioId){
         page=Math.max(0,page);size=Math.clamp(size,1,50);
-        var rows=db.list("select r.*,u.display_name,(select count(*) from room_participant p where p.room_id=r.id) as n from room r join app_user u on u.id=r.host_id join scenario_version v on v.id=r.scenario_version_id where r.visibility='PUBLIC' and r.status='WAITING' and (?::uuid is null or v.scenario_id=?::uuid) order by r.created_at desc limit ? offset ?",scenarioId,scenarioId,size,page*size);
-        var result=rows.stream().map(r->{var s=scenarios.publicVersion(Db.uuid(r,"scenario_version_id"));return map("id",r.get("id"),"title",s.get("title"),"scenarioVersionId",r.get("scenario_version_id"),"hostName",r.get("display_name"),"count",r.get("n"),"capacity",s.get("playerCount"),"mode",r.get("mode"));}).toList();
-        var total=db.one("select count(*) as n from room r join scenario_version v on v.id=r.scenario_version_id where r.visibility='PUBLIC' and r.status='WAITING' and (?::uuid is null or v.scenario_id=?::uuid)",scenarioId,scenarioId).get("n");
+        var rows=db.list("select r.*,u.display_name,(select count(*) from room_participant p where p.room_id=r.id) as n from room r join app_user u on u.id=r.host_id join scenario_version v on v.id=r.scenario_version_id where r.visibility='PUBLIC' and r.is_test=false and v.status='PUBLISHED' and r.status='WAITING' and (?::uuid is null or v.scenario_id=?::uuid) order by r.created_at desc limit ? offset ?",scenarioId,scenarioId,size,page*size);
+        var result=rows.stream().map(r->{var s=scenarios.publicVersion(Db.uuid(r,"scenario_version_id"));return map("id",r.get("id"),"title",s.get("title"),"scenarioVersionId",r.get("scenario_version_id"),"hostName",r.get("display_name"),"count",r.get("n"),"capacity",roomCapacity(r,s),"gameType",s.get("gameType"),"mode",r.get("mode"));}).toList();
+        var total=db.one("select count(*) as n from room r join scenario_version v on v.id=r.scenario_version_id where r.visibility='PUBLIC' and r.is_test=false and v.status='PUBLISHED' and r.status='WAITING' and (?::uuid is null or v.scenario_id=?::uuid)",scenarioId,scenarioId).get("n");
         return map("items",result,"total",total,"page",page,"size",size);
     }
     public Map<String,Object> join(UUID id,UUID user,String token){
@@ -42,7 +60,7 @@ public class RoomService {
             if(r.get("invite_hash")==null||!hash.equals(r.get("invite_hash"))||r.get("invite_expires_at")==null||!Db.instant(r,"invite_expires_at").isAfter(Instant.now()))throw new ApiException(403,"INVALID_INVITE","초대 링크가 만료되었거나 올바르지 않습니다.");
         }
         if(db.optional("select 1 from room_participant p join user_block b on (b.user_id=p.user_id and b.blocked_id=?) or (b.blocked_id=p.user_id and b.user_id=?) where p.room_id=?",user,user,id)!=null)throw new ApiException(409,"BLOCKED_PARTICIPANT","차단 관계가 있는 참가자가 있어 입장할 수 없습니다.");
-        var s=scenarios.publicVersion(Db.uuid(r,"scenario_version_id"));if(Db.num(db.one("select count(*) as n from room_participant where room_id=?",id),"n")>=((Number)s.get("playerCount")).intValue())throw new ApiException(409,"ROOM_FULL","모집 인원이 가득 찼습니다.");
+        var s=Boolean.TRUE.equals(r.get("is_test"))?scenarios.internalVersion(Db.uuid(r,"scenario_version_id")):scenarios.publicVersion(Db.uuid(r,"scenario_version_id"));if(Db.num(db.one("select count(*) as n from room_participant where room_id=?",id),"n")>=roomCapacity(r,s))throw new ApiException(409,"ROOM_FULL","모집 인원이 가득 찼습니다.");
         db.update("insert into room_participant(room_id,user_id) values(?,?)",id,user);activities.set(user,"ROOM",id);notifyRoom(id);return map("roomId",id);
     }
     public Map<String,Object> ready(UUID id,UUID user,boolean ready){waiting(id);requireMember(id,user);db.update("update room_participant set ready=?,last_seen_at=now() where room_id=? and user_id=?",ready,id,user);notifyRoom(id);return map("ok",true);}

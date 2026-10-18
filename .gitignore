@@ -14,3 +14,9 @@
 .vscode/
 *.iml
 !gradle-wrapper.jar
+
+# Local authoring media (stored separately from source)
+/data/assets/
+/backend/data/assets/
+/.data/assets/
+/backend/.data/assets/

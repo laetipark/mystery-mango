@@ -22,13 +22,18 @@ public class RequestGuard extends OncePerRequestFilter {
         if(windows.size()>10000)windows.entrySet().removeIf(e->e.getValue().minute<minute);
         boolean auth=path.startsWith("/api/v1/auth/login")||path.startsWith("/api/v1/auth/register")||path.equals("/api/v1/auth/kakao");
         boolean write=!Set.of("GET","HEAD","OPTIONS").contains(req.getMethod());
-        if(req.getContentLengthLong()>MAX_BODY_BYTES){reject(res,413,"INPUT_TOO_LARGE","입력 크기가 너무 큽니다.",trace);return;}
+        boolean upload=path.equals("/api/v1/author/assets")&&req.getMethod().equals("POST")&&Objects.toString(req.getContentType(),"").toLowerCase(Locale.ROOT).startsWith("multipart/form-data;");
+        int bodyLimit=upload?26*1024*1024:MAX_BODY_BYTES;
+        if(req.getContentLengthLong()>bodyLimit){reject(res,413,"INPUT_TOO_LARGE","입력 크기가 너무 큽니다.",trace);return;}
         var authentication=SecurityContextHolder.getContext().getAuthentication();
         String actor=authentication!=null && authentication.isAuthenticated() && !(authentication instanceof AnonymousAuthenticationToken)?authentication.getName():req.getRemoteAddr();
-        String key=(auth?"auth:":write?"write:":"read:")+actor;
+        String key=(auth?"auth:":upload?"upload:":write?"write:":"read:")+actor;
         Window w=windows.compute(key,(k,old)->new Window(minute,old==null||old.minute!=minute?1:old.count+1));
-        int max=auth?30:write?180:900;
+        int max=auth?30:upload?20:write?180:900;
         if(w.count>max){res.setHeader("Retry-After","60");reject(res,429,"RATE_LIMITED","요청이 많습니다. 잠시 후 다시 시도해 주세요.",trace);return;}
+        // The servlet multipart parser enforces actual file/request limits, including chunked uploads.
+        // Reading its stream here would consume parts before getParts() can parse them.
+        if(upload){chain.doFilter(req,res);return;}
         // Bound actual bytes as well as the untrusted Content-Length header. This application
         // accepts small JSON requests, so downstream MVC can safely read a bounded copy.
         byte[] body=req.getInputStream().readNBytes(MAX_BODY_BYTES+1);

@@ -1,0 +1,136 @@
+{
+  "schemaVersion": 1,
+  "slug": "classic-checkers",
+  "title": "대각선의 길 · 체커",
+  "synopsis": "8×8 판의 어두운 칸에서 대결하는 잉글리시 체커입니다. 일반 말은 앞으로 대각선 한 칸, 왕은 앞뒤로 한 칸 움직입니다. 잡을 수 있으면 반드시 잡고 같은 말로 가능한 연속 포획을 마칩니다. 상대 끝줄에서 왕이 되면 그 차례는 끝납니다. 상대 말이나 가능한 수가 없으면 승리합니다. 같은 판과 차례가 세 번 반복되거나 포획·일반 말 이동 없이 80반수가 지나면 무승부입니다.",
+  "language": "ko",
+  "playerCount": 2,
+  "supportedPlayerCounts": [
+    2
+  ],
+  "estimatedMinutes": 30,
+  "genre": "클래식 보드게임",
+  "difficulty": "EASY",
+  "modes": [
+    "TEXT",
+    "DISCORD"
+  ],
+  "gameType": "CHECKERS",
+  "engineId": "checkers-v1",
+  "roles": [],
+  "phases": [],
+  "targets": [],
+  "clues": [],
+  "rules": [],
+  "endings": [],
+  "ballot": {},
+  "classic": {
+    "boardColor": "#d9ad6a",
+    "lightSquareColor": "#f4e4c1",
+    "darkSquareColor": "#486b46",
+    "firstPieceColor": "#242a27",
+    "secondPieceColor": "#fffaf0"
+  },
+  "presentation": {
+    "scenes": [
+      {
+        "id": "opening",
+        "name": "규칙 안내",
+        "kind": "SCENE",
+        "referenceId": "",
+        "phaseIds": [],
+        "width": 1280,
+        "height": 720,
+        "background": "#f4ead7",
+        "bgmAssetId": null,
+        "nodes": [
+          {
+            "id": "accent",
+            "kind": "RECT",
+            "x": 64,
+            "y": 64,
+            "width": 10,
+            "height": 576,
+            "rotation": 0,
+            "fill": "#486b46",
+            "text": "",
+            "fontSize": 30,
+            "assetId": null,
+            "locked": false,
+            "hidden": false,
+            "bindingType": "NONE",
+            "bindingId": ""
+          },
+          {
+            "id": "title",
+            "kind": "TEXT",
+            "x": 106,
+            "y": 80,
+            "width": 1040,
+            "height": 90,
+            "rotation": 0,
+            "fill": "#242a27",
+            "text": "대각선의 길 · 체커",
+            "fontSize": 46,
+            "assetId": null,
+            "locked": false,
+            "hidden": false,
+            "bindingType": "NONE",
+            "bindingId": ""
+          },
+          {
+            "id": "rules",
+            "kind": "TEXT",
+            "x": 106,
+            "y": 212,
+            "width": 1000,
+            "height": 350,
+            "rotation": 0,
+            "fill": "#242a27",
+            "text": "8×8 판의 어두운 칸에서 대결하는 잉글리시 체커입니다. 일반 말은 앞으로 대각선 한 칸, 왕은 앞뒤로 한 칸 움직입니다. 잡을 수 있으면 반드시 잡고 같은 말로 가능한 연속 포획을 마칩니다. 상대 끝줄에서 왕이 되면 그 차례는 끝납니다. 상대 말이나 가능한 수가 없으면 승리합니다. 같은 판과 차례가 세 번 반복되거나 포획·일반 말 이동 없이 80반수가 지나면 무승부입니다.",
+            "fontSize": 30,
+            "assetId": null,
+            "locked": false,
+            "hidden": false,
+            "bindingType": "NONE",
+            "bindingId": ""
+          },
+          {
+            "id": "first-piece",
+            "kind": "ELLIPSE",
+            "x": 1090,
+            "y": 600,
+            "width": 40,
+            "height": 40,
+            "rotation": 0,
+            "fill": "#242a27",
+            "text": "",
+            "fontSize": 30,
+            "assetId": null,
+            "locked": false,
+            "hidden": false,
+            "bindingType": "NONE",
+            "bindingId": ""
+          },
+          {
+            "id": "second-piece",
+            "kind": "ELLIPSE",
+            "x": 1148,
+            "y": 600,
+            "width": 40,
+            "height": 40,
+            "rotation": 0,
+            "fill": "#fffaf0",
+            "text": "",
+            "fontSize": 30,
+            "assetId": null,
+            "locked": false,
+            "hidden": false,
+            "bindingType": "NONE",
+            "bindingId": ""
+          }
+        ]
+      }
+    ]
+  }
+}

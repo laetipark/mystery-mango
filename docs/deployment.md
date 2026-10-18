@@ -8,7 +8,7 @@ DNS 원본 IPv4는 2026-10-01 확인 기준 `220.86.36.83`이다.
 - 호스트 Nginx 443 → `127.0.0.1:3211`의 프런트 Nginx → Java 21 API → PostgreSQL 17.11.
 - DB와 Java API는 Docker 내부 네트워크에만 열고, 호스트에는 프런트 loopback 포트만 연다.
 - `compose.production.yml`은 개발 구성을 덮어쓰는 운영 설정이다. Docker Compose 2.24.4 이상이 필요하다.
-- 프로젝트 이름은 `mystery-mango-prod`, DB 볼륨은 `mystery-mango-prod_postgres-data`다. 개발용 볼륨과 분리된다.
+- 프로젝트 이름은 `mystery-mango-prod`, DB 볼륨은 `mystery-mango-prod_postgres-data`, 작가 파일 볼륨은 `mystery-mango-prod_author-assets`다. 개발용 볼륨과 분리된다.
 - 운영 프로필 `prod`, HTTPS 쿠키, 허용 Origin `https://mystery.laetipark.me`, 실제 작품 진행 시간으로 고정한다. 개발 계정은 생성하지 않는다.
 - 컨테이너 자동 재시작과 Docker 부팅 자동 시작을 사용한다. 로그는 컨테이너별 10MB × 3개로 제한한다.
 - API 컨테이너를 교체하면 프런트 Nginx도 재시작해 Docker 내부 IP를 다시 확인한다. 현재 단일 서버 배포에는 짧은 서비스 중단이 발생할 수 있다.
@@ -76,7 +76,7 @@ sudo bash scripts/compose-production.sh stop
 
 `down --volumes`, `docker volume rm`을 운영에서 실행하지 않는다. Flyway 스키마 변경 뒤에는 이전 앱 버전으로 단순 되돌리기가 불가능할 수 있으므로 해당 변경과 백업 복구를 함께 검토한다. 설정 변경 시 `.env.production.local`은 보존한다.
 
-백업 검증은 `pg_restore --list`까지 자동으로 수행한다. 실제 복구는 먼저 독립 PostgreSQL 17 DB에 덤프를 복원하고 로그인·작품·게임 데이터를 확인한다. 운영 복구가 필요하면 앱을 중지하고 현재 DB도 별도 백업한 뒤 명시적으로 선택한 덤프를 복원한다. 운영 DB를 자동 삭제하는 복구 명령은 제공하지 않는다.
+백업 스크립트는 실행 중인 백엔드를 잠시 정지하고 DB와 자산을 같은 시점으로 묶은 디렉터리(`database.dump`, `assets.tar.gz`, `SHA256SUMS`)를 만든 뒤 백엔드를 재시작한다. 서비스 중단 시간을 확보하고 실행한다. 파일 기능 첫 도입 때 기존 자산 볼륨이 없으면 빈 파일 묶음과 그 사유를 기록하며 볼륨을 미리 만들지 않는다. 새 앱 이미지가 UID 10001 소유로 볼륨을 초기화하고 배포 명령은 실제 앱 사용자로 임시 파일 생성·삭제를 확인한다. 백업 후 앱 재시작에 실패하면 백업 스크립트도 실패로 종료한다. 기존 단일 `.dump` 백업에는 새 자산이 포함되지 않는다. 백업 검증은 `pg_restore --list`, 압축 목록, SHA-256 생성을 자동으로 수행한다. 실제 복구는 먼저 독립 PostgreSQL 17 DB에 덤프를 복원하고 같은 백업의 assets.tar.gz를 별도 빈 디렉터리에 해제한 다음 ASSET_STORAGE_PATH로 지정한다. `sha256sum -c SHA256SUMS`와 로그인·작품·게임·이미지·음원 조회를 확인한다. 운영 복구가 필요하면 앱을 중지하고 현재 DB도 별도 백업한 뒤 명시적으로 선택한 덤프를 복원한다. 운영 DB를 자동 삭제하는 복구 명령은 제공하지 않는다.
 
 ## 배포 검증 상태
 
@@ -93,3 +93,16 @@ Docker와 Certbot 타이머의 부팅 자동 시작이 활성화돼 있고 인�
 이후 Discord 콜백·카테고리를 바로잡고 운영 제공자를 `discord`로 활성화했다. 서버 소유자 참가 허용 변경도 재배포했으며 사용자가 소유자 계정의 참가 성공을 확인했다. 약 01:24 KST 서버 건강 상태와 배포 JS/CSS 일치를 확인했다. 실제 4인 통화·밀담 청취 분리는 별도 미검증이다.
 
 개발·E2E 계정이 있는 검증 DB는 운영 볼륨으로 옮기지 않는다. 자세한 증거와 검증 범위는 [검증 기록](verification.md)을 참고한다.
+
+## 제작 파일 저장 설정
+
+Compose backend의 `/app/assets`는 UID 10001이 쓰는 영속 볼륨이다. 컨테이너 교체 시 보존한다. Java를 직접 실행하면 `ASSET_STORAGE_PATH`(기본 `.data/assets`)를 지정하고 해당 경로를 함께 백업한다. PNG·JPEG는 10MB, MP3·OGG·WAV는 25MB까지이며 작가별 총 512MB다. JSON 요청 1MB 제한은 유지하고 `/api/v1/author/assets` 업로드만 양쪽 Nginx에서 26MB로 허용한다. 자산 디렉터리를 Nginx 정적 파일 경로로 노출하지 않는다. 모든 파일 조회는 Java의 소유자·검수·현재 참가자 권한을 통과한다.
+
+이번 제작 스튜디오 변경은 운영에 자동 배포하지 않는다. 백업·복구 스크립트 검토와 분리된 환경 검증 후 운영 배포를 별도로 수행한다.
+
+
+## 2026-10-17 홈페이지·제작 스튜디오 운영 반영
+
+사용자가 서버 터미널에서 백업→`deploy-production.sh app` 절차를 실행했다. 배포 종료의 백엔드·DB·웹 healthy, 원본 HTTPS UP, 검증 빌드와 운영 JS/CSS 10개 일치, 새 검증/고정 버전/엔딩 관찰 API 계약, 기존 공개 작품 10개의 동일 ID·버전 보존을 확인했다. Chrome 확장에서도 새 운영 홈페이지와 유형 필터·만들기 로그인 복귀가 동작했다.
+
+이 확인에서 운영 DB 이력 SQL과 백업 파일 해시를 에이전트가 직접 재조회하지는 못했다. 사용자 계정의 sudo 인증은 별도 터미널에 한정된다. 실제 Discord 통화와 인증 후 새 작품 제작·플레이는 별도 미검증이다. 세부 증거는 [검증 기록](verification.md)의 후속 운영 반영 확인을 따른다.
