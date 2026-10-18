@@ -1,0 +1,1752 @@
+.studio {
+  display: grid;
+  gap: 1rem;
+}
+.toolbar,
+.tabs,
+.row {
+  display: flex;
+  gap: 0.6rem;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.toolbar {
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  z-index: 5;
+  background: #fffaf0;
+  border: 1px solid #eadcc8;
+  border-radius: 12px;
+  padding: 0.8rem;
+}
+.tabs button[aria-selected='true'] {
+  background: #252a28;
+  color: white;
+}
+.editor {
+  display: grid;
+  grid-template-columns: minmax(180px, 220px) minmax(0, 1fr) minmax(220px, 270px);
+  gap: 1rem;
+  align-items: start;
+}
+.panel {
+  border: 1px solid #dacbb8;
+  border-radius: 12px;
+  padding: 1rem;
+  background: #fffdf7;
+  min-width: 0;
+}
+.panel label,
+.fields label {
+  display: grid;
+  gap: 0.3rem;
+  margin: 0.65rem 0;
+}
+.panel input,
+.panel select,
+.panel textarea,
+.fields input,
+.fields select,
+.fields textarea {
+  min-width: 0;
+  width: 100%;
+}
+.panel textarea {
+  min-height: 100px;
+}
+.canvas {
+  overflow: auto;
+  background: #e8e5df;
+  border: 1px solid #c1b5a5;
+  touch-action: none;
+}
+.layers {
+  list-style: none;
+  padding: 0;
+  display: grid;
+  gap: 0.4rem;
+}
+.layers button {
+  width: 100%;
+  text-align: left;
+}
+.selected {
+  outline: 2px solid #a35a13;
+}
+.fields {
+  display: grid;
+  gap: 0.7rem;
+}
+.fields fieldset {
+  border: 1px solid #dacbb8;
+  border-radius: 10px;
+  padding: 0.7rem;
+  min-width: 0;
+}
+.fields summary {
+  cursor: pointer;
+  font-weight: bold;
+  padding: 0.5rem;
+}
+.error {
+  border: 2px solid #a23b2a;
+  background: #fff0e9;
+  padding: 1rem;
+}
+.assets {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+  gap: 0.7rem;
+}
+.assets img {
+  width: 100%;
+  height: 90px;
+  object-fit: contain;
+}
+.board {
+  display: grid;
+  gap: 1rem;
+}
+.cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 0.7rem;
+}
+.card {
+  border: 2px solid #d5c5af;
+  background: #fffdf5;
+  border-radius: 12px;
+  padding: 0.8rem;
+  text-align: left;
+  min-height: 130px;
+}
+.card img {
+  max-width: 100%;
+  height: 95px;
+  object-fit: contain;
+}
+.dice {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.7rem;
+  margin: 1rem 0;
+}
+.dice button {
+  font-size: 2rem;
+  min-width: 70px;
+  min-height: 80px;
+  display: grid;
+}
+.dice small {
+  font-size: 0.7rem;
+}
+.table {
+  overflow: auto;
+}
+.table table {
+  border-collapse: collapse;
+  width: 100%;
+}
+.table td,
+.table th {
+  border: 1px solid #ded4c7;
+  padding: 0.65rem;
+  text-align: left;
+  white-space: nowrap;
+}
+.table th {
+  background: #f6eddf;
+}
+.scene {
+  overflow: auto;
+  max-width: 100%;
+  border: 1px solid #ded4c7;
+}
+.scene audio {
+  max-width: 100%;
+}
+.notice {
+  background: #f6eddf;
+  padding: 0.6rem 1rem;
+}
+.preview {
+  white-space: pre-wrap;
+}
+@media (max-width: 1100px) {
+  .editor {
+    grid-template-columns: 180px minmax(0, 1fr);
+  }
+  .inspector {
+    grid-column: 1 / -1;
+  }
+}
+@media (max-width: 650px) {
+  .editor {
+    grid-template-columns: 1fr;
+  }
+  .toolbar {
+    position: static;
+  }
+}
+
+.panel input[type='checkbox'],
+.fields input[type='checkbox'] {
+  width: auto;
+}
+
+.assets audio {
+  width: 100%;
+}
+
+.table thead th {
+  background: transparent;
+  color: inherit;
+}
+
+.classicBoard {
+  display: grid;
+  width: 100%;
+  max-width: 600px;
+  margin: 1rem auto;
+  padding: 4px;
+  border: 1px solid #6d5940;
+  border-radius: 4px;
+  gap: 0;
+}
+.classicCell {
+  aspect-ratio: 1;
+  min-height: 0;
+  min-width: 0;
+  width: 100%;
+  padding: 10%;
+  border: 0;
+  border-radius: 0;
+  display: grid;
+  place-items: center;
+  touch-action: manipulation;
+  position: relative;
+}
+.classicCell:disabled {
+  opacity: 1;
+  cursor: default;
+}
+.gomokuCell {
+  background-image:
+    linear-gradient(transparent calc(50% - 0.5px), #856637 calc(50% - 0.5px), #856637 calc(50% + 0.5px), transparent calc(50% + 0.5px)),
+    linear-gradient(90deg, transparent calc(50% - 0.5px), #856637 calc(50% - 0.5px), #856637 calc(50% + 0.5px), transparent calc(50% + 0.5px));
+}
+.classicPiece {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  border: 1px solid #867a69;
+  box-shadow:
+    inset -2px -2px 4px #0004,
+    1px 2px 2px #0003;
+  display: grid;
+  place-items: center;
+  z-index: 1;
+}
+.classicDot {
+  width: 20%;
+  height: 20%;
+  border-radius: 50%;
+  background: #59411f;
+  opacity: 0.55;
+}
+.classicLegend {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+.classicLegend i {
+  display: inline-block;
+  width: 1rem;
+  height: 1rem;
+  border: 1px solid #867a69;
+  border-radius: 50%;
+}
+.crown {
+  color: #edbb50;
+  text-shadow: 0 1px 2px #000;
+  font-size: clamp(14px, 4vw, 30px);
+  line-height: 1;
+}
+
+.templates {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(270px, 100%), 1fr));
+  gap: 1rem;
+}
+
+.sceneOrder {
+  list-style: none;
+  padding: 0;
+  display: grid;
+  gap: 0.6rem;
+}
+.sceneOrder li {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+}
+
+/* 제작 작업실 */
+.studioHome {
+  gap: 3.5rem;
+}
+.studioHero {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 2rem;
+  padding: 2.5rem 0 2.1rem;
+  border-bottom: 1px solid #d9dfd0;
+}
+.studioHero h1 {
+  color: #244b3d;
+  font-size: clamp(2.2rem, 4vw, 3.5rem);
+  margin: 0.5rem 0 1rem;
+  letter-spacing: -0.055em;
+}
+.studioHero p {
+  color: #687263;
+  margin: 0;
+  line-height: 1.9;
+}
+.eyebrow {
+  font-size: 0.73rem;
+  font-weight: 750;
+  letter-spacing: 0.08em;
+  color: #73816a;
+}
+.heroLink {
+  white-space: nowrap;
+  border: 1px solid #bac7af;
+  padding: 1rem 1.3rem;
+  border-radius: 100px;
+  color: #264d3e;
+  font-weight: 650;
+}
+.heroLink span {
+  margin-left: 1rem;
+}
+.homeSection {
+  display: grid;
+  gap: 1.35rem;
+}
+.sectionHeading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+.sectionHeading h2 {
+  margin: 0.35rem 0 0;
+  font-size: 1.45rem;
+  color: #244b3d;
+  letter-spacing: -0.035em;
+}
+.sectionHeading p {
+  margin: 0;
+  color: #73816a;
+  font-size: 0.86rem;
+}
+.templates {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1.3rem;
+  align-items: start;
+}
+.templateCard {
+  background: #fffefa;
+  border: 1px solid #d9dfd0;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 5px 16px #203c2c04;
+}
+.templateSelected {
+  border-color: #486f49;
+  box-shadow: 0 0 0 2px #486f491c;
+}
+.templatePreview {
+  width: 100%;
+  display: block;
+  height: auto;
+}
+.templateBody {
+  padding: 1.25rem;
+  display: grid;
+  gap: 0.8rem;
+}
+.templateBody h3 {
+  margin: 0;
+  color: #284835;
+  font-size: 1.2rem;
+  letter-spacing: -0.03em;
+}
+.templateMeta {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.5rem;
+  color: #6b795f;
+  font-size: 0.74rem;
+  font-weight: 650;
+}
+.templateMeta span:last-child {
+  border-radius: 20px;
+  background: #edf0e4;
+  padding: 2px 9px;
+}
+.templateDescription {
+  color: #737669;
+  font-size: 0.87rem;
+  min-height: 3em;
+  line-height: 1.7;
+  margin: 0;
+}
+.templateDetails {
+  color: #697460;
+  font-size: 0.8rem;
+  border-top: 1px solid #eef0e6;
+  padding-top: 0.75rem;
+}
+.templateDetails summary {
+  cursor: pointer;
+  margin-bottom: 0.35rem;
+}
+.templateDetails p {
+  margin: 0.3rem 0 0.75rem;
+}
+.templateAction {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  color: #264d3e;
+  border-color: #ced8c4;
+  background: #f7f8ef;
+  padding: 0.8rem 1rem;
+}
+.primaryAction {
+  background: #294e3d !important;
+  color: #fffaf0 !important;
+  border-color: #294e3d !important;
+}
+.createTray {
+  border-top: 1px solid #d9dfd0;
+  padding-top: 1rem;
+  display: grid;
+  gap: 0.65rem;
+}
+.createTray h4 {
+  margin: 0;
+  font-size: 0.95rem;
+}
+.createTray label {
+  margin: 0;
+}
+.worksGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+}
+.workCard {
+  display: grid;
+  grid-template-columns: 115px minmax(0, 1fr) 18px;
+  align-items: center;
+  gap: 1.2rem;
+  border: 1px solid #d9dfd0;
+  border-radius: 12px;
+  padding: 0.8rem;
+  background: #fffefa;
+}
+.workCard .templatePreview {
+  border-radius: 8px;
+}
+.workCard h3 {
+  font-size: 1rem;
+  margin: 0.2rem 0;
+  overflow-wrap: anywhere;
+}
+.workCard p {
+  margin: 0;
+  font-size: 0.76rem;
+  color: #7c8374;
+}
+.emptyWorks {
+  grid-column: 1/-1;
+  text-align: center;
+  padding: 3rem 1.5rem;
+  border: 1px dashed #c5d0b9;
+  border-radius: 14px;
+  color: #77806e;
+}
+.emptyWorks > span {
+  display: block;
+  font-size: 2rem;
+  color: #98ad86;
+}
+.emptyWorks h3 {
+  font-size: 1.1rem;
+  color: #47603f;
+  margin: 0.4rem 0;
+}
+.emptyWorks p {
+  margin: 0;
+  font-size: 0.9rem;
+}
+.authorWorkspace {
+  gap: 0.8rem;
+  color: #2f493b;
+  min-width: 0;
+}
+.authorWorkspace [hidden] {
+  display: none !important;
+}
+.authorWorkspace h2,
+.authorWorkspace h3 {
+  color: #2d4d3b;
+}
+.authorWorkspace .toolbar {
+  border-color: #d9dfd0;
+  background: #fffefaee;
+  backdrop-filter: blur(12px);
+  border-radius: 12px;
+  padding: 0.8rem 1rem;
+  gap: 1rem;
+}
+.workTitle {
+  min-width: 0;
+}
+.workTitle > a {
+  font-size: 0.74rem;
+  color: #70816b;
+}
+.workTitle h1 {
+  font-size: 1.35rem;
+  line-height: 1.35;
+  margin: 0.2rem 0;
+  overflow-wrap: anywhere;
+}
+.saveState {
+  font-size: 0.73rem;
+  color: #799068;
+}
+.toolbarActions {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+}
+.toolbarActions button {
+  font-size: 0.8rem;
+  padding: 8px 12px;
+  border-radius: 7px;
+}
+.workNavigation {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  flex-wrap: wrap;
+  border-bottom: 1px solid #d9dfd0;
+  padding: 0 0.25rem 0.6rem;
+}
+.workNavigation button {
+  border: 0;
+  background: transparent;
+  color: #75816c;
+  font-size: 0.86rem;
+  padding: 0.65rem 1rem;
+}
+.workNavigation button[aria-selected='true'] {
+  background: #e7eddc;
+  color: #294e3d;
+}
+.workArea {
+  min-width: 0;
+}
+.workspacePanels {
+  display: grid;
+  grid-template-columns: 230px minmax(0, 1fr) 260px;
+  gap: 0.85rem;
+  position: relative;
+  align-items: start;
+  margin-top: 0.75rem;
+  min-width: 0;
+}
+.workspaceLeft,
+.workspaceRight {
+  max-height: calc(100dvh - 230px);
+  overflow: auto;
+  scrollbar-width: thin;
+  padding: 1rem;
+  border-color: #d9dfd0;
+  background: #fffefa;
+}
+.workspaceLeft h3,
+.workspaceRight h3 {
+  font-size: 0.97rem;
+  margin: 0 0 1rem;
+}
+.workspaceLeft h4,
+.workspaceRight h4 {
+  font-size: 0.8rem;
+  margin: 1.3rem 0 0.6rem;
+  color: #859175;
+}
+.workspaceLeft label,
+.workspaceRight label {
+  font-size: 0.76rem;
+}
+.workspaceLeft button,
+.workspaceRight button {
+  font-size: 0.78rem;
+  padding: 8px 9px;
+}
+.workspaceCenter {
+  min-width: 0;
+  padding: 1.2rem;
+  background: #eff1e9;
+  border: 1px solid #d9dfd0;
+  border-radius: 12px;
+  min-height: 560px;
+}
+.workspaceCenter > .row {
+  margin-bottom: 0.8rem;
+}
+.workspaceCenter > .row button {
+  font-size: 0.78rem;
+  padding: 8px 10px;
+}
+.workspaceCenter .canvas {
+  border-color: #cdd5c3;
+  border-radius: 4px;
+}
+.workspaceCenter > p,
+.workspaceCenter .subtle {
+  font-size: 0.78rem;
+  color: #7a8470;
+}
+.workspaceCenter > div > label {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 0.76rem;
+  padding-bottom: 0.65rem;
+  gap: 1rem;
+}
+.workspaceCenter > div > label select {
+  width: auto;
+  max-width: 180px;
+  padding: 7px 11px;
+}
+.workspacePanels .selected {
+  outline: 1px solid #8ba273;
+  background: #eaf0e0;
+}
+.paneTabs,
+.compactToggle {
+  display: none;
+}
+.compactPanels {
+  grid-template-columns: minmax(0, 1fr);
+}
+.compactPanels > .workspaceLeft,
+.compactPanels > .workspaceRight {
+  display: none;
+}
+.structureSection {
+  display: grid;
+  gap: 0.3rem;
+  border-top: 1px solid #edf0e5;
+  padding: 0.65rem 0;
+}
+.structureSection > button {
+  text-align: left;
+  border: 0;
+  border-radius: 5px;
+  background: transparent;
+  overflow-wrap: anywhere;
+}
+.sectionRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 0.8rem;
+}
+.sectionRow button {
+  padding: 1px 8px;
+}
+.addGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.4rem;
+}
+.subtle {
+  color: #7a8470;
+  font-size: 0.8rem;
+  line-height: 1.65;
+}
+.mobileNotice {
+  display: none;
+}
+.identifier {
+  display: block;
+  font-size: 0.65rem;
+  color: #8b947e;
+  overflow-wrap: anywhere;
+}
+.checkLabel {
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: center;
+  gap: 0.5rem !important;
+}
+.fields input[type='checkbox'],
+.checkLabel input {
+  flex: none;
+  width: auto;
+}
+.basicFields {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.6rem 1.5rem;
+}
+.basicFields > [data-field-path='title'],
+.basicFields > [data-field-path='synopsis'] {
+  grid-column: 1/-1;
+}
+.basicsPanel,
+.rulesPanel,
+.testPanel {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 1.7rem;
+  border-color: #d9dfd0;
+}
+.rulesPanel > .fields {
+  grid-template-columns: 1fr;
+}
+.designWorkspace {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 300px;
+  gap: 1rem;
+}
+.designWorkspace > .panel {
+  max-height: calc(100dvh - 220px);
+  overflow: auto;
+}
+.flowBoard {
+  display: grid;
+  gap: 1.2rem;
+}
+.flowBoard h3 {
+  margin: 0.8rem 0 0;
+  font-size: 0.95rem;
+}
+.phaseFlow {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(145px, 1fr));
+  gap: 0.65rem;
+}
+.phaseCard {
+  display: grid;
+  align-content: start;
+  gap: 0.7rem;
+  padding: 1rem;
+  background: #fffefa;
+  border: 1px solid #d4decb;
+  border-radius: 9px;
+}
+.phaseCard > button {
+  text-align: left;
+  padding: 0;
+  background: transparent;
+  border: 0;
+  color: #294e3d;
+}
+.phaseCard p {
+  font-size: 0.75rem;
+  color: #7c8673;
+  line-height: 1.7;
+  margin: 0;
+}
+.phaseCard small {
+  color: #93a087;
+  font-size: 0.7rem;
+}
+.phaseCard .row button {
+  font-size: 0.75rem;
+  padding: 3px 9px;
+}
+.relationships {
+  display: grid;
+  gap: 0.6rem;
+}
+.relationships article {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+  background: #fffefa;
+  padding: 0.7rem;
+  border: 1px solid #d9dfd0;
+  border-radius: 8px;
+}
+.relationships button {
+  padding: 6px 9px;
+  font-size: 0.77rem;
+  background: #f3f5eb;
+}
+.relationships small,
+.relationships p {
+  font-size: 0.72rem;
+  color: #849276;
+  margin: 0;
+}
+.relationships article > div {
+  display: flex;
+  gap: 0.3rem;
+  flex-wrap: wrap;
+}
+.roleTiles {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 0.65rem;
+}
+.roleTiles button {
+  display: grid;
+  gap: 0.4rem;
+  justify-items: center;
+  padding: 1rem;
+}
+.roleTiles button > span {
+  background: #dbe6cc;
+  color: #47603f;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  display: grid;
+  place-items: center;
+}
+.roleTiles small {
+  font-size: 0.68rem;
+  color: #8b967f;
+}
+.tableWorkspace h2 {
+  font-size: 1.1rem;
+}
+.tableWorkspace .sectionHeading {
+  margin-bottom: 1rem;
+}
+.tableWorkspace label {
+  font-size: 0.75rem;
+}
+.tableWorkspace select {
+  width: 150px;
+  padding: 6px;
+}
+.tableCanvas {
+  width: 100%;
+  overflow: auto;
+  border-radius: 12px;
+  border: 1px solid #b6c7a6;
+}
+.cardDesignBar {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin: 1rem 0;
+}
+.cardDesignBar label {
+  flex: 1;
+  min-width: 180px;
+  max-width: 350px;
+  font-size: 0.8rem;
+}
+.cardDesigner > .notice {
+  margin: 1rem 0;
+  font-size: 0.8rem;
+}
+.sceneOrder {
+  margin-bottom: 0;
+}
+.sceneOrder li {
+  background: #fffefa;
+  padding: 0.65rem;
+  border: 1px solid #e3e8db;
+  border-radius: 7px;
+}
+.sceneOrder li > span {
+  flex: 1;
+  font-size: 0.73rem;
+  color: #8b967f;
+}
+.sceneOrder button {
+  padding: 5px 9px;
+  font-size: 0.78rem;
+}
+.validationIssues {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 0.35rem;
+}
+.validationIssues button {
+  width: 100%;
+  text-align: left;
+  background: #fff2de;
+  border-color: #ead3a7;
+  font-size: 0.83rem;
+}
+.validationIssues small {
+  display: block;
+  font-size: 0.7rem;
+  color: #977943;
+}
+.testSettings {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin: 1rem 0;
+}
+.testSettings label {
+  flex: 1;
+  min-width: 180px;
+}
+.testChoices {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1rem;
+  margin: 1.5rem 0;
+}
+.testChoices article {
+  border: 1px solid #d9dfd0;
+  border-radius: 12px;
+  padding: 1.1rem;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+}
+.testChoices article > span {
+  color: #9da78b;
+  font-size: 0.75rem;
+}
+.testChoices h3 {
+  font-size: 1rem;
+  margin: 0.5rem 0;
+}
+.testChoices p {
+  color: #818b75;
+  font-size: 0.8rem;
+  flex: 1;
+}
+.testChoices button {
+  font-size: 0.76rem;
+  padding: 10px 7px;
+}
+.versionRow {
+  border-top: 1px solid #e3e8db;
+  padding: 0.8rem 0;
+  font-size: 0.85rem;
+}
+.versionRow p {
+  color: #859175;
+  margin: 0.3rem 0 0;
+}
+@media (min-width: 801px) and (max-width: 1199px) {
+  .workspacePanels {
+    grid-template-columns: 200px minmax(0, 1fr);
+  }
+  .workspaceRight {
+    display: none;
+  }
+  .paneTabs {
+    grid-column: 1/-1;
+    display: flex;
+    gap: 0.4rem;
+  }
+  .paneTabs button {
+    font-size: 0.8rem;
+    padding: 7px 12px;
+  }
+  .workspacePanels[data-pane='right'] > .workspaceRight {
+    display: block;
+    position: absolute;
+    right: 0;
+    top: 48px;
+    width: 300px;
+    z-index: 8;
+    box-shadow: 0 8px 30px #264d3e1c;
+  }
+  .compactToggle {
+    display: block;
+    position: absolute;
+    top: 0;
+    right: 0;
+    padding: 7px 12px;
+    font-size: 0.8rem;
+  }
+  .compactPanels {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .templates {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+@media (max-width: 800px) {
+  .studioHome {
+    gap: 2rem;
+  }
+  .studioHero {
+    padding: 1rem 0 1.5rem;
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 1.2rem;
+  }
+  .studioHero h1 {
+    font-size: 2.15rem;
+  }
+  .studioHero p {
+    font-size: 0.87rem;
+  }
+  .heroLink {
+    font-size: 0.82rem;
+    padding: 0.65rem 1rem;
+  }
+  .templates {
+    grid-template-columns: 1fr;
+  }
+  .templatePreview {
+    max-height: 210px;
+  }
+  .templateDescription {
+    min-height: 0;
+  }
+  .sectionHeading p {
+    font-size: 0.78rem;
+  }
+  .worksGrid {
+    grid-template-columns: 1fr;
+  }
+  .workCard {
+    grid-template-columns: 88px minmax(0, 1fr) 14px;
+    gap: 0.7rem;
+  }
+  .authorWorkspace .toolbar {
+    position: static;
+    padding: 0.8rem;
+  }
+  .workTitle h1 {
+    font-size: 1.1rem;
+  }
+  .toolbarActions {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    width: 100%;
+  }
+  .toolbarActions button {
+    font-size: 0.74rem;
+    padding: 8px 5px;
+  }
+  .workNavigation {
+    display: flex;
+    flex-wrap: nowrap;
+    gap: 0.3rem;
+    max-width: 100%;
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scrollbar-width: thin;
+  }
+  .workNavigation button {
+    flex: 0 0 auto;
+    min-height: 44px;
+    font-size: 0.76rem;
+    padding: 8px 12px;
+  }
+  .toolbarActions button {
+    min-height: 44px;
+  }
+  .tableWorkspace .mobileNotice {
+    display: none;
+  }
+  .mobileNotice {
+    display: block;
+    font-size: 0.73rem;
+    color: #839174;
+    background: #edf2e4;
+    border-radius: 7px;
+    padding: 0.65rem 0.8rem;
+    margin: 0;
+  }
+  .workspacePanels {
+    display: block;
+    margin-top: 0.5rem;
+  }
+  .paneTabs {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.4rem;
+    margin-bottom: 0.7rem;
+  }
+  .paneTabs button {
+    padding: 8px 4px;
+    font-size: 0.8rem;
+  }
+  .paneTabs button[aria-pressed='true'] {
+    background: #294e3d;
+    color: #fffaf0;
+  }
+  .workspacePanels > .workspaceLeft,
+  .workspacePanels > .workspaceCenter,
+  .workspacePanels > .workspaceRight {
+    display: none;
+    max-height: none;
+  }
+  .workspacePanels[data-pane='left'] > .workspaceLeft,
+  .workspacePanels[data-pane='center'] > .workspaceCenter,
+  .workspacePanels[data-pane='right'] > .workspaceRight {
+    display: block;
+  }
+  .workspaceCenter {
+    min-height: 300px;
+    padding: 0.8rem;
+  }
+  .workspaceCenter > div > label {
+    gap: 0.4rem;
+  }
+  .workspaceCenter > .row {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.3rem;
+  }
+  .workspaceCenter > .row button {
+    font-size: 0.73rem;
+    padding: 7px 3px;
+  }
+  .basicFields,
+  .designWorkspace,
+  .testChoices {
+    grid-template-columns: 1fr;
+  }
+  .basicsPanel,
+  .rulesPanel,
+  .testPanel {
+    padding: 1rem;
+  }
+  .basicFields > [data-field-path] {
+    grid-column: 1;
+  }
+  .designWorkspace > .panel {
+    max-height: none;
+  }
+  .phaseFlow {
+    grid-template-columns: 1fr;
+  }
+  .phaseCard {
+    padding: 0.8rem;
+    gap: 0.4rem;
+  }
+  .testChoices {
+    gap: 0.7rem;
+  }
+  .sceneOrder li {
+    gap: 0.4rem;
+  }
+  .sceneOrder li > span {
+    flex-basis: 100%;
+  }
+  .cardDesignBar {
+    gap: 0.5rem;
+  }
+  .cardDesignBar label {
+    min-width: 100%;
+  }
+}
+.tableStage {
+  position: relative;
+}
+.tableOverlays {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+.tableCardVisual {
+  position: absolute;
+  overflow: hidden;
+  border-radius: 5px;
+  background: #fffaf0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  font-size: 12px;
+  line-height: 1.3;
+}
+.tableCardVisual > svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+  flex: 1;
+}
+.tableCardVisual > img {
+  max-width: 100%;
+  max-height: 75%;
+  object-fit: contain;
+}
+.tableCardVisual > p {
+  font-size: 10px;
+  margin: 4px;
+}
+.deckCount {
+  position: absolute;
+  right: 4px;
+  bottom: 4px;
+  padding: 2px 5px;
+  background: #264d3ee6;
+  color: #fffaf0;
+  border-radius: 5px;
+}
+.deckCards {
+  display: grid;
+  gap: 6px;
+  max-height: 290px;
+  overflow: auto;
+}
+.deckCardRow {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+.deckCardRow > button {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 5px;
+  text-align: left;
+  font-size: 12px;
+}
+.deckCardRow > button > span:last-child {
+  overflow-wrap: anywhere;
+}
+.deckCardRow > div {
+  display: grid;
+  gap: 3px;
+}
+.deckCardRow > div > button {
+  padding: 2px 8px;
+}
+.cardThumbnail {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 40px;
+  height: 57px;
+  flex: 0 0 40px;
+  overflow: hidden;
+  background: #fffaf0;
+  border: 1px solid #dce0d0;
+  font-size: 8px;
+}
+.cardThumbnail > svg {
+  width: 100%;
+  height: 100%;
+}
+.cardThumbnail > img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
+.cardThumbnail > p {
+  margin: 0;
+  font-size: 7px;
+}
+.designDialog {
+  width: min(1000px, 94vw);
+  max-height: 90dvh;
+  overflow: auto;
+  padding: 24px;
+  border: 1px solid #cad3bc;
+  border-radius: 20px;
+  background: #fffdf6;
+  color: #264d3e;
+  box-shadow: 0 18px 70px #102d2450;
+}
+.designDialog::backdrop {
+  background: #153c2dcc;
+}
+.cardPreview {
+  max-width: 380px;
+  margin: 0 auto;
+  aspect-ratio: 600/850;
+}
+.cardPreview > svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+@media (max-width: 800px) {
+  .designDialog {
+    padding: 15px;
+  }
+}
+
+/* 제작 화면의 패널과 입력 요소는 공통 크기와 간격을 사용한다. */
+.studioHome {
+  max-width: 1240px;
+  width: 100%;
+  margin: 0 auto;
+}
+.templates {
+  align-items: stretch;
+}
+.templateCard {
+  display: flex;
+  flex-direction: column;
+}
+.templateBody {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+.templateAction {
+  margin-top: auto;
+  min-height: 44px;
+}
+.templateOptions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px 24px;
+  align-items: center;
+}
+.templateOptions > p {
+  flex: 1;
+  min-width: 240px;
+  margin: 0;
+  color: #687660;
+  font-size: 0.88rem;
+}
+.startModes {
+  display: flex;
+  gap: 4px;
+  border: 1px solid #d6dece;
+  border-radius: 12px;
+  padding: 4px;
+  background: #edf1e7;
+}
+.startModes button {
+  min-height: 44px;
+  border: 0;
+  background: transparent;
+  color: #67745f;
+  padding: 10px 20px;
+}
+.startModes button[aria-pressed='true'] {
+  background: #fffefa;
+  color: #254e3c;
+  box-shadow: 0 2px 5px #294e3d14;
+}
+.createDialog {
+  width: min(480px, calc(100vw - 32px));
+  max-height: calc(100dvh - 40px);
+  overflow: auto;
+  padding: 28px;
+  border: 1px solid #d3ddc9;
+  border-radius: 20px;
+  background: #fffefa;
+  color: #294735;
+  box-shadow: 0 24px 80px #16362930;
+}
+.createDialog::backdrop {
+  background: #203d2e70;
+  backdrop-filter: blur(3px);
+}
+.dialogHeading {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: center;
+}
+.dialogHeading button {
+  padding: 0;
+  width: 36px;
+  min-height: 36px;
+  font-size: 24px;
+  border: 0;
+  background: #eff2e8;
+}
+.createDialog h2 {
+  margin: 18px 0 10px;
+  font-size: 1.4rem;
+  letter-spacing: -0.035em;
+}
+.createDialog > p {
+  font-size: 0.9rem;
+  line-height: 1.7;
+  color: #687660;
+}
+.createDialog .createTray {
+  margin-top: 22px;
+  gap: 20px;
+  border: 0;
+  padding: 0;
+}
+.createDialog input {
+  width: 100%;
+  min-width: 0;
+}
+.dialogActions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}
+.dialogActions button {
+  min-height: 44px;
+  padding: 10px 18px;
+}
+.authorWorkspace .toolbar {
+  display: grid;
+  grid-template-columns: minmax(180px, 1fr) auto;
+  padding: 14px 18px;
+}
+.toolbarActions {
+  justify-content: flex-end;
+}
+.toolbarActions button {
+  min-height: 40px;
+  white-space: nowrap;
+}
+.workTitle h1 {
+  font-size: 1.2rem;
+  margin: 4px 0;
+}
+.workspacePanels {
+  grid-template-columns: 224px minmax(0, 1fr) 280px;
+  gap: 12px;
+  align-items: stretch;
+}
+.workspaceLeft,
+.workspaceRight,
+.workspaceCenter {
+  height: clamp(540px, calc(100dvh - 275px), 780px);
+  min-height: 0;
+  max-height: none;
+  overflow: auto;
+  scrollbar-width: thin;
+  scrollbar-gutter: stable;
+  padding: 16px;
+}
+.workspaceCenter {
+  background: #edf1e8;
+}
+.workspaceLeft h3,
+.workspaceRight h3 {
+  margin-bottom: 16px;
+  font-size: 0.95rem;
+}
+.workspaceLeft label,
+.workspaceRight label {
+  font-size: 0.8rem;
+  margin: 10px 0;
+}
+.workspaceLeft input,
+.workspaceRight input,
+.workspaceLeft select,
+.workspaceRight select,
+.workspaceLeft textarea,
+.workspaceRight textarea {
+  padding: 9px 10px;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  min-height: 38px;
+}
+.workspaceLeft input[type='color'],
+.workspaceRight input[type='color'] {
+  padding: 4px;
+  height: 38px;
+}
+.workspaceLeft input[type='checkbox'],
+.workspaceRight input[type='checkbox'] {
+  min-height: 0;
+  width: 16px;
+  height: 16px;
+}
+.workspaceRight textarea {
+  min-height: 88px;
+  resize: vertical;
+}
+.workspaceRight .fields {
+  gap: 10px;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+.workspaceRight .fields > * {
+  grid-column: 1 / -1;
+  min-width: 0;
+}
+.workspaceRight .fields > label:has(input[type='number']) {
+  grid-column: auto;
+}
+.workspaceRight .fields label {
+  margin: 0;
+}
+.geometryFields {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+  margin: 12px 0;
+}
+.geometryFields label {
+  margin: 0;
+}
+.workspaceRight > .row {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 6px;
+}
+.workspaceRight > button {
+  margin: 6px 4px 0 0;
+}
+.layers button {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  min-height: 38px;
+}
+.panelTools {
+  display: none;
+}
+.cardDesignBar {
+  align-items: end;
+}
+.cardDesignBar label {
+  margin: 0;
+}
+.cardDesigner > .subtle {
+  margin: 12px 0;
+}
+.paneTabs button[aria-pressed='true'] {
+  background: #294e3d;
+  color: #fffaf0;
+  border-color: #294e3d;
+}
+@media (min-width: 801px) and (max-width: 1199px) {
+  .authorWorkspace .toolbar {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+  .toolbarActions {
+    justify-content: flex-start;
+  }
+  .workspacePanels {
+    grid-template-columns: 210px minmax(0, 1fr);
+  }
+  .panelTools {
+    display: flex;
+    grid-column: 1/-1;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+  }
+  .paneTabs {
+    display: flex;
+    margin: 0;
+  }
+  .paneTabs button,
+  .compactToggle {
+    min-height: 40px;
+  }
+  .compactToggle {
+    display: block;
+    position: static;
+    white-space: nowrap;
+  }
+  .workspaceLeft {
+    grid-column: 1;
+    grid-row: 2;
+  }
+  .workspaceCenter {
+    grid-column: 2;
+    grid-row: 2;
+  }
+  .workspacePanels[data-pane='right'] {
+    grid-template-columns: minmax(0, 1fr) 260px;
+  }
+  .workspacePanels[data-pane='right'] > .workspaceLeft {
+    display: none;
+  }
+  .workspacePanels[data-pane='right'] > .workspaceCenter {
+    grid-column: 1;
+  }
+  .workspacePanels[data-pane='right'] > .workspaceRight {
+    display: block;
+    grid-column: 2;
+    grid-row: 2;
+    position: static;
+    width: auto;
+    box-shadow: none;
+  }
+  .workspacePanels.compactPanels {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .workspacePanels.compactPanels > .workspaceCenter {
+    grid-column: 1;
+  }
+  .workspacePanels.compactPanels > .workspaceLeft,
+  .workspacePanels.compactPanels > .workspaceRight {
+    display: none;
+  }
+}
+@media (max-width: 800px) {
+  .createDialog {
+    padding: 20px;
+  }
+  .dialogHeading button {
+    width: 44px;
+    min-height: 44px;
+  }
+  .startModes {
+    width: 100%;
+  }
+  .startModes button {
+    flex: 1;
+  }
+  .templateOptions > p {
+    font-size: 0.82rem;
+  }
+  .authorWorkspace .toolbar {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    padding: 12px;
+    gap: 12px;
+  }
+  .toolbarActions {
+    gap: 6px;
+  }
+  .toolbarActions button {
+    min-height: 44px;
+    font-size: 0.73rem;
+  }
+  .panelTools {
+    display: block;
+  }
+  .compactToggle {
+    display: none;
+  }
+  .workspacePanels > .workspaceLeft,
+  .workspacePanels > .workspaceCenter,
+  .workspacePanels > .workspaceRight {
+    height: auto;
+    min-height: 0;
+    padding: 14px;
+    scrollbar-gutter: auto;
+    overflow: visible;
+  }
+  .workspaceLeft input,
+  .workspaceRight input,
+  .workspaceLeft select,
+  .workspaceRight select,
+  .workspaceLeft textarea,
+  .workspaceRight textarea {
+    font-size: 16px;
+    min-height: 44px;
+  }
+  .workspaceLeft input[type='checkbox'],
+  .workspaceRight input[type='checkbox'] {
+    min-height: 0;
+  }
+  .workspaceRight > .row button {
+    min-height: 44px;
+  }
+  .geometryFields {
+    gap: 12px;
+  }
+  .workTitle h1 {
+    font-size: 1.1rem;
+  }
+  .templateBody {
+    padding: 18px;
+  }
+}
+.workspaceRight > .row {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+.workspaceRight > .row button {
+  white-space: nowrap;
+}
+.cardDesigner {
+  display: grid;
+  grid-template-columns: minmax(220px, 1fr) minmax(340px, 1fr);
+  gap: 12px 24px;
+}
+.cardDesigner > * {
+  grid-column: 1/-1;
+}
+.cardDesigner > .sectionHeading {
+  grid-column: 1;
+  gap: 10px;
+}
+.cardDesigner > .sectionHeading h2 {
+  font-size: 1.2rem;
+}
+.cardDesigner > .cardDesignBar {
+  grid-column: 2;
+  margin: 0;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+.cardDesigner > .cardDesignBar label {
+  width: auto;
+  min-width: 0;
+  font-size: 0.8rem;
+}
+.cardDesigner > .subtle {
+  margin: 0;
+}
+.cardDesigner > .notice {
+  margin: 0;
+}
+.cardDesigner > button {
+  justify-self: start;
+}
+.cardDesigner .workspaceLeft,
+.cardDesigner .workspaceCenter,
+.cardDesigner .workspaceRight {
+  height: clamp(470px, calc(100dvh - 410px), 670px);
+}
+.cardDesigner select[aria-label='편집할 카드 면'] {
+  width: 170px;
+}
+@media (max-width: 800px) {
+  .cardDesigner {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 12px;
+  }
+  .cardDesigner > .sectionHeading,
+  .cardDesigner > .cardDesignBar {
+    grid-column: 1;
+  }
+  .cardDesigner > .sectionHeading h2 {
+    font-size: 1.1rem;
+  }
+  .cardDesigner > .sectionHeading > button {
+    padding: 8px 10px;
+    font-size: 0.8rem;
+  }
+  .cardDesigner .workspaceLeft,
+  .cardDesigner .workspaceCenter,
+  .cardDesigner .workspaceRight {
+    height: auto;
+  }
+}

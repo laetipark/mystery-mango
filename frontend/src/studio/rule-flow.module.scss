@@ -1,0 +1,603 @@
+.flowBoard {
+  container: rule-flow / inline-size;
+  display: grid;
+  gap: 16px;
+  min-width: 0;
+  color: #292c32;
+  padding: 4px 8px 24px;
+}
+
+.flowHeading h2 {
+  margin: 6px 0;
+  font-size: clamp(20px, 2vw, 26px);
+  letter-spacing: -0.05em;
+  line-height: 1.4;
+}
+
+.flowHeading p {
+  margin: 0;
+  color: #687078;
+  font-size: 12px;
+  line-height: 1.8;
+}
+
+.eyebrow {
+  color: #8b9299;
+  font-size: 9px;
+  font-weight: 650;
+  letter-spacing: 0.14em;
+}
+
+.flowBadges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+  margin-top: 12px;
+
+  span {
+    padding: 4px 7px;
+    border: 1px solid #e5e8e9;
+    border-radius: 4px;
+    background: #fff;
+    color: #747c80;
+    font-size: 10px;
+  }
+
+  span:first-child {
+    border-color: #dee7df;
+    background: #eaf0e9;
+    color: #4d6553;
+  }
+}
+
+.flowSurface {
+  min-width: 0;
+  padding: 10px 18px 18px;
+  border: 1px solid #eef0f3;
+  border-radius: 6px;
+  background: #fafbfc;
+}
+
+.phaseGraph {
+  position: relative;
+  height: var(--flow-height);
+}
+
+.connectors {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  pointer-events: none;
+
+  path {
+    fill: none;
+    stroke: #a5afa1;
+    stroke-width: 1.4;
+    vector-effect: non-scaling-stroke;
+  }
+
+  polygon {
+    fill: #98a28e;
+  }
+}
+
+.phaseList {
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+.phaseNode {
+  position: absolute;
+  top: calc(var(--phase-row) * 130px + 8px);
+  width: 30%;
+  height: 100px;
+  display: flex;
+  flex-direction: column;
+  border: 1px solid #dce1e4;
+  border-radius: 9px;
+  background: #fff;
+  box-shadow: 0 3px 8px #27383906;
+  transition:
+    border-color 120ms,
+    box-shadow 120ms;
+
+  &[data-kind='READING'] {
+    border-color: #b7cbbb;
+  }
+
+  &[data-kind='ENDING'] {
+    background: #f1f4e9;
+    border-color: #d4dbc4;
+  }
+
+  &[data-selected='true'] {
+    border-color: #66775c;
+    outline: 2px solid #e9ca55;
+    outline-offset: 3px;
+    background: #fffced;
+    box-shadow: 0 3px 9px #74632a12;
+  }
+}
+
+.leftNode {
+  left: 8%;
+}
+
+.rightNode {
+  left: 62%;
+}
+
+.flowBoard .nodeSelect {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: center;
+  gap: 4px;
+  min-width: 0;
+  padding: 8px 12px 6px;
+  border: 0;
+  border-radius: 9px 9px 0 0;
+  background: transparent;
+  text-align: left;
+
+  &:hover {
+    background: #f6f8fa;
+  }
+
+  strong {
+    color: #353b37;
+    font-size: 13px;
+    font-weight: 700;
+    line-height: 1.5;
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    overflow-wrap: anywhere;
+  }
+}
+
+.nodeStep {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+  color: #8a907e;
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.065em;
+
+  > span {
+    color: #91958e;
+    font-size: 9px;
+    font-weight: 400;
+    letter-spacing: 0;
+  }
+}
+
+.nodeActions {
+  overflow: hidden;
+  color: #6c7868;
+  font-size: 10px;
+  font-weight: 400;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.orderControls {
+  display: flex;
+  border-top: 1px solid #eff1ee;
+
+  button {
+    flex: 1;
+    min-height: 24px;
+    padding: 3px 2px;
+    border: 0;
+    border-radius: 0 0 7px 7px;
+    background: transparent;
+    color: #8c9388;
+    font-size: 9px;
+    font-weight: 400;
+  }
+}
+
+.endingSection {
+  min-width: 0;
+}
+
+.endingCaption {
+  display: grid;
+  justify-items: center;
+  gap: 5px;
+  margin-bottom: 14px;
+
+  > span {
+    color: #6a735d;
+    font-size: 11px;
+    font-weight: 650;
+  }
+
+  small {
+    color: #858b81;
+    font-size: 10px;
+    text-align: center;
+    line-height: 1.6;
+  }
+}
+
+.endingGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 24px 30px;
+  position: relative;
+  padding-top: 16px;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 25%;
+    right: 25%;
+    border-top: 1px solid #a5afa1;
+  }
+}
+
+.flowBoard .endingNode {
+  position: relative;
+  display: grid;
+  align-content: start;
+  gap: 8px;
+  min-width: 0;
+  min-height: 86px;
+  padding: 12px 14px;
+  border: 1px solid #d5ddc8;
+  border-radius: 8px;
+  background: #f0f4e7;
+  text-align: left;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: -17px;
+    height: 16px;
+    left: 50%;
+    border-left: 1px solid #a5afa1;
+  }
+
+  &[data-fallback='true'] {
+    background: #fff5d7;
+    border-color: #ebdeae;
+  }
+
+  &[data-selected='true'] {
+    outline: 2px solid #e9ca55;
+    outline-offset: 3px;
+    border-color: #758362;
+  }
+
+  > strong {
+    font-size: 13px;
+    color: #4c5644;
+    line-height: 1.5;
+  }
+
+  > span:last-child {
+    color: #657050;
+    font-size: 11px;
+    font-weight: 400;
+    line-height: 1.8;
+    overflow-wrap: anywhere;
+  }
+}
+
+.flowNote {
+  padding: 12px 15px;
+  margin: 0;
+  border: 1px solid #e9dfba;
+  border-radius: 5px;
+  background: #fff7dd;
+  color: #76673f;
+  font-size: 11px;
+  line-height: 1.9;
+}
+
+.detailSection {
+  min-width: 0;
+  border-top: 1px solid #e6e9ec;
+  padding-top: 22px;
+}
+
+.sectionHeading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 14px;
+
+  h3 {
+    margin: 5px 0 0;
+    font-size: 15px;
+    font-weight: 700;
+    color: #41474c;
+  }
+
+  > span {
+    color: #8a9198;
+    font-size: 10px;
+    white-space: nowrap;
+  }
+}
+
+.ruleCards {
+  display: grid;
+  gap: 10px;
+}
+
+.ruleCard {
+  border: 1px solid #e0e4e6;
+  border-radius: 7px;
+  background: #fff;
+  overflow: hidden;
+
+  &[data-selected='true'] {
+    border-color: #dbbf4b;
+    box-shadow: 0 0 0 1px #efda82;
+  }
+
+  dl {
+    display: grid;
+    gap: 10px;
+    padding: 15px 16px;
+    margin: 0;
+  }
+
+  dl > div {
+    display: grid;
+    grid-template-columns: 32px minmax(0, 1fr);
+    gap: 10px;
+    font-size: 11px;
+    line-height: 1.8;
+  }
+
+  dt {
+    color: #92988b;
+  }
+
+  dd {
+    margin: 0;
+    color: #647067;
+    overflow-wrap: anywhere;
+  }
+}
+
+.flowBoard .ruleTitle {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 44px;
+  width: 100%;
+  padding: 10px 14px;
+  border: 0;
+  border-bottom: 1px solid #eef1ed;
+  border-radius: 0;
+  background: #f8faf7;
+  text-align: left;
+  color: #586151;
+  font-size: 12px;
+
+  > span {
+    color: #9ba491;
+    font-size: 10px;
+  }
+
+  > span:last-child {
+    margin-left: auto;
+    font-size: 16px;
+  }
+
+  strong {
+    overflow-wrap: anywhere;
+    min-width: 0;
+  }
+}
+
+.relationships {
+  display: grid;
+  gap: 8px;
+
+  article {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 22px minmax(0, 1.4fr);
+    align-items: center;
+    gap: 5px 10px;
+    padding: 10px 12px;
+    border: 1px solid #e2e6e8;
+    border-radius: 6px;
+    background: #fff;
+  }
+
+  article[data-selected='true'] {
+    border-color: #dbc65f;
+    background: #fffdf0;
+  }
+
+  button {
+    min-height: 36px;
+    padding: 7px 9px;
+    border: 0;
+    background: #f3f6f0;
+    color: #5c6856;
+    font-size: 11px;
+    text-align: left;
+    overflow-wrap: anywhere;
+  }
+
+  small {
+    grid-column: 1 / -1;
+    color: #9a9f96;
+    font-size: 10px;
+    line-height: 1.7;
+  }
+}
+
+.flowBoard .targetName {
+  background: transparent;
+  color: #555e63;
+  padding-left: 0;
+}
+
+.relationArrow {
+  color: #aab3a1;
+  text-align: center;
+}
+
+.clueLinks {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+
+  > span {
+    font-size: 11px;
+    color: #8c9588;
+  }
+}
+
+.roleTiles {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(220px, 100%), 1fr));
+  gap: 9px;
+
+  button {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    min-width: 0;
+    padding: 12px;
+    border: 1px solid #e0e5e6;
+    border-radius: 7px;
+    background: #fff;
+    text-align: left;
+  }
+
+  button[data-selected='true'] {
+    border-color: #d7bf59;
+    background: #fffdf1;
+  }
+
+  button > span:nth-child(2) {
+    display: grid;
+    gap: 5px;
+    min-width: 0;
+  }
+
+  strong {
+    color: #555f5a;
+    font-size: 12px;
+    overflow-wrap: anywhere;
+  }
+
+  small {
+    color: #939c90;
+    font-size: 10px;
+    font-weight: 400;
+  }
+
+  button > span:last-child {
+    margin-left: auto;
+    color: #a1a99b;
+  }
+}
+
+.roleAvatar {
+  width: 36px;
+  height: 36px;
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: #edf1e4;
+  color: #758362;
+  font-size: 13px;
+}
+
+.empty {
+  margin: 0;
+  padding: 20px 14px;
+  border: 1px dashed #dfe5e0;
+  border-radius: 6px;
+  background: #fafcf9;
+  color: #939b90;
+  font-size: 12px;
+  line-height: 1.8;
+}
+
+@container rule-flow (max-width: 520px) {
+  .flowSurface {
+    padding: 12px 15px 20px;
+  }
+
+  .phaseGraph {
+    height: auto;
+    margin-bottom: 28px;
+  }
+
+  .connectors {
+    display: none;
+  }
+
+  .phaseList {
+    display: grid;
+    gap: 28px;
+  }
+
+  .phaseNode {
+    position: relative;
+    top: auto;
+    left: auto;
+    width: auto;
+    height: auto;
+    min-height: 120px;
+
+    &:not(:last-child)::after {
+      content: '↓';
+      position: absolute;
+      top: 100%;
+      left: calc(50% - 8px);
+      display: grid;
+      place-items: center;
+      width: 16px;
+      height: 28px;
+      color: #a0ad98;
+    }
+  }
+
+  .flowBoard .nodeSelect {
+    min-height: 88px;
+  }
+
+  .orderControls button,
+  .relationships button {
+    min-height: 44px;
+  }
+
+  .endingGrid {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 14px;
+    padding-top: 0;
+  }
+
+  .endingGrid::before,
+  .flowBoard .endingNode::before {
+    display: none;
+  }
+
+  .relationships article {
+    grid-template-columns: minmax(0, 1fr) 16px minmax(0, 1fr);
+    gap: 5px;
+    padding: 9px;
+  }
+}

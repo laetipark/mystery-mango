@@ -1,3 +1,4 @@
+import type { GameType } from '~/studio/types';
 import type { components, paths } from './api.generated';
 
 type Schemas = components['schemas'];
@@ -7,12 +8,12 @@ export type AuthProviders = Schemas['AuthProviders'];
 export type KakaoAuthorize = Schemas['KakaoAuthorize'];
 export type Page<T> = Omit<ScenarioPage, 'items'> & { items: T[] };
 export type PlayMode = Schemas['RoomCard']['mode'];
-export type Scenario = Schemas['ScenarioCard'] & { rank?: number };
+export type Scenario = Schemas['ScenarioCard'] & { rank?: number; gameType?: GameType; engineId?: string; supportedPlayerCounts?: number[] };
 export type Activity = Schemas['Activity'];
 export type RoomCard = Schemas['RoomCard'];
-export type Room = Schemas['RoomSnapshot'];
-export type Ticket = Schemas['TicketView'];
-export type Proposal = Schemas['MatchProposal'];
+export type Room = Schemas['RoomSnapshot'] & { gameType?: GameType; isTest?: boolean };
+export type Ticket = Schemas['TicketView'] & { gameType?: GameType; capacity?: number; scenarioVersionId?: string };
+export type Proposal = Schemas['MatchProposal'] & { gameType?: GameType; capacity?: number; scenarioVersionId?: string };
 export type Clue = Schemas['ClueView'];
 export type Game = Schemas['GameSnapshot'];
 export type Message = Schemas['ChatMessage'];

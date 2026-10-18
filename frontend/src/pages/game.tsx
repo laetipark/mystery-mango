@@ -1,4 +1,7 @@
-import { useEffect, useState } from 'react';
+import { lazy, Suspense, useEffect, useState } from 'react';
+const ScenePanel = lazy(() => import('~/studio/runtime').then((m) => ({ default: m.ScenePanel })));
+import type { SceneState } from '~/studio/types';
+const BoardGamePage = lazy(() => import('~/studio/runtime').then((m) => ({ default: m.BoardGamePage })));
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { Badge, Deadline, Empty, ErrorNotice, QueryState, useUser } from '~/components/ui';
@@ -7,9 +10,27 @@ import { phaseNames } from '~/common/time';
 import { command, errorMessage, get } from '~/services/api';
 import { useCommand } from '~/hooks/use-command';
 import s from '~/styles/app.module.scss';
+import p from '~/studio/play.module.scss';
 
 type VoiceState = { provider: string; configured: boolean; status: string; connected: boolean; channelUrl: string | null; channelKind: string | null; message: string };
 export function GamePage() {
+  const { id } = useParams();
+  const kind = useQuery({ queryKey: ['game-kind', id], queryFn: () => get<{ gameType: string }>(`/games/${id}/kind`) });
+  return (
+    <QueryState query={kind}>
+      {(data) =>
+        data.gameType === 'MURDER_MYSTERY' ? (
+          <MysteryGamePage />
+        ) : (
+          <Suspense fallback={<p>보드게임을 불러오는 중…</p>}>
+            <BoardGamePage />
+          </Suspense>
+        )
+      }
+    </QueryState>
+  );
+}
+function MysteryGamePage() {
   const { id } = useParams();
   const game = useQuery({ queryKey: ['game', id], queryFn: () => get<Game>(`/games/${id}/snapshot`), refetchInterval: 15000 });
   useEffect(() => {
@@ -22,7 +43,7 @@ export function GamePage() {
   }, [id]);
   return <QueryState query={game}>{(snapshot) => <GameBoard game={snapshot} />}</QueryState>;
 }
-function VoicePanel({ id }: { id: string }) {
+export function VoicePanel({ id }: { id: string }) {
   const action = useCommand();
   const voice = useQuery({ queryKey: ['voice', id], queryFn: () => get<VoiceState>(`/games/${id}/voice-state`), refetchInterval: 15000 });
   return (
@@ -122,8 +143,8 @@ function GameBoard({ game }: { game: Game }) {
     }
   }
   return (
-    <>
-      <div className={s.gameTop}>
+    <div className={p.playShell}>
+      <div className={`${s.gameTop} ${p.mysteryHeader}`}>
         <div>
           <span className={s.eyebrow}>나의 사건 기록</span>
           <h1>{game.status === 'COMPLETED' ? '이야기가 끝났습니다.' : game.status === 'ABORTED' ? '플레이가 중단되었습니다.' : (phaseNames[game.phase?.kind ?? ''] ?? '게임 진행')}</h1>
@@ -148,7 +169,7 @@ function GameBoard({ game }: { game: Game }) {
           {notice}
         </p>
       )}
-      <div className={s.mobileTabs} role="tablist" aria-label="게임 화면">
+      <div className={`${p.tabs} ${p.mobileTabs}`} role="tablist" aria-label="게임 화면">
         {[
           ['role', '내 역할'],
           ['investigation', '조사 · 진행'],
@@ -175,8 +196,9 @@ function GameBoard({ game }: { game: Game }) {
           </button>
         ))}
       </div>
-      <div className={s.gameGrid}>
-        <aside id="panel-role" role="tabpanel" aria-labelledby="tab-role" className={`${s.gameColumn} ${tab !== 'role' ? s.mobileHidden : ''}`}>
+      <div className={p.mysteryGrid}>
+        <aside id="panel-role" role="tabpanel" aria-labelledby="tab-role" className={`${s.gameColumn} ${tab !== 'role' ? p.mobileHidden : ''}`}>
+          <p className={p.columnLabel}>내 역할과 참가자</p>
           <section className={`${s.panel} ${s.privatePanel}`}>
             <Badge>나만 볼 수 있는 비밀</Badge>
             <span className={s.roleAvatar}>{game.myRole.name.slice(0, 1)}</span>
@@ -217,7 +239,22 @@ function GameBoard({ game }: { game: Game }) {
             ))}
           </section>
         </aside>
-        <section id="panel-investigation" role="tabpanel" aria-labelledby="tab-investigation" className={`${s.gameColumn} ${tab !== 'investigation' ? s.mobileHidden : ''}`}>
+        <section id="panel-investigation" role="tabpanel" aria-labelledby="tab-investigation" className={`${s.gameColumn} ${tab !== 'investigation' ? p.mobileHidden : ''}`}>
+          <p className={p.columnLabel}>현장과 단서</p>
+          {Boolean((game as Game & Partial<SceneState>).scene || (game as Game & Partial<SceneState>).layouts?.length) && (
+            <details className={`${s.panel} ${p.details}`}>
+              <summary>작품 장면·내 자료</summary>
+              <Suspense fallback={<p>장면을 불러오는 중…</p>}>
+                <ScenePanel
+                  data={game as Game & SceneState}
+                  context={{ gameId: game.id }}
+                  send={async (_type, payload) => {
+                    await action.run('POST', `/games/${game.id}/scene`, payload);
+                  }}
+                />
+              </Suspense>
+            </details>
+          )}
           <section className={s.panel}>
             <div className={s.sectionHeading}>
               <Badge>{phaseNames[game.phase?.kind ?? ''] ?? game.status}</Badge>
@@ -347,7 +384,7 @@ function GameBoard({ game }: { game: Game }) {
             <p className={s.note}>공유된 단서는 상대방의 열람 기록에 남습니다. 공유는 소유권을 넘기는 행동이 아닙니다.</p>
           </section>
         </section>
-        <aside id="panel-chat" role="tabpanel" aria-labelledby="tab-chat" className={`${s.gameColumn} ${tab !== 'chat' ? s.mobileHidden : ''}`}>
+        <aside id="panel-chat" role="tabpanel" aria-labelledby="tab-chat" className={`${s.gameColumn} ${p.mysteryChat} ${tab !== 'chat' ? p.mobileHidden : ''}`}>
           <section className={s.panel}>
             <h2>대화</h2>
             <label>
@@ -407,7 +444,7 @@ function GameBoard({ game }: { game: Game }) {
                 이전 대화 보기
               </button>
             )}
-            <div className={s.messages} role="log" aria-label={channel ? '밀담 메시지' : '전체 메시지'} aria-live="polite">
+            <div className={`${s.messages} ${p.mysteryMessageLog}`} role="log" aria-label={channel ? '밀담 메시지' : '전체 메시지'} aria-live="polite">
               <QueryState query={messages}>
                 {() =>
                   allMessages.length ? (
@@ -525,6 +562,6 @@ function GameBoard({ game }: { game: Game }) {
           )}
         </aside>
       </div>
-    </>
+    </div>
   );
 }

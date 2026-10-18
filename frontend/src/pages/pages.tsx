@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, type FormEvent } from 'react';
+import { lazy, Suspense, useEffect, useRef, useState, type FormEvent } from 'react';
 import { Link, useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { Badge, Deadline, Empty, ErrorNotice, PageTitle, QueryState, ScenarioCard, useUser } from '~/components/ui';
@@ -9,6 +9,10 @@ import { command, errorMessage, get } from '~/services/api';
 import { useCommand } from '~/hooks/use-command';
 import { createInviteToken, forgetCreatedInvite, getCreatedInvite, rememberCreatedInvite } from '~/services/invites';
 import s from '~/styles/app.module.scss';
+import { BoardMatchPage } from '~/studio/matching';
+const ReviewList = lazy(() => import('~/studio/reviews').then((m) => ({ default: m.ReviewList })));
+import { gameTypeNames, isClassic } from '~/studio/types';
+import { HomeLanding } from './home';
 import { captureInvitePath, clearReceivedInvite, receivedInvite } from '~/services/invites';
 
 const listItems = <T,>(value: Page<T> | T[]) => (Array.isArray(value) ? value : value.items);
@@ -29,112 +33,77 @@ function ModeSelect({ value, onChange, disabled = false, allowedModes = ['TEXT',
   );
 }
 export function HomePage() {
-  const scenarios = useQuery({ queryKey: ['scenarios', 'home'], queryFn: () => get<Page<Scenario>>('/scenarios?size=3') });
-  return (
-    <>
-      <section className={s.hero}>
-        <div>
-          <span className={s.eyebrow}>혼자 또는 함께 풀어가는 사건</span>
-          <h1>
-            오늘 밤,
-            <br />
-            우리는 모두
-            <br />
-            <em>용의자.</em>
-          </h1>
-          <p>
-            혼자 추리하거나, 동료와 비밀을 나누세요.
-            <br />한 편의 미스터리가 당신을 기다립니다.
-          </p>
-          <div className={s.actions}>
-            <Link className={s.primary} to="/match">
-              바로 매칭 시작 →
-            </Link>
-            <Link className={s.button} to="/rooms">
-              모집방 찾기
-            </Link>
-          </div>
-          <Link className={s.textLink} to="/scenarios">
-            친구와 시작하기 ↗
-          </Link>
-        </div>
-        <div className={s.heroArt} aria-hidden="true">
-          <span className={s.orbit}>사건 파일 001</span>
-          <div className={s.fileCard}>
-            <small>CONFIDENTIAL</small>
-            <span>?</span>
-            <strong>
-              진실은,
-              <br />
-              우리 사이에.
-            </strong>
-            <div className={s.fileLines} />
-          </div>
-          <span className={s.artNote}>함께 읽고 · 조사하고 · 추리하기</span>
-        </div>
-      </section>
-      <section className={s.section}>
-        <div className={s.sectionHeading}>
-          <div>
-            <span className={s.eyebrow}>첫 번째 사건을 만나보세요</span>
-            <h2>오늘의 미스터리</h2>
-          </div>
-          <Link to="/scenarios">모든 작품 →</Link>
-        </div>
-        <QueryState query={scenarios}>
-          {(data) =>
-            data.items.length ? (
-              <div className={s.cards}>
-                {data.items.map((item) => (
-                  <ScenarioCard key={item.id} scenario={item} />
-                ))}
-              </div>
-            ) : (
-              <Empty>아직 공개된 작품이 없어요.</Empty>
-            )
-          }
-        </QueryState>
-      </section>
-      <section className={s.steps}>
-        {[
-          ['01', '이야기 시작하기', '작품의 인원에 맞춰 시작하거나, 4인 자동 매칭으로 동료를 찾아요.'],
-          ['02', '나만의 비밀 읽기', '역할을 맡고 개인 자료와 단서를 살펴보세요.'],
-          ['03', '진실 완성하기', '대화와 조사, 마지막 투표로 우리만의 엔딩을 만나요.']
-        ].map(([n, title, text]) => (
-          <article key={n}>
-            <span>{n}</span>
-            <h3>{title}</h3>
-            <p>{text}</p>
-          </article>
-        ))}
-      </section>
-    </>
-  );
+  return <HomeLanding />;
 }
 export function CatalogPage() {
-  const [playerCount, setPlayerCount] = useState('');
-  const [genre, setGenre] = useState('');
-  const [difficulty, setDifficulty] = useState('');
-  const [minutes, setMinutes] = useState('');
-  const [page, setPage] = useState(0);
+  const [expandedFilters, setExpandedFilters] = useState(false);
+  const [params, setParams] = useSearchParams();
+  const requestedType = params.get('gameType') ?? '',
+    gameType = Object.hasOwn(gameTypeNames, requestedType) ? requestedType : '',
+    requestedCount = params.get('playerCount') ?? '',
+    playerCount = ['1', '2', '3', '4'].includes(requestedCount) ? requestedCount : '',
+    genre = (params.get('genre') ?? '').slice(0, 80),
+    requestedDifficulty = params.get('difficulty') ?? '',
+    difficulty = Object.hasOwn(difficultyNames, requestedDifficulty) ? requestedDifficulty : '',
+    requestedMinutes = params.get('maxMinutes') ?? '',
+    minutes = ['45', '60', '90'].includes(requestedMinutes) ? requestedMinutes : '',
+    requestedPage = params.get('page') ?? '0',
+    page = /^\d{1,6}$/.test(requestedPage) ? Number(requestedPage) : 0;
+  const normalized = new URLSearchParams();
+  for (const [key, value] of Object.entries({ gameType, playerCount, genre, difficulty, maxMinutes: minutes })) if (value) normalized.set(key, value);
+  if (page) normalized.set('page', String(page));
+  const normalizedSearch = normalized.toString();
+  useEffect(() => {
+    if (params.toString() !== normalizedSearch) setParams(normalizedSearch, { replace: true });
+  }, [params, normalizedSearch, setParams]);
+  function updateFilter(key: string, value: string, replace = false) {
+    const next = new URLSearchParams(normalizedSearch);
+    if (value) next.set(key, value);
+    else next.delete(key);
+    next.delete('page');
+    setParams(next, { replace });
+  }
+  function setPage(value: number) {
+    const next = new URLSearchParams(normalizedSearch);
+    if (value > 0) next.set('page', String(value));
+    else next.delete('page');
+    setParams(next);
+  }
   const query = useQuery({
-    queryKey: ['scenarios', playerCount, genre, difficulty, minutes, page],
-    queryFn: () => get<Page<Scenario>>(`/scenarios?${new URLSearchParams({ page: String(page), size: '12', genre, difficulty, maxMinutes: minutes, ...(playerCount ? { playerCount } : {}) })}`)
+    queryKey: ['scenarios', gameType, playerCount, genre, difficulty, minutes, page],
+    queryFn: () =>
+      get<Page<Scenario>>(`/scenarios?${new URLSearchParams({ page: String(page), size: '12', gameType, genre, difficulty, maxMinutes: minutes, ...(playerCount ? { playerCount } : {}) })}`)
   });
   return (
     <>
-      <PageTitle eyebrow="이야기 속으로" title="작품 탐색">
-        스포일러 없이 작품을 살펴보고, 카드에 표시된 인원에 맞춰 시작하세요.
+      <PageTitle eyebrow="오늘은 어떤 게임을 할까요?" title="작품 탐색">
+        함께 추리하는 이야기부터 익숙한 보드게임까지, 인원과 취향에 맞춰 골라보세요.
       </PageTitle>
       <div className={s.filters}>
+        <label>
+          게임 종류
+          <select
+            aria-label="게임 종류"
+            value={gameType}
+            onChange={(e) => {
+              updateFilter('gameType', e.target.value);
+            }}
+          >
+            <option value="">모든 게임</option>
+            {Object.entries(gameTypeNames).map(([k, v]) => (
+              <option key={k} value={k}>
+                {v}
+              </option>
+            ))}
+          </select>
+        </label>
         <label>
           인원
           <select
             aria-label="인원"
             value={playerCount}
             onChange={(e) => {
-              setPlayerCount(e.target.value);
-              setPage(0);
+              updateFilter('playerCount', e.target.value);
             }}
           >
             <option value="">모든 인원</option>
@@ -145,24 +114,26 @@ export function CatalogPage() {
             ))}
           </select>
         </label>
-        <label>
+        <button className={s.filterToggle} aria-expanded={expandedFilters} aria-controls="catalog-genre catalog-difficulty catalog-time" onClick={() => setExpandedFilters(!expandedFilters)}>
+          상세 조건 <span aria-hidden="true">{expandedFilters ? '−' : '+'}</span>
+        </button>
+        <label id="catalog-genre" className={s.advancedFilter} data-expanded={expandedFilters}>
           장르
           <input
             placeholder="모든 장르"
             value={genre}
             onChange={(e) => {
-              setGenre(e.target.value);
-              setPage(0);
+              updateFilter('genre', e.target.value, true);
             }}
           />
         </label>
-        <label>
+        <label id="catalog-difficulty" className={s.advancedFilter} data-expanded={expandedFilters}>
           난이도
           <select
+            aria-label="난이도"
             value={difficulty}
             onChange={(e) => {
-              setDifficulty(e.target.value);
-              setPage(0);
+              updateFilter('difficulty', e.target.value);
             }}
           >
             <option value="">모든 난이도</option>
@@ -173,13 +144,13 @@ export function CatalogPage() {
             ))}
           </select>
         </label>
-        <label>
+        <label id="catalog-time" className={s.advancedFilter} data-expanded={expandedFilters}>
           가능한 시간
           <select
+            aria-label="가능한 시간"
             value={minutes}
             onChange={(e) => {
-              setMinutes(e.target.value);
-              setPage(0);
+              updateFilter('maxMinutes', e.target.value);
             }}
           >
             <option value="">제한 없음</option>
@@ -192,6 +163,21 @@ export function CatalogPage() {
       <QueryState query={query}>
         {(data) => (
           <>
+            <div className={s.catalogMeta}>
+              <span>
+                <strong>{data.total}개</strong>의 공개 작품
+              </span>
+              {(gameType || playerCount || genre || difficulty || minutes) && (
+                <button
+                  className={s.clearFilters}
+                  onClick={() => {
+                    setParams({});
+                  }}
+                >
+                  조건 초기화
+                </button>
+              )}
+            </div>
             {data.items.length ? (
               <div className={s.cards}>
                 {data.items.map((item) => (
@@ -222,6 +208,7 @@ export function ScenarioPage() {
   const navigate = useNavigate();
   const action = useCommand();
   const [visibility, setVisibility] = useState('PUBLIC');
+  const [capacity, setCapacity] = useState(2);
   const [mode, setMode] = useState<PlayMode>('TEXT');
   const pendingInvite = useRef<string | null>(null);
   const query = useQuery({ queryKey: ['scenario', id], queryFn: () => get<Scenario>(`/scenarios/${id}`) });
@@ -231,8 +218,20 @@ export function ScenarioPage() {
       navigate(`/login?next=/scenarios/${id}`);
       return;
     }
+    const selectedCapacity =
+      query.data?.gameType && query.data.gameType !== 'MURDER_MYSTERY'
+        ? query.data.supportedPlayerCounts?.includes(capacity)
+          ? capacity
+          : (query.data.supportedPlayerCounts?.[0] ?? 2)
+        : query.data?.playerCount;
     const inviteToken = visibility === 'INVITE' ? (pendingInvite.current ??= createInviteToken()) : undefined;
-    const result = await action.run<{ roomId: string; expiresAt?: string }>('POST', '/rooms', { scenarioVersionId: versionId, visibility, mode: selectedMode, ...(inviteToken ? { inviteToken } : {}) });
+    const result = await action.run<{ roomId: string; expiresAt?: string }>('POST', '/rooms', {
+      scenarioVersionId: versionId,
+      capacity: selectedCapacity,
+      visibility,
+      mode: selectedMode,
+      ...(inviteToken ? { inviteToken } : {})
+    });
     if (result) {
       if (inviteToken) rememberCreatedInvite(result.roomId, inviteToken);
       pendingInvite.current = null;
@@ -248,7 +247,7 @@ export function ScenarioPage() {
           </PageTitle>
           <div className={s.detailGrid}>
             <section className={s.panel}>
-              <h2>이 사건의 등장인물</h2>
+              <h2>{data.gameType && data.gameType !== 'MURDER_MYSTERY' ? gameTypeNames[data.gameType] : '이 사건의 등장인물'}</h2>
               <div className={s.roleGrid}>
                 {data.roles.map((role) => (
                   <article key={role.id}>
@@ -258,10 +257,18 @@ export function ScenarioPage() {
                   </article>
                 ))}
               </div>
-              <p className={s.note}>역할별 비밀 자료는 게임 시작 뒤 본인에게만 공개됩니다.</p>
+              <p className={s.note}>
+                {data.gameType === 'TABLETOP'
+                  ? '카드와 주사위를 조작하며 참가자가 규칙을 진행하는 자유 테이블입니다.'
+                  : data.gameType === 'YACHT'
+                    ? '서버가 차례와 굴림, 점수를 판정하는 주사위 게임입니다.'
+                    : data.gameType && isClassic(data.gameType)
+                      ? '서버가 가능한 수와 차례, 승패를 판정하는 2인 보드게임입니다.'
+                      : '역할별 비밀 자료는 게임 시작 뒤 본인에게만 공개됩니다.'}
+              </p>
             </section>
             <aside className={s.panel}>
-              <Badge>{data.playerCount}인 전용</Badge>
+              <Badge>{data.gameType && data.gameType !== 'MURDER_MYSTERY' ? (data.supportedPlayerCounts ?? [data.playerCount]).join('·') : data.playerCount}인 전용</Badge>
               <h2>{data.playerCount === 1 ? '혼자 플레이하기' : '함께 플레이하기'}</h2>
               <p>
                 예상 {data.estimatedMinutes}분 <small>(샘플 작품 추정값)</small>
@@ -274,11 +281,24 @@ export function ScenarioPage() {
                     <option value="INVITE">친구 초대 전용</option>
                   </select>
                 </label>
+                {data.gameType && data.gameType !== 'MURDER_MYSTERY' && (
+                  <label>
+                    플레이 인원
+                    <select value={data.supportedPlayerCounts?.includes(capacity) ? capacity : (data.supportedPlayerCounts?.[0] ?? 2)} onChange={(e) => setCapacity(Number(e.target.value))}>
+                      {(data.supportedPlayerCounts ?? [2, 3, 4]).map((n) => (
+                        <option key={n} value={n}>
+                          {n}명
+                        </option>
+                      ))}
+                    </select>
+                  </label>
+                )}
                 <ModeSelect value={selectedMode} onChange={setMode} allowedModes={data.modes} />
                 <ErrorNotice message={action.error} />
                 <button className={s.primary} disabled={action.pending} onClick={() => void create(data.versionId)}>
                   이 작품으로 방 만들기
                 </button>
+                {data.gameType && data.gameType !== 'MURDER_MYSTERY' && <Link to={`/match?gameType=${data.gameType}&scenario=${data.id}`}>이 작품 자동 매칭 →</Link>}
                 <Link to={`/rooms?scenario=${data.id}`}>이 작품 모집방 보기 →</Link>
               </div>
             </aside>
@@ -424,8 +444,12 @@ export function LobbyPage() {
         const host = room.hostId === user.id;
         return (
           <>
-            <PageTitle eyebrow="플레이 준비" title={room.title}>
-              {room.capacity === 1 ? '혼자 자료를 읽고 단서를 조사합니다.' : room.mode === 'TEXT' ? '텍스트로 대화합니다.' : 'Discord에서 음성으로 대화합니다. 계정 연결과 마이크 설정을 확인해 주세요.'}
+            <PageTitle eyebrow={room.isTest ? '비공개 테스트 방 · 기록에 남지 않음' : '플레이 준비'} title={room.title}>
+              {room.capacity === 1
+                ? '혼자 자료를 읽고 단서를 조사합니다.'
+                : room.mode === 'TEXT'
+                  ? '텍스트로 대화합니다.'
+                  : 'Discord에서 음성으로 대화합니다. 계정 연결과 마이크 설정을 확인해 주세요.'}
             </PageTitle>
             <div className={s.detailGrid}>
               <section className={s.panel}>
@@ -523,6 +547,19 @@ export function LobbyPage() {
   );
 }
 export function MatchPage() {
+  const [params] = useSearchParams();
+  const ticketId = params.get('ticket'),
+    proposalId = params.get('proposal');
+  const kind = useQuery({
+    queryKey: ['match-route-kind', ticketId, proposalId],
+    queryFn: () => get<{ gameType?: string }>(ticketId ? `/match-tickets/${ticketId}` : `/match-proposals/${proposalId}`),
+    enabled: !!(ticketId || proposalId)
+  });
+  if ((ticketId || proposalId) && kind.isPending) return <p>매칭을 확인하고 있어요…</p>;
+  const gameType = params.get('gameType') ?? kind.data?.gameType;
+  return gameType && gameType !== 'MURDER_MYSTERY' ? <BoardMatchPage /> : <MurderMatchPage />;
+}
+function MurderMatchPage() {
   const [params, setParams] = useSearchParams();
   const ticketId = params.get('ticket');
   const explicitProposal = params.get('proposal');
@@ -571,7 +608,7 @@ export function MatchPage() {
   return (
     <>
       <PageTitle eyebrow="서로 다른 네 사람이 만드는 한 이야기" title="바로 매칭">
-        모두에게 새로운 작품이 있는 4인 그룹을 찾습니다.
+        모두에게 새로운 작품이 있는 4인 그룹을 찾습니다. <Link to="/match?gameType=TABLETOP">보드게임 매칭 →</Link>
       </PageTitle>
       <ErrorNotice message={action.error} />
       {proposalId && proposal.data && !['ENDED', 'ROOM'].includes(proposal.data.status) ? (
@@ -869,6 +906,9 @@ export function AdminPage() {
   }
   return (
     <>
+      <Suspense fallback={<p>검수 목록을 불러오는 중…</p>}>
+        <ReviewList />
+      </Suspense>
       <PageTitle eyebrow="관리자" title="작품과 신고 관리">
         공개된 작품 버전은 수정되지 않습니다. 변경된 작품은 새 버전으로 등록하세요.
       </PageTitle>

@@ -1,10 +1,12 @@
 import { createContext, useContext, useEffect, useState, type ReactNode } from 'react';
 import { Link } from 'react-router-dom';
 import type { UseQueryResult } from '@tanstack/react-query';
+import { gameTypeNames } from '~/studio/types';
 import type { Scenario, User } from '~/common/types';
 import { clockText, difficultyNames, secondsUntil } from '~/common/time';
 import { errorMessage } from '~/services/api';
 import s from '~/styles/app.module.scss';
+import { GameArt } from './game-art';
 
 export const UserContext = createContext<User | null>(null);
 export const useUser = () => useContext(UserContext)!;
@@ -50,17 +52,16 @@ export function ScenarioCard({ scenario, action }: { scenario: Scenario; action?
   return (
     <article className={s.scenarioCard}>
       <div className={s.cardArt} aria-hidden="true">
-        <span>?</span>
+        <GameArt type={scenario.gameType} />
         <span>{scenario.genre}</span>
       </div>
       <div className={s.cardBody}>
         <div className={s.row}>
-          <Badge>{scenario.playerCount}인</Badge>
+          <Badge>{scenario.gameType && scenario.gameType !== 'MURDER_MYSTERY' ? (scenario.supportedPlayerCounts ?? [scenario.playerCount]).join('·') : scenario.playerCount}인</Badge>
+          {scenario.gameType && <Badge>{gameTypeNames[scenario.gameType]}</Badge>}
           <Badge>{difficultyNames[scenario.difficulty] ?? scenario.difficulty}</Badge>
           {scenario.rank !== undefined && <Badge>추천 {scenario.rank + 1}순위</Badge>}
-          <span className={s.muted}>
-            약 {scenario.estimatedMinutes}분*
-          </span>
+          <span className={s.muted}>약 {scenario.estimatedMinutes}분*</span>
         </div>
         <h2>
           <Link to={`/scenarios/${scenario.id}`}>{scenario.title}</Link>

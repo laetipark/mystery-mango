@@ -1,12 +1,26 @@
+@font-face {
+  font-family: 'Pretendard';
+  src: url('/fonts/PretendardVariable.woff2') format('woff2');
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
 :root {
+  --mango-ink: #253f34;
+  --mango-muted: #647267;
+  --mango-paper: #fffef9;
+  --mango-line: #e0e4d9;
+  --mango-accent: #efb64d;
   font-family: 'Pretendard', 'Noto Sans KR', 'Malgun Gothic', sans-serif;
-  color: #292c2a;
-  background: #faf8f3;
+  color: #253f34;
+  background: #f7f8f3;
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   font-size: 15px;
   line-height: 1.65;
   font-weight: 400;
+  letter-spacing: -0.015em;
   color-scheme: light;
 }
 * {
@@ -14,6 +28,7 @@
 }
 body {
   margin: 0;
+  min-width: 320px;
 }
 button,
 input,
@@ -43,11 +58,11 @@ button {
   color: #30372e;
   transition:
     background 0.15s,
-    transform 0.15s;
+    border-color 0.15s;
 }
 button:hover:not(:disabled):not([aria-selected='true']) {
   background: #eeeede;
-  transform: translateY(-1px);
+  border-color: #9ca98f;
 }
 button:disabled {
   opacity: 0.47;
@@ -123,6 +138,31 @@ summary {
   cursor: pointer;
   font-weight: 700;
 }
+img,
+svg {
+  max-width: 100%;
+}
+button,
+a {
+  touch-action: manipulation;
+}
+fieldset {
+  min-width: 0;
+}
+@media (max-width: 800px) {
+  input,
+  select,
+  textarea {
+    font-size: 16px;
+  }
+  button,
+  summary {
+    min-height: 44px;
+  }
+  h1 {
+    font-size: 2rem;
+  }
+}
 time {
   font-size: 0.7rem;
   color: #757a70;
@@ -135,6 +175,14 @@ a:hover {
 }
 button:hover a {
   text-decoration: none;
+}
+h1,
+h2,
+h3,
+button,
+label {
+  word-break: keep-all;
+  overflow-wrap: anywhere;
 }
 @media (prefers-reduced-motion: reduce) {
   * {

@@ -1,0 +1,702 @@
+.workspaceChrome {
+  --editor-forest: #30343a;
+  --editor-muted: #6b7179;
+  --editor-paper: #ffffff;
+  color: var(--editor-forest);
+}
+.workspaceChrome > .sidePanel {
+  border-color: transparent;
+  border-radius: 12px;
+  background: var(--editor-paper);
+  box-shadow: none;
+}
+.workspaceChrome .panelHeading {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  margin: 0 0 14px;
+  color: var(--editor-forest);
+}
+.workspaceChrome .panelHeading h3,
+.sceneStrip .panelHeading h3 {
+  margin: 0;
+  font-size: 0.87rem;
+  font-weight: 720;
+  letter-spacing: -0.025em;
+}
+.workspaceChrome svg,
+.sceneEditor svg,
+.cardDesigner svg {
+  flex-shrink: 0;
+}
+.workspaceChrome .panelHeading > svg {
+  color: #85997b;
+}
+.panelTools .paneTabs {
+  padding: 3px;
+  gap: 3px;
+  background: #ecf0e6;
+  border-radius: 10px;
+}
+.panelTools .paneTabs button,
+.panelTools .compactToggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  border-color: transparent;
+  box-shadow: none;
+  min-height: 40px;
+}
+.panelTools .paneTabs button {
+  background: transparent;
+  border-radius: 7px;
+  color: #677961;
+}
+.panelTools .paneTabs button[aria-pressed='true'] {
+  background: #fffef9;
+  color: #244c3b;
+  box-shadow: 0 1px 3px #264d3e0c;
+}
+.panelTools .compactToggle {
+  background: transparent;
+  font-size: 0.8rem;
+  color: #5f6e5b;
+}
+.sceneEditor {
+  min-width: 0;
+}
+.sceneEditor .sceneSwitch {
+  gap: 8px;
+  margin-bottom: 12px;
+  align-items: center;
+}
+.sceneSwitch .switchLabel {
+  display: inline-flex;
+  gap: 7px;
+  align-items: center;
+  font-size: 0.8rem;
+  font-weight: 650;
+  color: #62735d;
+}
+.sceneEditor .sceneSwitch > select {
+  width: min(260px, 100%);
+  min-height: 40px;
+  font-size: 0.84rem;
+  background: #fffef9;
+  border-color: #dde4d5;
+}
+.sceneEditor .sceneSwitch > button {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 40px;
+  padding: 8px 12px;
+  color: #62745c;
+  background: transparent;
+  border-color: transparent;
+  font-size: 0.8rem;
+}
+.sceneEditor .sceneSwitch > button:hover:enabled {
+  background: #eff2e8;
+  color: #264d3e;
+}
+.sceneEditor .faceToggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px;
+  border-radius: 11px;
+  background: #e9eee2;
+}
+.sceneEditor .faceToggle button {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  gap: 7px;
+  min-width: 100px;
+  min-height: 40px;
+  border-radius: 8px;
+  border-color: transparent;
+  background: transparent;
+  color: #5f6e5b;
+  font-size: 0.83rem;
+  font-weight: 650;
+}
+.sceneEditor .faceToggle button[aria-pressed='true'] {
+  background: #fffdf6;
+  color: #244c3b;
+  box-shadow: 0 2px 5px #234b3b10;
+}
+.sceneEditor .faceToggle button[aria-pressed='true'] svg {
+  color: #b9882c;
+}
+.sceneEditor .canvasPanel {
+  background: #eef1e8;
+  border-color: transparent;
+  border-radius: 13px;
+  padding: 14px;
+}
+.toolbox {
+  margin: 0 0 12px;
+}
+.toolboxLabel {
+  display: block;
+  font-size: 0.8rem;
+  font-weight: 680;
+  letter-spacing: 0.035em;
+  color: #5f6e5b;
+  margin-bottom: 7px;
+}
+.toolItems {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+.sceneEditor .toolItems button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-height: 40px;
+  padding: 7px 11px;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  background: #fffef9;
+  color: #345640;
+  box-shadow: 0 1px 2px #2b47320a;
+  font-size: 0.8rem;
+  white-space: nowrap;
+}
+.sceneEditor .toolItems button svg {
+  color: #8c9d7c;
+}
+.sceneEditor .toolItems button:hover:enabled {
+  background: #fbf4df;
+  border-color: #e6d2a1;
+}
+.sceneEditor .toolItems button:disabled {
+  opacity: 0.48;
+}
+.canvasFrame {
+  min-width: 0;
+  background: #e3e8dd;
+  border-radius: 9px;
+  overflow: hidden;
+}
+.canvasFrame .zoomBar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 8px 10px;
+  background: #e3e8dd;
+  color: #5f6e5b;
+}
+.canvasDimensions {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.8rem;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+.canvasFrame .zoomBar > label {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 6px;
+  margin: 0;
+  font-size: 0.8rem;
+  padding: 0;
+  min-width: 0;
+}
+.canvasFrame .zoomBar select {
+  width: auto;
+  max-width: 154px;
+  min-height: 32px;
+  border: 0;
+  border-radius: 6px;
+  padding: 6px 8px;
+  background: #f5f7f0;
+  color: #45613e;
+  font-size: 0.8rem;
+}
+.canvasFrame .canvasSurface {
+  border: 0;
+  border-radius: 0;
+  background-color: #e3e8dd;
+  background-image: radial-gradient(#b7c4ac70 0.65px, transparent 0.65px);
+  background-size: 12px 12px;
+}
+.canvasFrame .canvasSurface :global(.konvajs-content) {
+  box-shadow: 0 2px 12px #244d3220;
+}
+.sceneEditor .canvasHelp {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  margin: 10px 1px 0;
+  color: #d2d8df;
+  font-size: 0.8rem;
+  line-height: 1.55;
+}
+.canvasHelp kbd {
+  display: inline-block;
+  margin: 0 1px;
+  padding: 1px 4px;
+  border-radius: 4px;
+  border: 1px solid #d8dfce;
+  background: #f5f7ef;
+  color: #6b7b60;
+  font-family: inherit;
+  font-size: 0.8rem;
+}
+.workspaceChrome .layersHeading {
+  margin-top: 23px;
+  padding-top: 17px;
+  border-top: 1px solid #e9ece3;
+  gap: 6px;
+}
+.workspaceChrome .layersHeading h3 {
+  font-size: 0.8rem;
+}
+.countBadge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: auto;
+  min-width: 22px;
+  height: 22px;
+  border-radius: 6px;
+  background: #edf1e6;
+  color: #5f6e5b;
+  font-size: 0.8rem;
+  font-weight: 650;
+}
+.sceneEditor .layerList {
+  gap: 5px;
+  margin-bottom: 0;
+}
+.sceneEditor .layerList button {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  text-align: left;
+  min-height: 40px;
+  padding: 6px;
+  border: 1px solid transparent;
+  border-radius: 7px;
+  background: transparent;
+  color: #546d49;
+  font-size: 0.8rem;
+  outline: none;
+}
+.sceneEditor .layerList button:hover {
+  background: #f1f4eb;
+}
+.sceneEditor .layerList button[aria-pressed='true'] {
+  background: #f6efdc;
+  border-color: #ead9ab;
+  color: #3c5430;
+}
+.sceneEditor .layerList button:focus-visible {
+  outline: 2px solid #b58b35;
+  outline-offset: 2px;
+}
+.layerGlyph {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 27px;
+  height: 27px;
+  border-radius: 5px;
+  background: #f1f3ea;
+  color: #879774;
+  flex: 0 0 27px;
+}
+.sceneEditor .layerList button[aria-pressed='true'] .layerGlyph {
+  background: #e9ddb9;
+  color: #9c792f;
+}
+.layerName {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  min-width: 0;
+  flex: 1;
+}
+.typeBadge {
+  margin-left: auto;
+  padding: 4px 6px;
+  border-radius: 5px;
+  font-size: 0.8rem;
+  font-weight: 650;
+  color: #5f6e5b;
+  background: #eff3e8;
+}
+.workspaceChrome .propertyHeading {
+  margin: 20px 0 8px;
+  padding-top: 16px;
+  border-top: 1px solid #e9ece3;
+  font-size: 0.8rem;
+  color: #6d7e60;
+  font-weight: 650;
+}
+.sceneEditor .sidePanel .alignmentTools {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 5px;
+}
+.sceneEditor .alignmentTools button {
+  min-height: 35px;
+  padding: 6px 3px;
+  font-size: 0.8rem;
+  border-color: #e7eadf;
+  border-radius: 6px;
+  color: #5f6e5b;
+  background: #fcfdf8;
+  white-space: nowrap;
+}
+.sceneEditor .layerActions {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 6px;
+  padding-top: 8px;
+}
+.sceneEditor .layerActions button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  min-height: 36px;
+  font-size: 0.8rem;
+  background: #f7f9f2;
+  border-color: transparent;
+  border-radius: 7px;
+}
+.sceneEditor .layerActions .dangerButton,
+.cardDesigner .dangerButton {
+  background: transparent;
+  color: #947a66;
+}
+.emptyInspector {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  padding: 54px 0;
+  color: #8c9c7f;
+  text-align: center;
+}
+.emptyInspector > svg {
+  padding: 12px;
+  box-sizing: content-box;
+  border-radius: 15px;
+  background: #f1f4eb;
+  color: #95a389;
+}
+.emptyInspector strong {
+  font-size: 0.86rem;
+  font-weight: 600;
+}
+.emptyInspector p,
+.emptyLayers {
+  margin: 0;
+  font-size: 0.8rem;
+  line-height: 1.75;
+  color: #69795f;
+}
+.sceneEditor .sceneStrip {
+  margin-top: 14px;
+  padding: 15px 0 0;
+  background: transparent;
+  border: 0;
+  border-top: 1px solid #e2e7da;
+  border-radius: 0;
+}
+.sceneStrip .panelHeading {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  color: #7b8c6e;
+  margin-bottom: 10px;
+}
+.cardDesigner .cardHeader {
+  margin: 0;
+}
+.cardDesigner .cardHeader h2 {
+  font-size: 1.13rem;
+  font-weight: 720;
+  letter-spacing: -0.035em;
+}
+.cardDesigner .cardHeader > button {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 40px;
+  padding: 9px 12px;
+  border-color: #dce4d3;
+  border-radius: 8px;
+  background: #f4f7ed;
+  color: #637953;
+  font-size: 0.8rem;
+  white-space: nowrap;
+}
+.cardDesigner .cardControls label {
+  font-size: 0.8rem;
+  color: #69795f;
+}
+.cardDesigner .cardControls input,
+.cardDesigner .cardControls select {
+  min-height: 40px;
+  font-size: 0.84rem;
+  background: #fffef9;
+  border-color: #dfe5d8;
+  border-radius: 8px;
+}
+.cardMeta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 18px;
+  padding: 0 0 5px;
+  color: #69795f;
+  font-size: 0.8rem;
+}
+.cardMeta span {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+.cardMeta span:first-child {
+  color: #6e805f;
+}
+.cardFooter {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 0 2px;
+}
+.cardFooter p {
+  font-size: 0.8rem;
+  color: #69795f;
+  margin: 0;
+  line-height: 1.7;
+}
+.cardFooter button {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  min-height: 40px;
+  padding: 8px 0;
+  border: 0;
+  background: transparent;
+  white-space: nowrap;
+  font-size: 0.8rem;
+}
+.cardDesigner .emptyCardDesign {
+  padding: 48px 20px;
+  border: 0;
+  background: #f2f5eb;
+  border-radius: 14px;
+}
+.emptyCards {
+  display: flex;
+  justify-content: center;
+  padding: 4px 0 16px;
+  color: #a2b08c;
+}
+.emptyCards svg:first-child {
+  transform: rotate(-12deg) translateX(7px);
+}
+.emptyCards svg:last-child {
+  transform: rotate(9deg) translateX(-4px);
+  color: #6d8758;
+}
+@media (min-width: 801px) and (max-width: 1199px) {
+  .panelTools .paneTabs button {
+    font-size: 0.8rem;
+    padding: 7px 12px;
+  }
+  .sceneEditor .toolItems button {
+    font-size: 0.8rem;
+    padding: 7px 8px;
+    gap: 4px;
+  }
+  .sceneEditor .toolItems button svg {
+    width: 16px;
+    height: 16px;
+  }
+}
+@media (max-width: 800px) {
+  .panelTools .paneTabs {
+    display: grid;
+    width: 100%;
+    margin-bottom: 10px;
+  }
+  .panelTools .paneTabs button {
+    min-height: 44px;
+    font-size: 0.8rem;
+    padding: 6px 3px;
+    gap: 5px;
+  }
+  .panelTools .compactToggle {
+    display: none;
+  }
+  .sceneEditor .sceneSwitch {
+    gap: 6px;
+    margin-bottom: 10px;
+  }
+  .sceneEditor .sceneSwitch > select {
+    min-height: 44px;
+    font-size: 16px;
+    max-width: 100%;
+  }
+  .sceneEditor .sceneSwitch > button {
+    min-height: 44px;
+    font-size: 0.8rem;
+    padding: 7px 8px;
+  }
+  .sceneEditor .sceneSwitch .switchLabel {
+    width: 100%;
+    margin: 3px 0;
+  }
+  .sceneEditor .faceToggle button {
+    min-width: 78px;
+    min-height: 44px;
+    padding: 7px 9px;
+  }
+  .sceneEditor .canvasPanel {
+    padding: 10px;
+  }
+  .sceneEditor .toolItems {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 5px;
+  }
+  .sceneEditor .toolItems button {
+    min-height: 44px;
+    padding: 5px;
+    font-size: 0.8rem;
+    gap: 4px;
+  }
+  .sceneEditor .toolItems button svg {
+    width: 16px;
+    height: 16px;
+  }
+  .canvasFrame .zoomBar {
+    padding: 7px;
+    gap: 6px;
+    flex-wrap: wrap;
+  }
+  .canvasFrame .zoomBar > label {
+    margin-left: auto;
+    font-size: 0.8rem;
+  }
+  .canvasFrame .zoomBar select {
+    max-width: 138px;
+    min-height: 44px;
+    font-size: 0.8rem;
+  }
+  .canvasDimensions {
+    font-size: 0.8rem;
+  }
+  .sceneEditor .canvasHelp {
+    font-size: 0.8rem;
+    line-height: 1.7;
+  }
+  .sceneEditor .canvasHelp > span:last-child {
+    display: none;
+  }
+  .sceneEditor .layerList button {
+    min-height: 44px;
+    font-size: 0.84rem;
+  }
+  .workspaceChrome .panelHeading h3 {
+    font-size: 0.92rem;
+  }
+  .sceneEditor .alignmentTools button,
+  .sceneEditor .layerActions button {
+    min-height: 44px;
+    font-size: 0.8rem;
+  }
+  .cardDesigner .cardHeader {
+    gap: 8px;
+  }
+  .cardDesigner .cardHeader h2 {
+    font-size: 1.04rem;
+  }
+  .cardDesigner .cardHeader > button {
+    min-height: 44px;
+    font-size: 0.8rem;
+    padding: 8px 10px;
+  }
+  .cardDesigner .cardControls input,
+  .cardDesigner .cardControls select {
+    min-height: 44px;
+    font-size: 16px;
+  }
+  .cardMeta {
+    gap: 6px 14px;
+    font-size: 0.8rem;
+    line-height: 1.6;
+  }
+  .cardMeta span:last-child {
+    flex-basis: 100%;
+  }
+  .cardFooter {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .cardFooter p {
+    font-size: 0.8rem;
+  }
+  .cardFooter button {
+    min-height: 44px;
+  }
+  .emptyInspector {
+    padding: 34px 0;
+  }
+  .emptyInspector p,
+  .emptyLayers {
+    font-size: 0.83rem;
+  }
+}
+
+.sceneEditor .sceneSwitch { background: #fff; margin: 0; padding: 8px 14px; }
+.cardDesigner .cardHeader, .cardDesigner .cardControls, .cardDesigner .cardMeta, .cardDesigner .cardFooter { background: #fff; margin: 0; padding: 8px 14px; }
+.cardDesigner .cardHeader h2 { font-size: 16px; }
+.cardDesigner .cardControls { display: flex; flex-wrap: wrap; gap: 12px; }
+.cardDesigner .cardControls label { flex: 1 1 180px; }
+.canvasHelp kbd { color: #424750; }
+
+@media(min-width:801px) {
+  .cardDesigner .cardHeader { padding-block: 5px; }
+  .cardDesigner .cardHeader > div { display: flex; gap: 12px; align-items: center; }
+  .cardDesigner .cardHeader > div > span { display: none; }
+  .cardDesigner .cardHeader h2 { margin: 0; }
+  .cardDesigner .cardControls { padding-block: 5px; }
+  .cardDesigner .cardControls label { display: flex; flex-direction: row; gap: 8px; align-items: center; white-space: nowrap; margin: 0; }
+  .cardDesigner .cardControls input, .cardDesigner .cardControls select { flex: 1; width: auto; min-width: 0; min-height: 36px; }
+  .cardDesigner .cardMeta { padding-block: 4px; font-size: 12px; }
+  .cardDesigner .cardFooter { padding-block: 5px; }
+}
+
+@media(max-width:800px) { .cardDesigner .cardMeta { display:none; } }
+
+.cardDesigner .sceneSwitch { padding-block: 4px; margin: 0; }
+.cardDesigner .faceToggle { padding: 3px; }
+
+.sceneEditor .faceToggle, .panelTools .paneTabs { background: #f0f1f3; }
+.sceneEditor .faceToggle button, .panelTools .paneTabs button { color: #606773; }
+.sceneEditor .faceToggle button[aria-pressed='true'], .panelTools .paneTabs button[aria-pressed='true'] { background: #fff0ad; color: #30343a; box-shadow: none; }
+.sceneEditor .faceToggle button[aria-pressed='true'] svg { color: #8c6a00; }
+.cardMeta, .cardDesigner .cardControls label, .sceneEditor .sceneSwitch .switchLabel { color: #626b76; }

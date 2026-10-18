@@ -2,6 +2,20 @@ $line: #e2e2d7;
 $cream: #fffef9;
 $green: #435639;
 $mango: #f2bb49;
+.main.homeMain {
+  max-width: none;
+  padding: 0;
+  background: #fff;
+}
+.siteHeader.homeHeader {
+  background: #fff;
+  border-color: #ededeb;
+  color: #292b2e;
+}
+.footer.homeFooter {
+  background: #fff;
+  border-color: #ededeb;
+}
 .main {
   max-width: 1376px;
   margin: 0 auto;
@@ -1305,3 +1319,345 @@ $mango: #f2bb49;
     flex-basis: 100%;
   }
 }
+
+/* 탐색 화면과 제작 작업실의 공통 반응형 틀 */
+.siteHeader {
+  height: 76px;
+  gap: 38px;
+  background: #fffef9;
+  border-bottom-color: #e4e9e0;
+  .desktopNav {
+    gap: 8px;
+  }
+  .desktopNav a {
+    padding: 9px 13px;
+    border-radius: 8px;
+    color: #657265;
+  }
+  .desktopNav a[aria-current='page'] {
+    background: #edf1e7;
+    text-decoration: none;
+    color: #274e3e;
+  }
+}
+.brand {
+  color: #253f34;
+}
+.accountMenu {
+  position: relative;
+  summary {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    list-style: none;
+    padding: 4px;
+    border-radius: 9px;
+  }
+  summary::-webkit-details-marker {
+    display: none;
+  }
+}
+.accountAvatar {
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  border: 1px solid #d9e0cf;
+  background: #edf1e6;
+  border-radius: 50%;
+}
+.accountName {
+  max-width: 140px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.accountDropdown {
+  position: absolute;
+  right: 0;
+  top: calc(100% + 12px);
+  width: 220px;
+  padding: 10px;
+  background: #fffef9;
+  border: 1px solid $line;
+  border-radius: 12px;
+  box-shadow: 0 12px 40px #263b3120;
+  z-index: 30;
+  display: grid;
+  gap: 4px;
+  > span {
+    overflow-wrap: anywhere;
+    font-size: 0.8rem;
+    padding: 10px;
+    border-bottom: 1px solid $line;
+  }
+  a,
+  button {
+    display: block;
+    padding: 10px;
+    text-align: left;
+    border: 0;
+    border-radius: 7px;
+    font-size: 0.87rem;
+  }
+  a:hover {
+    background: #f0f3e9;
+    text-decoration: none;
+  }
+}
+.mobileNavigation {
+  display: none;
+}
+.workspaceHeader {
+  height: 58px;
+  padding-inline: 22px;
+  .logo {
+    width: 29px;
+    height: 33px;
+    font-size: 23px;
+  }
+  .brand {
+    font-size: 1.08rem;
+  }
+}
+.workspaceConnection {
+  max-width: none;
+  padding: 5px 22px;
+  background: #f1f3ed;
+  font-size: 12px;
+  color: #6b7d6d;
+}
+.main.workspaceMain {
+  max-width: none;
+  padding: 12px 20px 24px;
+  min-height: calc(100dvh - 86px);
+  background: #f1f3ed;
+}
+.panel,
+.scenarioCard {
+  box-shadow: 0 3px 14px #34432e03;
+}
+.cardBody h2 a:hover {
+  color: #3e684a;
+}
+.filters {
+  background: #f0f3e9;
+  border-color: #e0e5d7;
+  gap: 14px;
+}
+.filters label {
+  min-width: 0;
+}
+.catalogMeta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin: -8px 0 20px;
+  font-size: 0.86rem;
+  color: #747d6d;
+}
+.catalogMeta strong {
+  color: #354a3b;
+}
+.filterToggle {
+  display: none;
+}
+.clearFilters {
+  padding: 7px 11px;
+  background: transparent;
+  font-size: 0.8rem;
+}
+.creationBanner {
+  background: #294b3d;
+  color: #fff9e7;
+  border-radius: 18px;
+  padding: 28px 32px;
+  margin-top: 44px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 24px;
+  h2 {
+    margin: 0 0 7px;
+  }
+  p {
+    color: #d4dfcb;
+    font-size: 0.88rem;
+    margin: 0;
+  }
+  a {
+    background: #f4c368;
+    color: #313d29;
+    border: 0;
+  }
+}
+@media (min-width: 801px) and (max-width: 1100px) {
+  .siteHeader {
+    padding-inline: 24px;
+    gap: 18px;
+    .desktopNav {
+      gap: 0;
+      font-size: 0.82rem;
+    }
+    .desktopNav a {
+      padding-inline: 9px;
+    }
+  }
+  .accountName {
+    max-width: 90px;
+  }
+}
+@media (max-width: 800px) {
+  .siteHeader {
+    height: 66px;
+    min-height: 66px;
+    padding: 0 18px;
+    flex-wrap: nowrap;
+    gap: 12px;
+    .desktopNav {
+      display: none;
+    }
+  }
+  .logo {
+    width: 30px;
+    height: 35px;
+    font-size: 24px;
+  }
+  .accountName {
+    display: none;
+  }
+  .accountNav .button {
+    padding: 8px 12px;
+    min-height: 40px;
+  }
+  .mobileNavigation {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 4px;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 8px 12px max(8px, env(safe-area-inset-bottom));
+    z-index: 15;
+    border-top: 1px solid #dfe4d6;
+    background: #fffef9f7;
+    backdrop-filter: blur(12px);
+    a {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 3px;
+      padding: 7px 4px;
+      border-radius: 10px;
+      font-size: 0.7rem;
+      font-weight: 700;
+      color: #78806f;
+    }
+    a[aria-current='page'] {
+      background: #edf1e4;
+      color: #2a513e;
+    }
+    a:hover {
+      text-decoration: none;
+    }
+  }
+  .footer {
+    padding-bottom: calc(104px + env(safe-area-inset-bottom));
+  }
+  .main.workspaceMain {
+    padding: 10px 12px 24px;
+  }
+  .workspaceHeader {
+    height: 56px;
+    min-height: 56px;
+  }
+  .workspaceConnection {
+    padding: 6px 12px;
+  }
+  .filters {
+    grid-template-columns: 1fr 1fr;
+    padding: 14px;
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+  .filterToggle {
+    display: inline-flex;
+    justify-content: space-between;
+    grid-column: 1 / -1;
+    background: transparent;
+    border: 0;
+    padding: 4px 0;
+    font-size: 0.8rem;
+  }
+  .advancedFilter[data-expanded='false'] {
+    display: none;
+  }
+  .catalogMeta {
+    margin-top: 0;
+    font-size: 0.8rem;
+  }
+  .creationBanner {
+    flex-direction: column;
+    align-items: stretch;
+    padding: 24px;
+    gap: 18px;
+    h2 {
+      font-size: 1.25rem;
+    }
+  }
+  .roomRow {
+    align-items: flex-start;
+    flex-wrap: wrap;
+  }
+  .roomRow > div {
+    min-width: 0;
+  }
+  .roomRow h2,
+  .historyRow {
+    overflow-wrap: anywhere;
+  }
+  .historyRow {
+    flex-wrap: wrap;
+  }
+  .historyRow > div {
+    min-width: 0;
+  }
+  .connection a {
+    padding-block: 4px;
+  }
+}
+@media (max-width: 390px) {
+  .siteHeader {
+    padding-inline: 12px;
+  }
+  .brand {
+    gap: 7px;
+    font-size: 0.98rem;
+  }
+  .main {
+    padding-inline: 14px;
+  }
+  .roleGrid {
+    grid-template-columns: 1fr;
+  }
+}
+.cardArt {
+  height: 172px;
+}
+.cardArt > svg {
+  display: block;
+}
+.cardArt > span:last-child {
+  background: #fffdf5e8;
+  border-color: #d1d8c2;
+  color: #49623e;
+}
+@media (max-width: 800px) {
+  .cardArt {
+    height: 154px;
+  }
+}
+
+.main.workspaceMain.studioEditorMain { padding: 0; min-height: 100dvh; background: #f3f4f6; }

@@ -42,7 +42,7 @@ async function closePlayers(group: Player[]) {
   await Promise.all(group.map((player) => player.context.close()));
 }
 function scenarioForPlayers(catalog: Page<Scenario>, count: number): Scenario {
-  const scenario = catalog.items.find((item) => item.playerCount === count);
+  const scenario = catalog.items.find((item) => item.playerCount === count && item.gameType === 'MURDER_MYSTERY');
   expect(scenario, `${count}인 작품이 필요합니다.`).toBeDefined();
   return scenario!;
 }
@@ -107,7 +107,7 @@ test('네 독립 로그인으로 모집방 → 비밀 역할 → 조사 → 투�
   const pageErrors: string[] = [];
   for (const player of group) player.page.on('pageerror', (error) => pageErrors.push(error.message));
   try {
-    const catalog = await read<Page<Scenario>>(group[0], '/scenarios?size=10');
+    const catalog = await read<Page<Scenario>>(group[0], '/scenarios?gameType=MURDER_MYSTERY&size=10');
     expect(catalog.items.length).toBeGreaterThanOrEqual(3);
     expect(JSON.stringify(catalog)).not.toContain('culpritRoleId');
     expect(JSON.stringify(catalog)).not.toContain('"secret"');
@@ -286,7 +286,7 @@ for (const playerCount of [1, 2]) {
     const pageErrors: string[] = [];
     for (const player of group) player.page.on('pageerror', (error) => pageErrors.push(error.message));
     try {
-      const catalog = await read<Page<Scenario>>(group[0], `/scenarios?playerCount=${playerCount}&size=12`);
+      const catalog = await read<Page<Scenario>>(group[0], `/scenarios?gameType=MURDER_MYSTERY&playerCount=${playerCount}&size=12`);
       expect(catalog.items.length).toBeGreaterThan(0);
       expect(catalog.items.every((item) => item.playerCount === playerCount)).toBe(true);
       const scenario = scenarioForPlayers(catalog, playerCount);

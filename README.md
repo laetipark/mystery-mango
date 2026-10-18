@@ -1,6 +1,8 @@
 # Mystery Mango · 미스터리 망고
 
-Java 서버를 통해 작품의 정원에 맞춰 모이고, 역할별 자료·조사·대화·투표·엔딩까지 진행하는 한국어 머더미스터리 플랫폼입니다. 1인·2인·4인 샘플을 제공하며 자동 매칭은 4인용입니다. 음성은 전용 Discord 서버와 관리 봇에 맡기며 게임 데이터는 웹에 보관합니다.
+Java 서버를 통해 작품의 정원에 맞춰 모이고, 역할별 자료·조사·대화·투표·엔딩까지 진행하는 한국어 머더미스터리·보드게임 제작 플랫폼입니다. 일반 작가는 제작 스튜디오에서 머더미스터리, 자유 테이블, 요트형 주사위 게임, 자유 오목·리버시·체커를 만들고 혼자 시험한 뒤 검수를 요청합니다. 관리자가 승인한 버전만 공개되며, 머더미스터리 자동 매칭은 4인, 보드게임은 선택한 버전·2~4인 정원으로 진행합니다. 음성은 전용 Discord 서버와 관리 봇에 맡기며 게임 데이터는 웹에 보관합니다.
+
+홈페이지에서 여섯 게임 유형과 실제 공개 작품을 탐색하고 제작으로 이어집니다. PC 스튜디오는 게임판·이야기 흐름·카드 디자인을 한 작업실에서 편집하며, 모바일은 내용 수정과 시험에 맞춘 패널을 제공합니다. 여러 검증 오류의 위치 이동, 이전 버전 재시험, 출처별 엔딩 도달 기록을 지원합니다. [제작 화면 안내](docs/studio-ui.md)와 [버전·시험 계약](docs/studio.md)을 참고하세요.
 
 운영 회원가입·로그인은 카카오 계정으로 처리합니다. 최초 카카오 로그인 시 회원을 생성하며 이메일·비밀번호를 입력하지 않습니다. Discord는 로그인한 사용자가 마이페이지에서 별도로 연결합니다. [기존 카카오 앱·Discord 봇 연결 안내](docs/account-connections.md)를 참고하세요.
 
@@ -15,7 +17,7 @@ docker compose up --build -d
 
 Linux/macOS에서는 첫 줄 대신 `cp .env.example .env`를 사용합니다. [앱 열기](http://localhost:8080), [OpenAPI](http://localhost:8080/api/openapi), [Swagger UI](http://localhost:8080/api/docs).
 
-최초 실행은 공식 이미지와 의존성을 내려받고 Flyway가 빈 DB를 구성합니다. 직접 작성한 작품 5개(1인용 1개, 2인용 1개, 4인용 3개)는 자동 등록됩니다. 기존 서버를 갱신할 때도 아직 없는 작품만 추가하며 기존 작품·게임 기록은 보존합니다. 상태 확인은 `docker compose ps`, 로그는 `docker compose logs backend`를 사용합니다. `docker compose down`은 DB 볼륨을 보존합니다.
+최초 실행은 공식 이미지와 의존성을 내려받고 Flyway가 빈 DB를 구성합니다. 직접 작성한 머더미스터리 5개(1인용 1개, 2인용 1개, 4인용 3개)와 보드게임 5개(자유 테이블·요트·자유 오목·리버시·체커), 총 10개를 자동 등록합니다. 여섯 게임 유형마다 기본 템플릿과 빈 템플릿을 제공하며, 내 작품을 만들거나 공개 기본 게임을 바로 플레이할 수 있습니다. 기존 서버를 갱신할 때도 아직 없는 작품만 추가하며 기존 작품·게임 기록은 보존합니다. 상태 확인은 `docker compose ps`, 로그는 `docker compose logs backend`를 사용합니다. `docker compose down`은 DB 볼륨을 보존합니다.
 
 기본 `dev` 프로필에서는 다음 개발 계정을 생성합니다. 일반 회원가입도 동작합니다.
 
@@ -24,7 +26,7 @@ Linux/macOS에서는 첫 줄 대신 `cp .env.example .env`를 사용합니다. [
 | `player1@example.test` ~ `player8@example.test` | `MangoDev!2026` | 일반 사용자 |
 | `admin@example.test` | `MangoDev!2026` | 작품 등록·검증·공개, 신고 조회 |
 
-혼자 확인하려면 작품 탐색에서 1인용을 선택하고 텍스트 방을 만든 뒤 준비 → 시작으로 진행합니다. 2인·4인 플레이는 서로 독립된 브라우저 프로필에서 각각 로그인하고 작품 선택 → 모집방 생성·참가 → 전원 준비 → 방장 시작 순서로 진행합니다. 같은 브라우저 프로필의 일반 탭은 로그인 상태를 공유합니다. 자동 매칭은 실제 독립 계정 4개가 필요하며 4인용 작품만 선택합니다.
+혼자 확인하려면 작품 탐색에서 1인용을 선택하고 텍스트 방을 만든 뒤 준비 → 시작으로 진행합니다. 2인·4인 플레이는 서로 독립된 브라우저 프로필에서 각각 로그인하고 작품 선택 → 모집방 생성·참가 → 전원 준비 → 방장 시작 순서로 진행합니다. 같은 브라우저 프로필의 일반 탭은 로그인 상태를 공유합니다. 머더미스터리 자동 매칭은 실제 독립 계정 4개가 필요하며 4인용 작품만 선택합니다. 보드게임은 작품의 허용 인원 중 1~4명(고전 게임은 2명)으로 방을 만들고, 2~4명은 버전·인원·모드를 지정해 자동 매칭할 수 있습니다. 제작과 혼자 시험은 [제작 스튜디오 안내](docs/studio.md)를 참고하세요.
 
 개발 계정은 `dev`/`e2e` 프로필에서만 생성합니다. 배포 환경에서는 `SPRING_PROFILES_ACTIVE=prod`, 새로운 DB 비밀번호, HTTPS와 `COOKIE_SECURE=true`, 정확한 `APP_ORIGINS`를 사용합니다. 이미 개발 계정이 생성된 DB를 운영 DB로 재사용하지 않습니다. 최초 운영 관리자는 신뢰된 운영자가 DB의 기존 사용자 `admin` 속성으로 지정합니다.
 
@@ -76,6 +78,7 @@ OpenAPI는 실행 중인 Java API의 `/api/openapi`에서 제공합니다. 프�
 | --- | --- |
 | `DATABASE_URL`, `DATABASE_USER`, `DATABASE_PASSWORD` | JDBC 연결; Compose가 내부 DB 주소를 주입 |
 | `SPRING_PROFILES_ACTIVE` | `dev`; 개발 계정 생성은 dev/e2e만 |
+| `ASSET_STORAGE_PATH` | 로컬 실행 기본 `.data/assets`; Compose는 `/app/assets` 영속 볼륨 |
 | `VOICE_PROVIDER` | `disabled`; 설정 완료 시 `discord` |
 | `GAME_PHASE_SECONDS` | `0`: 작품 정의 사용, 양수: 검증용 단계 시간 |
 | `MATCH_ACCEPT_SECONDS`, `MATCH_VOTE_SECONDS` | 30초, 60초 |
@@ -90,7 +93,7 @@ Discord가 미설정이면 텍스트 플레이가 정상 동작하며 음성 모
 ## 구성과 고정 버전
 
 - 백엔드: Java 21, Spring Boot 4.1.1, Gradle 8.14.4, PostgreSQL 17.11, springdoc 3.1.1, JDA 6.7.0. Spring 계열·Flyway·JUnit·Testcontainers는 Boot BOM을 따릅니다.
-- 프런트: React 19.2.5, TypeScript 5.9.3, Vite 8.0.16, SCSS Modules, TanStack Query, npm lockfile.
+- 프런트: React 19.2.5, TypeScript 5.9.3, Vite 8.0.16, SCSS Modules, TanStack Query, react-konva 19.2.5·Konva 10.2.0, npm lockfile.
 - Docker 기본 이미지 5종은 공식 레지스트리 digest로 고정했습니다. Gradle 배포 ZIP의 SHA-256도 검증합니다.
 - `backend/`: 모듈형 Java 모놀리스, 마이그레이션, 서버 전용 작품 정의, 테스트.
 - `frontend/`: 실제 API를 사용하는 웹 화면과 브라우저 테스트.

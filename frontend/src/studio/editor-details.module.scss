@@ -1,0 +1,191 @@
+.toolbar { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; min-width: 0; padding: 10px 14px; background: #fff; border-bottom: 1px solid #e4e5e7; }
+.toolbar label { display: flex; flex: 1 1 170px; min-width: 0; gap: 6px; font-size: 13px; flex-direction: row; align-items: center; white-space: nowrap; }
+.toolbar input, .toolbar select { min-width: 0; width: 100%; }
+.toolbar button { min-height: 36px; }
+.breadcrumb { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; font-size: 13px; color: #515761; }
+.breadcrumb strong { color: #202329; }
+.summary { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; padding: 9px 14px; background: #fff; color: #515761; font-size: 12px; }
+.summary span { background: #f1f2f4; border-radius: 5px; padding: 5px 8px; }
+.summary button { font-size: 12px; }
+.inspectorSection { border-top: 1px solid #e5e6e8; margin-top: 12px; padding-top: 12px; }
+.inspectorSection > summary { font-weight: 700; cursor: pointer; padding: 4px 0 12px; }
+.inspectorSection > label { margin-block: 10px; }
+.links { display: flex; flex-wrap: wrap; gap: 6px; padding: 10px 0; }
+.links button { text-align: left; max-width: 100%; overflow-wrap: anywhere; }
+.compactPreview { display: none; }
+.version { border: 1px solid #e1e3e6; border-radius: 12px; background: #fff; margin-top: 12px; padding: 18px; }
+.version header { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 10px; }
+.version h3, .version h4 { margin: 0 0 10px; }
+.versionActions { display: flex; flex-wrap: wrap; align-items: end; gap: 10px; margin: 16px 0; }
+.versionActions label { display: grid; gap: 5px; }
+.observations { margin-top: 20px; padding: 16px; background: #f8f9fa; border-radius: 10px; }
+.observations table { width: 100%; border-collapse: collapse; font-size: 13px; }
+.observations td, .observations th { padding: 10px 6px; border-bottom: 1px solid #e2e4e8; text-align: left; }
+.issuePanel { margin: 12px 18px; padding: 14px 18px; background: #fff9e8; border: 1px solid #e8ce84; border-radius: 10px; max-height: 260px; overflow: auto; }
+.issuePanel header { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px; }
+.issuePanel h3 { font-size: 14px; margin: 0; }
+.issuePanel ul { margin: 8px 0; padding: 0; list-style: none; }
+.issuePanel li button { width: 100%; text-align: left; background: #fff; margin: 3px 0; font-size: 13px; }
+.issuePanel small { display: block; color: #676e76; overflow-wrap: anywhere; }
+.issuePanel[data-stale='true'] { background: #f2f3f5; border-color: #d9dce0; }
+.readOnly { display: grid; gap: 12px; }
+.readOnly details { border: 1px solid #e3e5e8; border-radius: 8px; padding: 12px; }
+@media(max-width: 800px) {
+  .toolbar input, .toolbar select, .version input, .version select { font-size: 16px; }
+  .toolbar button, .links button, .breadcrumb button, .summary button, .version button { min-width: 44px; min-height: 44px; }
+  .compactPreview { display: block; padding: 12px; background: #3c4046; color: #fff; text-align: center; }
+  .compactPreview svg { width: 100%; max-width: 180px; height: 120px; display: block; margin: auto; }
+  .compactPreview p { color: #fff; font-size: 12px; margin: 6px 0 0; }
+  .observations { overflow-x: auto; padding: 10px; }
+  .observations th, .observations td { min-width: 76px; }
+  .issuePanel { margin: 8px; }
+}
+
+@media(min-width:801px) {
+  .toolbar { padding-block: 6px; }
+  .toolbar label { margin: 0; }
+  .toolbar input, .toolbar select { min-height: 36px; }
+}
+
+.cardNavigation { background: #fff; min-width: 0; }
+.cardNavigation > summary { cursor: pointer; padding: 12px 14px; min-height: 44px; font-weight: 700; border-block: 1px solid #e3e5e7; }
+@media(min-width:801px) { .cardNavigation > summary { display:none; } }
+
+.cardEditor { gap: 0 !important; }
+.cardEditor > .cardPath {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+  padding: 5px 14px;
+  border-bottom: 1px solid #e4e5e7;
+  background: #fff;
+}
+.cardPath > button {
+  flex: 0 0 auto;
+  min-height: 32px;
+  padding: 5px 8px;
+  border: 0;
+  background: #f3f4f5;
+  color: #555c65;
+  font-size: 12px;
+  white-space: nowrap;
+}
+.cardBreadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  min-width: 0;
+  color: #767d86;
+  font-size: 12px;
+  white-space: nowrap;
+}
+.cardBreadcrumb > strong,
+.cardOrigin {
+  min-width: 0;
+  max-width: 320px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.cardBreadcrumb > strong { color: #30363d; }
+.cardPathFace { flex: 0 0 auto; }
+.cardEditor .cardNavigationBody {
+  display: grid;
+  grid-template-columns: minmax(140px, .8fr) repeat(2, minmax(160px, 1fr)) auto;
+  align-items: end;
+  gap: 10px;
+  padding: 8px 14px;
+  border-bottom: 1px solid #eceef0;
+}
+.cardNavigationBody > label {
+  display: grid;
+  align-content: start;
+  gap: 4px;
+  min-width: 0;
+  margin: 0;
+  color: #626b76;
+  font-size: 12px;
+  line-height: 1.4;
+}
+.cardNavigationBody input,
+.cardNavigationBody select {
+  width: 100%;
+  min-width: 0;
+  min-height: 36px;
+  padding: 7px 9px;
+  border: 1px solid #dfe2e7;
+  background: #fff;
+  color: #30363d;
+  font-size: 13px;
+}
+.cardNavigationActions,
+.cardPagination {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  min-width: 0;
+}
+.cardNavigationActions { justify-content: flex-end; gap: 10px; }
+.cardPagination > span { margin-right: 3px; color: #747c86; font-size: 12px; white-space: nowrap; }
+.cardPagination > button {
+  width: 32px;
+  min-height: 36px;
+  padding: 0;
+  border: 1px solid #e4e6e9;
+  background: #fff;
+  color: #47505a;
+  font-size: 24px;
+  font-weight: 400;
+  line-height: 1;
+}
+.cardNavigationActions > .cardAdd {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  min-height: 36px;
+  padding: 7px 9px;
+  border: 1px solid #ecdb99;
+  background: #fff6d5;
+  color: #514a30;
+  font-size: 12px;
+  white-space: nowrap;
+}
+.cardEditor > .cardLinks {
+  flex-wrap: nowrap;
+  gap: 6px;
+  min-width: 0;
+  padding: 5px 14px;
+  overflow-x: auto;
+  background: #fff;
+  scrollbar-width: thin;
+}
+.cardLinks > button {
+  flex: 0 0 auto;
+  max-width: min(320px, 85vw);
+  min-height: 32px;
+  padding: 5px 8px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 12px;
+}
+@media (min-width: 801px) and (max-width: 1050px) {
+  .cardEditor .cardNavigationBody { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 800px) {
+  .cardEditor > .cardPath { gap: 8px; padding: 4px 10px; }
+  .cardPath > button { min-height: 44px; }
+  .cardBreadcrumb { gap: 5px; }
+  .cardOrigin { max-width: 110px; }
+  .cardEditor .cardNavigationBody { grid-template-columns: repeat(2, minmax(0, 1fr)); padding: 10px; }
+  .cardNavigationBody input, .cardNavigationBody select { min-height: 44px; font-size: 16px; }
+  .cardNavigationActions { flex-wrap: wrap; gap: 6px; }
+  .cardPagination > button, .cardNavigationActions > .cardAdd, .cardLinks > button { min-height: 44px; }
+  .cardPagination > button { min-width: 44px; }
+}
+@media (max-width: 480px) {
+  .cardEditor .cardNavigationBody { grid-template-columns: minmax(0, 1fr); }
+  .cardNavigationActions { justify-content: space-between; }
+  .cardOrigin { max-width: 70px; }
+}
