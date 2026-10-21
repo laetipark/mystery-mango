@@ -1,12 +1,114 @@
+![미스터리 망고 홈 — 게임을 만들고 함께 플레이하는 서비스](docs/images/home.jpg)
+
 # Mystery Mango · 미스터리 망고
 
-Java 서버를 통해 작품의 정원에 맞춰 모이고, 역할별 자료·조사·대화·투표·엔딩까지 진행하는 한국어 머더미스터리·보드게임 제작 플랫폼입니다. 일반 작가는 제작 스튜디오에서 머더미스터리, 자유 테이블, 요트형 주사위 게임, 자유 오목·리버시·체커를 만들고 혼자 시험한 뒤 검수를 요청합니다. 관리자가 승인한 버전만 공개되며, 머더미스터리 자동 매칭은 4인, 보드게임은 선택한 버전·2~4인 정원으로 진행합니다. 음성은 전용 Discord 서버와 관리 봇에 맡기며 게임 데이터는 웹에 보관합니다.
+> **나만의 게임을 만들고, 함께 플레이하세요.**
 
-홈페이지에서 여섯 게임 유형과 실제 공개 작품을 탐색하고 제작으로 이어집니다. PC 스튜디오는 게임판·이야기 흐름·카드 디자인을 한 작업실에서 편집하며, 모바일은 내용 수정과 시험에 맞춘 패널을 제공합니다. 여러 검증 오류의 위치 이동, 이전 버전 재시험, 출처별 엔딩 도달 기록을 지원합니다. [제작 화면 안내](docs/studio-ui.md)와 [버전·시험 계약](docs/studio.md)을 참고하세요.
+머더미스터리와 보드게임을 직접 만들고, 공개된 작품을 골라 혼자 또는 함께 즐기는 한국어 웹 플랫폼입니다. 플레이어는 작품 탐색부터 모집·매칭·게임·기록까지, 창작자는 템플릿 선택부터 편집·시험·검수·공개까지 한 흐름으로 이용합니다.
 
-운영 회원가입·로그인은 카카오 계정으로 처리합니다. 최초 카카오 로그인 시 회원을 생성하며 이메일·비밀번호를 입력하지 않습니다. Discord는 로그인한 사용자가 마이페이지에서 별도로 연결합니다. [기존 카카오 앱·Discord 봇 연결 안내](docs/account-connections.md)를 참고하세요.
+**[🥭 서비스 바로가기](https://mystery.laetipark.me)** · **[🎨 Figma UI 문서](https://www.figma.com/design/Y4orK4LUYK19NXmVlmskdV/mystery-mango)** · **[🖼️ 화면 모아보기](docs/screens.md)** · **[📚 문서 허브](docs/README.md)**
 
-## 실행
+## 목차
+
+[프로젝트 소개](#-프로젝트-소개) · [주요 화면](#-주요-화면) · [이용 흐름](#-이용-흐름) · [프로젝트 구성](#-프로젝트-구성) · [기술 스택](#-활용-기술-스택) · [실행](#-실행) · [화면 개발](#-화면-개발) · [검증](#-검증) · [설정](#-계약과-설정) · [문서 안내](#-문서-안내)
+
+## 🥭 프로젝트 소개
+
+추리 이야기와 보드게임을 **만드는 공간**과 **함께 즐기는 공간**을 연결합니다. PC에서는 게임판·이야기 흐름·카드 앞뒷면을 편집하고, 모바일에서는 내용 수정과 시험, 실제 플레이를 이어갈 수 있습니다.
+
+| 영역 | 제공하는 경험 |
+| --- | --- |
+| 작품 탐색 | 게임 종류·인원·장르·난이도·시간으로 공개 작품을 찾고 상세 정보 확인 |
+| 모집과 매칭 | 작품에 맞는 방 생성·참가, 친구 초대, 조건에 맞는 자동 매칭 |
+| 실제 플레이 | 역할별 자료·조사·대화·투표·엔딩, 카드·말·주사위와 게임별 조작 |
+| 제작 스튜디오 | 여섯 유형의 기본·빈 템플릿 12개, 게임판·장면·카드·이야기 편집 |
+| 시험과 공개 | 검증 오류 위치 이동, 혼자 또는 초대 시험, 이전 버전 재시험, 검수 후 공개 |
+| 내 서재 | 완료·중단한 플레이 기록 확인, Discord 계정 연결 |
+
+### 지원하는 여섯 가지 게임
+
+| 게임 | 인원 | 진행 방식 |
+| --- | --- | --- |
+| 머더미스터리 | 작품별 1~4명 | 역할·단서·조사·투표·엔딩을 서버가 진행 |
+| 자유 테이블 | 작품별 1~4명 | 카드·덱·말·주사위·카운터를 조작하며 참가자가 규칙과 종료를 진행 |
+| 요트형 주사위 | 작품별 1~4명 | 주사위 굴림·점수 기록·차례·종료를 서버가 판정 |
+| 자유 오목 | 2명 | 착수·차례·승패를 서버가 판정 |
+| 리버시 | 2명 | 허용 수·돌 뒤집기·차례·승패를 서버가 판정 |
+| 체커 | 2명 | 이동·포획·승급·차례·승패를 서버가 판정 |
+
+실제 방의 인원과 대화 방식은 선택한 작품의 지원 범위를 따릅니다. 머더미스터리 자동 매칭은 4인, 보드게임 자동 매칭은 지원하는 정원 중 2~4인으로 진행합니다. 1인 플레이는 직접 방을 만듭니다.
+
+## 🖼️ 주요 화면
+
+아래 이미지는 **2026-10-18에 배포 화면을 확인해 정리한 Figma 문서**에서 가져왔습니다. 저장소의 이후 편집기 보완과 화면 차이는 [이미지 기준과 전체 화면](docs/screens.md)에서 확인할 수 있습니다.
+
+### 이야기의 흐름을 연결하는 제작 작업실
+
+역할·단서·진행 단계·엔딩을 한 작업실에서 구성합니다. PC의 정교한 제작과 모바일의 내용 수정·시험을 구분해 지원합니다.
+
+![머더미스터리 이야기 편집 — 자료 읽기·조사·투표·엔딩 연결](docs/images/studio-story.png)
+
+### 시험한 버전을 검수하고 공개하기
+
+작품 정보와 규칙 연결을 확인한 뒤 버전을 고정해 시험하고 공개 검수를 요청합니다. 관리자가 승인한 버전만 작품 탐색에 공개되며, 이후 초안 수정은 진행 중인 게임을 바꾸지 않습니다.
+
+![공개 준비 — 작품 소개·구조 검증·공개 검수와 버전 확인](docs/images/studio-publish.png)
+
+[홈 전체 화면 · 템플릿 보관함 · 매칭 화면 더 보기 →](docs/screens.md)
+
+## 🧭 이용 흐름
+
+| 플레이어 | 창작자 |
+| --- | --- |
+| ① 공개 작품 탐색 | ① 기본 또는 빈 템플릿 선택 |
+| ② 카카오 로그인 | ② 꾸미기·게임 설정과 저장 |
+| ③ 방 생성·참가 또는 자동 매칭 | ③ 구조 검증과 혼자·초대 시험 |
+| ④ 정원이 모여 모두 준비한 뒤 시작 | ④ 공개 검수 요청 |
+| ⑤ 플레이 후 내 서재에서 기록 확인 | ⑤ 관리자 승인 후 공개 |
+
+운영 회원가입·로그인은 카카오 계정으로 처리합니다. 최초 로그인 시 회원을 생성하며 이메일·비밀번호를 입력하지 않습니다. Discord는 로그인한 사용자가 내 서재에서 별도로 연결하고, 설정이 없으면 텍스트 플레이를 이용합니다. [계정 연결 안내](docs/account-connections.md)를 참고하세요.
+
+## 📁 프로젝트 구성
+
+```text
+mystery-mango/
+├── backend/        Java API·게임 엔진·권한·마이그레이션·테스트
+├── frontend/       React 화면·제작 캔버스·브라우저 테스트
+├── infra/          정적 프런트 빌드·동일 출처 Nginx 프록시
+├── scripts/        운영 배포·백업 스크립트
+└── docs/           정책·작품 형식·아키텍처·화면·운영 문서
+```
+
+게임 규칙과 열람 권한은 Java 서버가 판정합니다. 웹은 서버가 허용한 개인 자료와 현재 보이는 카드 면을 표시하고, Discord는 음성 대화를 맡습니다. PostgreSQL 트랜잭션·잠금·제약 조건으로 상태와 중복 처리를 관리하며, WebSocket은 변경 알림을 전달하고 REST 조회가 최신 상태의 기준이 됩니다.
+
+초안의 개정 충돌 검사와 불변 공개 버전으로 제작과 실행을 분리합니다. 실제 게임과 작가 시험은 같은 Java 게임 계산·권한별 응답을 공유합니다. 자세한 데이터 모델과 현재 확장 한계는 [아키텍처 문서](docs/architecture.md)에 정리했습니다.
+
+## 🛠️ 활용 기술 스택
+
+<p>
+  <img alt="Java 21" src="https://img.shields.io/badge/Java-21-007396?style=for-the-badge&amp;logo=openjdk&amp;logoColor=white">
+  <img alt="Spring Boot 4.1.1" src="https://img.shields.io/badge/Spring_Boot-4.1.1-6DB33F?style=for-the-badge&amp;logo=springboot&amp;logoColor=white">
+  <img alt="PostgreSQL 17" src="https://img.shields.io/badge/PostgreSQL-17-4169E1?style=for-the-badge&amp;logo=postgresql&amp;logoColor=white">
+  <img alt="React 19" src="https://img.shields.io/badge/React-19-61DAFB?style=for-the-badge&amp;logo=react&amp;logoColor=111111">
+  <img alt="TypeScript 5.9" src="https://img.shields.io/badge/TypeScript-5.9-3178C6?style=for-the-badge&amp;logo=typescript&amp;logoColor=white">
+  <img alt="Vite 8" src="https://img.shields.io/badge/Vite-8-646CFF?style=for-the-badge&amp;logo=vite&amp;logoColor=white">
+  <img alt="Sass" src="https://img.shields.io/badge/Sass-CC6699?style=for-the-badge&amp;logo=sass&amp;logoColor=white">
+  <img alt="Docker" src="https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&amp;logo=docker&amp;logoColor=white">
+  <img alt="Nginx" src="https://img.shields.io/badge/Nginx-009639?style=for-the-badge&amp;logo=nginx&amp;logoColor=white">
+</p>
+
+| 영역 | 기술과 역할 |
+| --- | --- |
+| 백엔드 | Java 21 · Spring Boot 4.1.1 · JPA/JDBC · JDA 6.7.0 |
+| 데이터 | PostgreSQL 17.11 · Flyway 마이그레이션 |
+| 프런트엔드 | React 19.2.5 · TypeScript 5.9.3 · Vite 8.0.16 · SCSS Modules |
+| 상태·캔버스 | TanStack Query · STOMP · react-konva 19.2.5 / Konva 10.2.0 |
+| API 계약 | springdoc 3.1.1 · OpenAPI · 생성 TypeScript 타입 |
+| 배포·검증 | Docker Compose · Nginx · Gradle 8.14.4 · Vitest · Playwright |
+
+Spring 계열·Flyway·JUnit·Testcontainers는 Boot BOM을 따릅니다. Docker 기본 이미지 5종은 공식 레지스트리 digest로, Gradle 배포 ZIP은 SHA-256으로 검증하며 npm은 lockfile을 사용합니다.
+
+## ⚙️ 실행
 
 Docker Desktop의 Linux 엔진과 Docker Compose가 필요합니다. 전체 실행에는 호스트 JDK나 Node.js가 필요하지 않습니다.
 
@@ -32,7 +134,7 @@ Linux/macOS에서는 첫 줄 대신 `cp .env.example .env`를 사용합니다. [
 
 운영 서버 설치·HTTPS·백업 명령은 [mystery.laetipark.me 배포 안내](docs/deployment.md)를 따릅니다. 운영 실행에는 `scripts/deploy-production.sh`를 사용합니다.
 
-## 화면 개발
+## 💻 화면 개발
 
 Node.js 22.22.0과 npm을 사용합니다. Windows에서는 실행 정책 충돌을 피하려고 `npm.cmd`를 사용할 수 있습니다.
 
@@ -46,7 +148,7 @@ npm.cmd run dev:web
 
 JDK 21이 있는 경우 PostgreSQL만 Compose에서 실행하고 `backend` 폴더에서 `./gradlew.bat bootRun` 또는 `./gradlew bootRun`을 사용할 수 있습니다. 로컬 백엔드 기본 포트는 8080이므로 `PORT=8081` 환경 변수를 지정하거나 프런트의 프록시 대상도 맞춥니다. Gradle은 전역 설치 없이 Wrapper를 사용합니다.
 
-## 검증
+## 🧪 검증
 
 JDK 21과 Docker가 준비된 환경에서:
 
@@ -70,7 +172,7 @@ npm.cmd --prefix frontend run test:e2e
 
 Playwright가 개발 화면을 실행하고 독립 로그인 컨텍스트로 1인·2인 샘플 진행과 기존 4인 게임·매칭을 검사합니다. 테스트 뒤 일반 플레이에는 `GAME_PHASE_SECONDS=0`, `MATCH_VOTE_SECONDS=60`, `SPRING_PROFILES_ACTIVE=dev`로 복원합니다. [검증 기록과 남은 한계](docs/verification.md)를 확인하세요.
 
-## 계약과 설정
+## 🔐 계약과 설정
 
 OpenAPI는 실행 중인 Java API의 `/api/openapi`에서 제공합니다. 프런트 계약 타입 갱신은 `npm --prefix frontend run generate:api`, 차이 검사는 `npm --prefix frontend run check:api`로 수행합니다. `API_SCHEMA_URL`로 명세 URL을 바꿀 수 있습니다.
 
@@ -90,14 +192,18 @@ OpenAPI는 실행 중인 Java API의 `/api/openapi`에서 제공합니다. 프�
 
 Discord가 미설정이면 텍스트 플레이가 정상 동작하며 음성 모집은 비활성화됩니다. 봇과 OAuth 설정, 서버 최소 권한, 실제 통화 점검은 [Discord 안내](docs/discord.md)를 따릅니다. API 키·봇 토큰·운영 비밀번호는 커밋하지 않습니다.
 
-## 구성과 고정 버전
+## 📚 문서 안내
 
-- 백엔드: Java 21, Spring Boot 4.1.1, Gradle 8.14.4, PostgreSQL 17.11, springdoc 3.1.1, JDA 6.7.0. Spring 계열·Flyway·JUnit·Testcontainers는 Boot BOM을 따릅니다.
-- 프런트: React 19.2.5, TypeScript 5.9.3, Vite 8.0.16, SCSS Modules, TanStack Query, react-konva 19.2.5·Konva 10.2.0, npm lockfile.
-- Docker 기본 이미지 5종은 공식 레지스트리 digest로 고정했습니다. Gradle 배포 ZIP의 SHA-256도 검증합니다.
-- `backend/`: 모듈형 Java 모놀리스, 마이그레이션, 서버 전용 작품 정의, 테스트.
-- `frontend/`: 실제 API를 사용하는 웹 화면과 브라우저 테스트.
-- `infra/`: 정적 프런트 빌드와 동일 출처 Nginx 프록시.
-- `docs/`: 데이터 모델, 권한·복구 정책, 작품 형식, Discord, 검증 결과.
-
-[문서 안내](docs/README.md) · [아키텍처와 ERD](docs/architecture.md) · [게임·권한 정책](docs/policies.md) · [작품 형식](docs/scenarios.md)
+| 문서 | 내용 |
+| --- | --- |
+| [문서 허브](docs/README.md) | 목적별 시작 안내와 전체 문서 목록 |
+| [화면과 Figma 문서](docs/screens.md) | 주요 화면·프로토타입·이미지 출처와 갱신 기준 |
+| [프런트엔드](frontend/README.md) | 화면 구성·개발·API 타입·브라우저 검증 |
+| [제작 스튜디오](docs/studio.md) | 템플릿·편집·시험·버전·검수·공개 |
+| [제작 화면과 반응형](docs/studio-ui.md) | PC·모바일 작업실과 카드 디자인 |
+| [아키텍처와 ERD](docs/architecture.md) | 서버·데이터 모델·동시성과 확장 경계 |
+| [게임·권한 정책](docs/policies.md) | 매칭·자료 열람·상태 전이·복구 |
+| [작품 형식](docs/scenarios.md) | 작품 JSON·필드·검증 계약 |
+| [계정 연결](docs/account-connections.md) · [Discord](docs/discord.md) | 카카오·Discord 연결과 실제 통화 점검 |
+| [운영 배포](docs/deployment.md) | HTTPS·배포·백업·복구 |
+| [검증 기록](docs/verification.md) | 실제 실행 결과와 운영 반영 여부 |
