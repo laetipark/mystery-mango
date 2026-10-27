@@ -643,7 +643,7 @@ function WorkEditor({ work }: { work: Work }) {
       <div className={`${s.studio} ${s.authorWorkspace} ${chrome.workspace}`}>
         <header className={chrome.header}>
           <Link to="/studio" className={chrome.brand}>
-            <span className={chrome.logo}>m</span>
+            <img className={chrome.logo} src="/images/mango-detective.png" alt="" aria-hidden="true" width={34} height={34} />
             <span>
               MYSTERY MANGO<small>GAME MAKER STUDIO</small>
             </span>

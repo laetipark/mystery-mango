@@ -30,7 +30,7 @@ function CreationPreview() {
   return (
     <div className={s.preview} aria-label="제작 화면 예시">
       <div className={s.previewBar}>
-        <span className={s.previewMark}>m</span>
+        <img className={s.previewMark} src="/images/mango-detective.png" alt="" aria-hidden="true" width={24} height={24} />
         <strong>나의 첫 번째 이야기</strong>
         <span>제작 화면 예시</span>
       </div>

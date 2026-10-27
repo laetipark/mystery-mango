@@ -1,0 +1,11 @@
+Use case: ads-marketing
+Asset type: illustrated GitHub README banner for the Mystery Mango project
+Primary request: Create one polished wide pixel-art banner, approximately 1200:630 aspect ratio, for an online tabletop mystery and storytelling game platform.
+Scene/backdrop: warm cream #fff9e8 backdrop with spacious clean margins and restrained tiny pixel sparkles.
+Subject: an original adorable golden mango detective with a tiny green leaf and a subtle magnifying glass, seated above a dark green tabletop board with a few dice and playing cards.
+Style/medium: charming crisp pixel art with visible deliberate square pixel edges, cohesive pixel sizes, premium indie game title illustration.
+Composition/framing: wide landscape composition. Place the mango character in the upper center and the title prominently across the lower-middle. Keep all letters and key objects fully inside safe margins. Leave a small calm outer border.
+Color palette: cream #fff9e8, dark forest green #253f34, golden mango #efb64d, small muted warm brown accents.
+Text (verbatim): "Mystery Mango"
+Typography: very large perfectly legible playful pixel lettering with cream fill and thick dark forest green outline. Spell exactly M y s t e r y, a space, M a n g o. Title is the main reading point.
+Constraints: an original mango character, not any existing character. Exactly one title and no additional text, slogans, logos, watermark, application UI, or screenshots. No photorealism, gradients, or overly busy background.

@@ -46,6 +46,7 @@
 .brand {
   display: flex;
   align-items: center;
+  min-height: 44px;
   gap: 8px;
   flex: 0 0 auto;
   color: #ffdc57;
@@ -63,17 +64,12 @@
   }
 }
 .logo {
-  display: grid;
-  place-items: center;
-  width: 29px;
-  height: 33px;
-  border-radius: 50% 43% 47% 20%;
-  background: #ffda52;
-  color: #30362c;
-  font:
-    italic 800 25px Georgia,
-    serif;
-  transform: rotate(-7deg);
+  display: block;
+  width: 34px;
+  height: 34px;
+  flex-shrink: 0;
+  object-fit: contain;
+  image-rendering: pixelated;
 }
 .topLinks {
   display: flex;
@@ -835,7 +831,7 @@
   .workspace input, .workspace select, .workspace textarea { font-size: 16px; }
   .workspace button { min-width: 44px; min-height: 44px; }
   .header { gap: 4px 8px; padding: 8px 10px; }
-  .logo { width: 24px; height: 28px; font-size: 21px; }
+  .logo { width: 28px; height: 28px; }
   .brand small { display: none; }
   .saveStatus { font-size: 11px; line-height: 1.3; }
   .actions { gap: 2px; }

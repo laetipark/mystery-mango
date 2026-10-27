@@ -1,0 +1,10 @@
+Use case: logo-brand
+Asset type: square transparent website mascot logo and favicon for Mystery Mango
+Input images: Image 1 is the character identity reference. Recreate the SAME original mango detective character from this banner as a compact standalone icon.
+Primary request: create a clean square logo with genuine transparent alpha background. Center the adorable round golden mango detective face, brown deerstalker detective cap, small green leaf, large expressive dark eyes, tiny friendly smile, and one magnifying glass held in front of one eye. Include only a very short shoulder/collar base.
+Identity invariants: preserve the reference character's recognizable golden mango face, cute warm expression, asymmetrical green leaf, brown cap silhouette, dark brown-green contours, and magnifying-glass eye pose. Simplify details while retaining identity.
+Style/medium: crisp, simple pixel art. Thick dark outlines, large clear pixel clusters, few colors and minimal interior texture. Prioritize recognizability when displayed at 40px in a website header and 16px or 32px as a favicon.
+Composition/framing: square canvas, close-up bust. Character silhouette fills 88–92% of canvas with small even safe margins. Keep every part of hat, leaf, magnifying glass, and collar inside the canvas. No clipping.
+Color palette: golden mango #efb64d, warm browns, forest green #253f34, tiny cream eye highlights.
+Background: completely transparent genuine alpha, including outside the silhouette. Do not draw a checkerboard pattern.
+Constraints: only one isolated character. No text, letters, slogans, wordmark, watermark, badge circle, decorative border, backdrop, shadow extending outside the character, table, chair, books, candles, cards, dice, foliage beyond the small leaf, sparkles, or scene elements. A square PNG around 512x512 is ideal.

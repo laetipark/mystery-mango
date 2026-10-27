@@ -63,9 +63,7 @@ function Layout() {
       {!studioEditor && (
         <header className={`${s.siteHeader} ${workspace ? s.workspaceHeader : ''} ${home ? s.homeHeader : ''}`}>
           <Link to="/" className={s.brand}>
-            <span className={s.logo} aria-hidden="true">
-              m
-            </span>
+            <img className={s.logo} src="/images/mango-detective.png" alt="" aria-hidden="true" width={42} height={42} />
             미스터리 망고
           </Link>
           <nav aria-label="주요 메뉴" className={s.desktopNav}>

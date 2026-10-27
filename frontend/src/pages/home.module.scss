@@ -267,14 +267,12 @@
   }
 }
 .previewMark {
-  display: grid;
-  place-items: center;
-  width: 23px;
-  height: 23px;
-  border-radius: 7px;
-  background: #ffd351;
-  color: #25272b;
-  font-weight: 850;
+  display: block;
+  width: 24px;
+  height: 24px;
+  flex-shrink: 0;
+  object-fit: contain;
+  image-rendering: pixelated;
 }
 .previewBody {
   display: grid;

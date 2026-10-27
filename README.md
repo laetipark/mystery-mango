@@ -1,18 +1,19 @@
-![미스터리 망고 홈 — 게임을 만들고 함께 플레이하는 서비스](docs/images/home.jpg)
+![Mystery Mango — 추리와 보드게임을 만들고 함께 플레이하는 공간](docs/images/readme-banner.png)
 
 # Mystery Mango · 미스터리 망고
 
 > **나만의 게임을 만들고, 함께 플레이하세요.**
 
-머더미스터리와 보드게임을 직접 만들고, 공개된 작품을 골라 혼자 또는 함께 즐기는 한국어 웹 플랫폼입니다. 플레이어는 작품 탐색부터 모집·매칭·게임·기록까지, 창작자는 템플릿 선택부터 편집·시험·검수·공개까지 한 흐름으로 이용합니다.
-
 **[🥭 서비스 바로가기](https://mystery.laetipark.me)** · **[🎨 Figma UI 문서](https://www.figma.com/design/Y4orK4LUYK19NXmVlmskdV/mystery-mango)** · **[🖼️ 화면 모아보기](docs/screens.md)** · **[📚 문서 허브](docs/README.md)**
 
-## 목차
+<a id="-프로젝트-소개"></a>
 
-[프로젝트 소개](#-프로젝트-소개) · [주요 화면](#-주요-화면) · [이용 흐름](#-이용-흐름) · [프로젝트 구성](#-프로젝트-구성) · [기술 스택](#-활용-기술-스택) · [실행](#-실행) · [화면 개발](#-화면-개발) · [검증](#-검증) · [설정](#-계약과-설정) · [문서 안내](#-문서-안내)
+## 🥭 프로그램 소개
 
-## 🥭 프로젝트 소개
+머더미스터리와 보드게임을 직접 만들고, 공개된 작품을 골라 혼자 또는 함께 즐기는 한국어 웹 플랫폼입니다. 플레이어는 작품 탐색부터 모집·매칭·게임·기록까지, 창작자는 템플릿 선택부터 편집·시험·검수·공개까지 한 흐름으로 이용합니다.
+
+<details>
+<summary>지원 게임과 플레이·제작 흐름</summary>
 
 추리 이야기와 보드게임을 **만드는 공간**과 **함께 즐기는 공간**을 연결합니다. PC에서는 게임판·이야기 흐름·카드 앞뒷면을 편집하고, 모바일에서는 내용 수정과 시험, 실제 플레이를 이어갈 수 있습니다.
 
@@ -38,25 +39,9 @@
 
 실제 방의 인원과 대화 방식은 선택한 작품의 지원 범위를 따릅니다. 머더미스터리 자동 매칭은 4인, 보드게임 자동 매칭은 지원하는 정원 중 2~4인으로 진행합니다. 1인 플레이는 직접 방을 만듭니다.
 
-## 🖼️ 주요 화면
+<a id="-이용-흐름"></a>
 
-아래 이미지는 **2026-10-18에 배포 화면을 확인해 정리한 Figma 문서**에서 가져왔습니다. 저장소의 이후 편집기 보완과 화면 차이는 [이미지 기준과 전체 화면](docs/screens.md)에서 확인할 수 있습니다.
-
-### 이야기의 흐름을 연결하는 제작 작업실
-
-역할·단서·진행 단계·엔딩을 한 작업실에서 구성합니다. PC의 정교한 제작과 모바일의 내용 수정·시험을 구분해 지원합니다.
-
-![머더미스터리 이야기 편집 — 자료 읽기·조사·투표·엔딩 연결](docs/images/studio-story.png)
-
-### 시험한 버전을 검수하고 공개하기
-
-작품 정보와 규칙 연결을 확인한 뒤 버전을 고정해 시험하고 공개 검수를 요청합니다. 관리자가 승인한 버전만 작품 탐색에 공개되며, 이후 초안 수정은 진행 중인 게임을 바꾸지 않습니다.
-
-![공개 준비 — 작품 소개·구조 검증·공개 검수와 버전 확인](docs/images/studio-publish.png)
-
-[홈 전체 화면 · 템플릿 보관함 · 매칭 화면 더 보기 →](docs/screens.md)
-
-## 🧭 이용 흐름
+### 🧭 이용 흐름
 
 | 플레이어 | 창작자 |
 | --- | --- |
@@ -67,6 +52,10 @@
 | ⑤ 플레이 후 내 서재에서 기록 확인 | ⑤ 관리자 승인 후 공개 |
 
 운영 회원가입·로그인은 카카오 계정으로 처리합니다. 최초 로그인 시 회원을 생성하며 이메일·비밀번호를 입력하지 않습니다. Discord는 로그인한 사용자가 내 서재에서 별도로 연결하고, 설정이 없으면 텍스트 플레이를 이용합니다. [계정 연결 안내](docs/account-connections.md)를 참고하세요.
+
+</details>
+
+**목차** · [프로젝트 구성](#-프로젝트-구성) · [기술 스택](#-활용-기술-스택) · [환경 설정 및 실행](#-환경-설정-및-실행) · [URL 규칙](#-url-규칙) · [주요 화면](#-주요-화면) · [API 문서](#-api-문서) · [배포 문서](#-배포-문서) · [문서 안내](#-문서-안내)
 
 ## 📁 프로젝트 구성
 
@@ -108,7 +97,11 @@ mystery-mango/
 
 Spring 계열·Flyway·JUnit·Testcontainers는 Boot BOM을 따릅니다. Docker 기본 이미지 5종은 공식 레지스트리 digest로, Gradle 배포 ZIP은 SHA-256으로 검증하며 npm은 lockfile을 사용합니다.
 
-## ⚙️ 실행
+<a id="-실행"></a>
+
+## ⚙️ 환경 설정 및 실행
+
+### 전체 서비스 실행
 
 Docker Desktop의 Linux 엔진과 Docker Compose가 필요합니다. 전체 실행에는 호스트 JDK나 Node.js가 필요하지 않습니다.
 
@@ -134,7 +127,9 @@ Linux/macOS에서는 첫 줄 대신 `cp .env.example .env`를 사용합니다. [
 
 운영 서버 설치·HTTPS·백업 명령은 [mystery.laetipark.me 배포 안내](docs/deployment.md)를 따릅니다. 운영 실행에는 `scripts/deploy-production.sh`를 사용합니다.
 
-## 💻 화면 개발
+<a id="-화면-개발"></a>
+
+### 프런트엔드 개발
 
 Node.js 22.22.0과 npm을 사용합니다. Windows에서는 실행 정책 충돌을 피하려고 `npm.cmd`를 사용할 수 있습니다.
 
@@ -148,7 +143,9 @@ npm.cmd run dev:web
 
 JDK 21이 있는 경우 PostgreSQL만 Compose에서 실행하고 `backend` 폴더에서 `./gradlew.bat bootRun` 또는 `./gradlew bootRun`을 사용할 수 있습니다. 로컬 백엔드 기본 포트는 8080이므로 `PORT=8081` 환경 변수를 지정하거나 프런트의 프록시 대상도 맞춥니다. Gradle은 전역 설치 없이 Wrapper를 사용합니다.
 
-## 🧪 검증
+<a id="-검증"></a>
+
+### 빌드와 테스트
 
 JDK 21과 Docker가 준비된 환경에서:
 
@@ -172,9 +169,9 @@ npm.cmd --prefix frontend run test:e2e
 
 Playwright가 개발 화면을 실행하고 독립 로그인 컨텍스트로 1인·2인 샘플 진행과 기존 4인 게임·매칭을 검사합니다. 테스트 뒤 일반 플레이에는 `GAME_PHASE_SECONDS=0`, `MATCH_VOTE_SECONDS=60`, `SPRING_PROFILES_ACTIVE=dev`로 복원합니다. [검증 기록과 남은 한계](docs/verification.md)를 확인하세요.
 
-## 🔐 계약과 설정
+<a id="-계약과-설정"></a>
 
-OpenAPI는 실행 중인 Java API의 `/api/openapi`에서 제공합니다. 프런트 계약 타입 갱신은 `npm --prefix frontend run generate:api`, 차이 검사는 `npm --prefix frontend run check:api`로 수행합니다. `API_SCHEMA_URL`로 명세 URL을 바꿀 수 있습니다.
+### 환경 변수
 
 | 설정 | 기본값·역할 |
 | --- | --- |
@@ -191,6 +188,52 @@ OpenAPI는 실행 중인 Java API의 `/api/openapi`에서 제공합니다. 프�
 | `KAKAO_REDIRECT_URI` | 카카오 앱에 등록한 콜백. 운영: `https://mystery.laetipark.me/api/v1/auth/kakao/callback` |
 
 Discord가 미설정이면 텍스트 플레이가 정상 동작하며 음성 모집은 비활성화됩니다. 봇과 OAuth 설정, 서버 최소 권한, 실제 통화 점검은 [Discord 안내](docs/discord.md)를 따릅니다. API 키·봇 토큰·운영 비밀번호는 커밋하지 않습니다.
+
+## 🔗 URL 규칙
+
+| 주소 | 화면 |
+| --- | --- |
+| `/` | 서비스 소개와 공개 작품 |
+| `/scenarios` · `/scenarios/:id` | 작품 탐색·상세 |
+| `/rooms` · `/rooms/:id` | 모집 목록·참가자의 대기실 |
+| `/match` · `/games/:id` | 조건별 매칭·참가자의 게임 |
+| `/studio` · `/studio/:id` · `/studio/sandboxes/:id` | 제작 목록·소유 작품 편집·권한이 있는 시험 |
+| `/account` | 내 플레이 기록·계정 연결 |
+| `/login` · `/register` | 서버 설정에 따른 로그인·가입 |
+| `/admin` · `/admin/reviews/:id` | 관리자 전용 작품·신고·공개 검수 |
+
+`:id`는 작품·방·게임 등의 식별자입니다. 비공개 화면은 로그인과 서버의 참가·소유·관리자 권한 검사를 거칩니다. 세부 경로와 API 연동 규칙은 [프런트엔드 안내](frontend/README.md#url과-api-규칙)에서 확인할 수 있습니다.
+
+## 🖼️ 주요 화면
+
+아래 이미지는 **2026-10-18에 배포 화면을 확인해 정리한 Figma 문서**에서 가져왔습니다. 저장소의 이후 편집기 보완과 화면 차이는 [이미지 기준과 전체 화면](docs/screens.md)에서 확인할 수 있습니다.
+
+[![미스터리 망고 홈 — 게임을 만들고 함께 플레이하는 서비스](docs/images/home.jpg)](docs/screens.md#홈)
+
+| 이야기의 흐름을 연결하는 제작 작업실 | 시험한 버전을 검수하고 공개하기 |
+| --- | --- |
+| [![머더미스터리 이야기 편집 — 자료 읽기·조사·투표·엔딩 연결](docs/images/studio-story.png)](docs/screens.md#이야기-편집) | [![공개 준비 — 작품 소개·구조 검증·공개 검수와 버전 확인](docs/images/studio-publish.png)](docs/screens.md#공개-준비) |
+| 역할·단서·진행 단계·엔딩을 한 작업실에서 구성합니다. PC의 정교한 제작과 모바일의 내용 수정·시험을 구분해 지원합니다. | 작품 정보와 규칙 연결을 확인한 뒤 버전을 고정해 시험하고 공개 검수를 요청합니다. 관리자 승인 후 공개하며 이후 초안 수정은 진행 중인 게임을 바꾸지 않습니다. |
+
+[홈 전체 화면 · 템플릿 보관함 · 매칭 · 클릭 프로토타입 보기 →](docs/screens.md)
+
+## 📝 API 문서
+
+OpenAPI는 실행 중인 Java API의 `/api/openapi`에서 제공합니다. 프런트 계약 타입 갱신은 `npm --prefix frontend run generate:api`, 차이 검사는 `npm --prefix frontend run check:api`로 수행합니다. `API_SCHEMA_URL`로 명세 URL을 바꿀 수 있습니다.
+
+| 문서 | 내용 |
+| --- | --- |
+| [저장된 OpenAPI](docs/openapi.json) | 공개 요청·응답 명세 |
+| [프런트엔드 API 계약](frontend/README.md#api-계약과-생성-타입) | 생성 타입과 계약 차이 확인 |
+| [작품 형식](docs/scenarios.md) | 게임 정의 JSON·필드·검증 계약 |
+| [권한과 상태 전이](docs/policies.md) | 로그인·매칭·개인 자료·게임 복구 규칙 |
+
+## 🚀 배포 문서
+
+- [운영 서버 배포 가이드](docs/deployment.md): mystery.laetipark.me 설치·동일 출처 Nginx·HTTPS·백업·복구
+- [계정 연결 설정](docs/account-connections.md): 카카오 앱·Discord 연결과 운영 전환
+- [Discord 운영 안내](docs/discord.md): 봇 권한·서버 구성·실제 음성 통화 점검
+- [검증 기록](docs/verification.md): 실제 실행 결과와 운영 반영 여부
 
 ## 📚 문서 안내
 

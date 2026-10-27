@@ -1,3 +1,5 @@
+![Mystery Mango — 추리와 보드게임을 만들고 함께 플레이하는 공간](../docs/images/readme-banner.png)
+
 # Mystery Mango · 프런트엔드
 
 작품을 찾고 함께 플레이하는 화면부터 나만의 게임을 만드는 스튜디오까지 담당하는 React 애플리케이션입니다. 프로젝트 소개와 화면은 [루트 README](../README.md), 기능별 정책과 운영 안내는 [문서 허브](../docs/README.md)에서 확인할 수 있습니다.
@@ -6,13 +8,17 @@
 
 ## 목차
 
-[프로그램 소개](#프로그램-소개) · [프로젝트 구성](#프로젝트-구성) · [기술 스택](#기술-스택) · [실행](#실행) · [URL과 API 규칙](#url과-api-규칙) · [화면과 동작 정책](#화면과-동작-정책) · [검증](#검증) · [관련 문서](#관련-문서)
+[프로그램 소개](#프로그램-소개) · [프로젝트 구성](#프로젝트-구성) · [활용 기술 스택](#기술-스택) · [환경 설정 및 실행](#실행) · [URL 규칙](#url과-api-규칙) · [API 문서](#-api-문서) · [배포 문서](#-배포-문서) · [화면과 동작 정책](#화면과-동작-정책) · [검증](#검증) · [관련 문서](#관련-문서)
 
-## 프로그램 소개
+<a id="프로그램-소개"></a>
+
+## 🥭 프로그램 소개
 
 플레이어는 작품 탐색·모집방·매칭·게임·플레이 기록으로 이어지는 화면을 이용합니다. 창작자는 템플릿을 고르고 카드·게임판·이야기를 편집한 뒤 시험과 공개 검수를 진행합니다. 게임 규칙과 자료 열람 권한은 Java 서버가 판단하며 프런트는 허용된 응답을 표시합니다.
 
-## 프로젝트 구성
+<a id="프로젝트-구성"></a>
+
+## 📁 프로젝트 구성
 
 | 경로 | 역할 |
 | --- | --- |
@@ -27,7 +33,9 @@
 
 익숙한 저장소 관례에 맞춰 SCSS Modules, 기능별 pages/hooks/services, `~/` 경로 별칭, 엄격한 TypeScript, 작은 AGENTS 진입점과 집중 테스트를 사용합니다. 빌드 결과물 `dist/`, 의존성, 테스트 캡처를 소스처럼 수정하지 마세요.
 
-## 기술 스택
+<a id="기술-스택"></a>
+
+## 🛠️ 활용 기술 스택
 
 ![React 19.2.5](https://img.shields.io/badge/React-19.2.5-149ECA?style=for-the-badge&logo=react&logoColor=white)
 ![TypeScript 5.9.3](https://img.shields.io/badge/TypeScript-5.9.3-3178C6?style=for-the-badge&logo=typescript&logoColor=white)
@@ -43,7 +51,11 @@ React 19.2.5 · TypeScript 5.9.3 · Vite 8.0.16. npm과 package-lock.json으로 
 
 화면 글꼴은 `public/fonts/`에 포함한 Pretendard v1.3.9를 같은 출처에서 불러옵니다. 가변 굵기와 `font-display: swap`을 사용하며 원본 라이선스를 동봉합니다. 상세 출처는 [글꼴 안내](public/fonts/README.md)를 확인하세요. 작가가 작성한 캔버스·카드의 기존 글꼴 지정은 유지합니다. 스튜디오 홈, 편집 상단, 편집 패널의 시각 스타일은 각각 `studio-home.module.scss`, `editor-chrome.module.scss`, `workspace-polish.module.scss`에서 관리합니다.
 
-## 실행
+사이트와 스튜디오의 로고, 브라우저 파비콘은 [망고 탐정 이미지](public/images/mango-detective.png)를 공유합니다. 투명 배경과 정사각 비율을 유지하며, 생성 출처와 교체 기준은 [이미지 문서](../docs/images/README.md#사이트-로고)에 기록합니다.
+
+<a id="실행"></a>
+
+## ⚙️ 환경 설정 및 실행
 
 `frontend/` 폴더에서 실행합니다. 전체 구성과 백엔드 실행은 [루트 README](../README.md)를 따릅니다.
 
@@ -54,7 +66,9 @@ npm.cmd run dev
 
 Java 서버를 먼저 `localhost:8081`에서 실행하세요. Vite는 `/api`·`/swagger-ui`·`/ws`를 같은 출처 프록시로 전달합니다. 서버 주소를 바꾸려면 실행 전 `VITE_API_PROXY_TARGET` 환경변수를 설정합니다. 운영 환경도 `/api`·`/ws`와 SPA가 같은 출처여야 하며 WebSocket upgrade를 전달해야 합니다. 루트 실행 절차는 상위 README를 확인하세요.
 
-## URL과 API 규칙
+<a id="url과-api-규칙"></a>
+
+## 🔗 URL 규칙
 
 ### 화면 주소
 
@@ -69,11 +83,23 @@ Java 서버를 먼저 `localhost:8081`에서 실행하세요. Vite는 `/api`·`/
 | `/studio` · `/studio/:id` · `/studio/sandboxes/:id` | 제작 목록·소유 작품 편집·권한이 있는 시험 화면 |
 | `/admin` · `/admin/reviews/:id` | 관리자 전용 작품·신고·검수 화면 |
 
+## 🔌 API 문서
+
 ### API 계약과 생성 타입
 
 Java API의 OpenAPI에서 타입을 생성하려면 서버 실행 후 `npm.cmd run generate:api`를 사용합니다. `npm.cmd run check:api`는 파일을 수정하지 않고 서버 명세와 생성된 타입의 차이를 검증합니다. 기본 주소는 `http://localhost:8081/api/openapi`이며 `API_SCHEMA_URL`로 변경할 수 있습니다. `src/common/api.generated.ts`는 직접 편집하지 않습니다.
 
-## 화면과 동작 정책
+## 🚀 배포 문서
+
+| 문서 | 확인할 내용 |
+| --- | --- |
+| [운영 배포](../docs/deployment.md) | 동일 출처 프록시·HTTPS·배포·백업 |
+| [계정 연결 설정](../docs/account-connections.md) | 운영 카카오 로그인·Discord 연결 |
+| [검증 기록](../docs/verification.md) | 실제 실행 결과와 운영 반영 여부 |
+
+<a id="화면과-동작-정책"></a>
+
+## 📐 화면과 동작 정책
 
 ### 작품 탐색·모집·매칭
 
@@ -95,7 +121,9 @@ Java API의 OpenAPI에서 타입을 생성하려면 서버 실행 후 `npm.cmd r
 
 Discord 미설정 시 텍스트 게임을 이용합니다. 계정 연결과 봇 설정이 있어도 실제 4인 음성, 방 분리, 퇴장과 재입장 차단은 실제 Discord 환경에서 따로 검증해야 합니다. 웹은 마이크를 직접 제어하거나 음성 연결 성공을 가장하지 않습니다.
 
-## 검증
+<a id="검증"></a>
+
+## 🧪 검증
 
 ```powershell
 npm.cmd run build
@@ -117,7 +145,9 @@ npm.cmd run test:e2e
 
 카카오 버튼은 [공식 디자인 가이드](https://developers.kakao.com/docs/ko/kakaologin/design-guide)에 따라 [공식 리소스](https://developers.kakao.com/tool/resource/login)의 한국어 완성형 이미지를 사용합니다. `e2e/auth.spec.ts`는 API 응답과 외부 페이지 이동을 가로채 화면 상태·CSRF·주소 검증을 확인하는 UI 테스트입니다. 이 테스트의 통과는 실제 카카오 계정 인증이나 외부 콜백 성공을 검증했다는 뜻이 아닙니다.
 
-## 관련 문서
+<a id="관련-문서"></a>
+
+## 📚 관련 문서
 
 | 문서 | 확인할 내용 |
 | --- | --- |

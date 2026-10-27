@@ -45,6 +45,7 @@ $mango: #f2bb49;
 .brand {
   display: flex;
   align-items: center;
+  min-height: 44px;
   gap: 10px;
   white-space: nowrap;
   font-size: 1.17rem;
@@ -52,15 +53,12 @@ $mango: #f2bb49;
   letter-spacing: -0.045em;
 }
 .logo {
-  width: 37px;
+  width: 42px;
   height: 42px;
-  border-radius: 48% 48% 45% 25%;
-  background: $mango;
-  font: italic bold 28px Georgia;
-  display: grid;
-  place-items: center;
-  color: #53401a;
-  transform: rotate(-10deg);
+  display: block;
+  flex-shrink: 0;
+  object-fit: contain;
+  image-rendering: pixelated;
 }
 .beta {
   font-size: 9px;
@@ -1412,9 +1410,8 @@ $mango: #f2bb49;
   height: 58px;
   padding-inline: 22px;
   .logo {
-    width: 29px;
-    height: 33px;
-    font-size: 23px;
+    width: 34px;
+    height: 34px;
   }
   .brand {
     font-size: 1.08rem;
@@ -1520,9 +1517,8 @@ $mango: #f2bb49;
     }
   }
   .logo {
-    width: 30px;
-    height: 35px;
-    font-size: 24px;
+    width: 36px;
+    height: 36px;
   }
   .accountName {
     display: none;
